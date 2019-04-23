@@ -193,6 +193,7 @@ ifeq ($(SKIP_CLEANUP), 0)
 	$(MAKE) clean
 endif
 
+.PHONY: ${GOPATH}/out/yaml/crds
 # Install CRDS
 ${GOPATH}/out/yaml/crds: crds
 	mkdir -p ${GOPATH}/out/yaml
@@ -451,3 +452,4 @@ ${GOPATH}/bin/ci2gubernator:
 lint: ${GOPATH}/bin/helm
 	helm lint istio-control/istio-discovery -f global.yaml
 	helm lint istio-control/istio-config -f global.yaml
+	helm lint istio-control/istio-autoinject -f global.yaml

@@ -224,6 +224,10 @@ install-ingress:
 	bin/iop ${ISTIO_NS} istio-ingress ${BASE}/gateways/istio-ingress --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS}
 	kubectl wait deployments ingressgateway -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
+install-egress:
+	bin/iop istio-egress istio-egress ${BASE}/gateways/istio-egress --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS}
+	kubectl wait deployments egressgateway -n istio-egress --for=condition=available --timeout=${WAIT_TIMEOUT}
+
 # Telemetry will be installed in istio-control for the tests, until integration tests are changed
 # to expect telemetry in separate namespace
 install-telemetry:
@@ -453,3 +457,4 @@ lint: ${GOPATH}/bin/helm
 	helm lint istio-control/istio-discovery -f global.yaml
 	helm lint istio-control/istio-config -f global.yaml
 	helm lint istio-control/istio-autoinject -f global.yaml
+	helm lint gateways/istio-egress -f global.yaml

@@ -450,3 +450,4 @@ ${GOPATH}/bin/ci2gubernator:
 
 lint: ${GOPATH}/bin/helm
 	helm lint istio-control/istio-discovery -f global.yaml
+	helm lint istio-control/istio-config -f global.yaml

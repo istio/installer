@@ -93,6 +93,7 @@ function switch_istio_control() {
         done
         if [ $REMOVE_OLD_CONTROL = true ]; then
             kubectl delete namespace $ISTIO_CONTROL_OLD --wait --ignore-not-found
+            kubectl delete mutatingwebhookconfiguration istio-sidecar-injector-$ISTIO_CONTROL_OLD --wait --ignore-not-found
         fi
         for ns in $ACTIVE_NAMESPACES; do
             kubectl set env --all deployment --env="LAST_MANUAL_RESTART=$(date +%s)" --namespace=$ns

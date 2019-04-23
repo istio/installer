@@ -10,7 +10,7 @@ metadata:
     istio: sidecar-injector
 data:
   values: |-
-    {{ .Values.sidecarInjectorWebhook | toJson }}
+    {{ .Values | toJson }}
 
   config: |-
     # Deprecated: user may install or not the autoinjector.

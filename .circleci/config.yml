@@ -176,17 +176,9 @@ jobs:
             git clone https://github.com/istio/istio.git $GOPATH/src/istio.io/istio
             git clone https://github.com/istio/tools.git $GOPATH/src/istio.io/tools
       - run:
-          # TODO: include in the istio base image
-          command: make ${GOPATH}/bin/kind
-      - run:
-          command: |
-            export PATH=/go/bin:$PATH
-            # Create KIND cluster (separate so we get time info)
-            make info dep prepare
+          command: make info dep
       - run:
           command: make sync
-      - run:
-          command: make docker-run-test TEST_TARGET="install-crds install-base install-ingress"
       - run:
           command: make docker-run-test TEST_TARGET="run-test.integration.kube.presubmit"
           # simple is currently failing

@@ -186,7 +186,7 @@ jobs:
       - run:
           command: make sync
       - run:
-          command: make docker-run-test TEST_TARGET="install-crds install-ingress"
+          command: make docker-run-test TEST_TARGET="install-crds install-base install-ingress"
       - run:
           command: make docker-run-test TEST_TARGET="run-test.integration.kube.presubmit"
           # simple is currently failing

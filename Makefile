@@ -460,5 +460,6 @@ lint: ${GOPATH}/bin/helm
 	helm lint istio-policy -f global.yaml
 	helm lint istio-telemetry/grafana -f global.yaml
 	helm lint istio-telemetry/mixer-telemetry -f global.yaml
+	helm lint istio-telemetry/prometheus -f global.yaml
 	helm lint security/citadel -f global.yaml
 	helm lint gateways/istio-egress -f global.yaml

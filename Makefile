@@ -458,5 +458,6 @@ lint: ${GOPATH}/bin/helm
 	helm lint istio-control/istio-config -f global.yaml
 	helm lint istio-control/istio-autoinject -f global.yaml
 	helm lint istio-policy -f global.yaml
+	helm lint istio-telemetry/grafana -f global.yaml
 	helm lint security/citadel -f global.yaml
 	helm lint gateways/istio-egress -f global.yaml

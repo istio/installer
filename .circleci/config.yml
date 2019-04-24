@@ -214,7 +214,6 @@ workflows:
       - integration-presubmit-kind
       - integration-old-kind
       - install-minikube
-      - modular-installation
 
   all:
     jobs:

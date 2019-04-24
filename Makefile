@@ -463,3 +463,4 @@ lint: ${GOPATH}/bin/helm
 	helm lint istio-telemetry/prometheus -f global.yaml
 	helm lint security/citadel -f global.yaml
 	helm lint gateways/istio-egress -f global.yaml
+	helm lint gateways/istio-ingress -f global.yaml

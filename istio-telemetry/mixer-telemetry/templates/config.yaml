@@ -200,7 +200,7 @@ spec:
     destination.workload.namespace:
       valueType: STRING
 ---
-{{- if .Values.adapters.stdio.enabled }}
+{{- if .Values.mixer.telemetry.adapters.stdio.enabled }}
 apiVersion: "config.istio.io/v1alpha2"
 kind: handler
 metadata:
@@ -621,7 +621,7 @@ spec:
   compiledAdapter: prometheus
   params:
     metricsExpirationPolicy:
-      metricsExpiryDuration: "{{ .Values.adapters.prometheus.metricsExpiryDuration }}"
+      metricsExpiryDuration: "{{ .Values.mixer.telemetry.adapters.prometheus.metricsExpiryDuration }}"
     metrics:
     - name: requests_total
       instance_name: requestcount.instance.{{ .Release.Namespace }}

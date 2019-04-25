@@ -202,13 +202,9 @@ ifeq ($(SKIP_CLEANUP), 0)
 endif
 
 # Install CRDS
-${GOPATH}/out/yaml/crds: crds
-	mkdir -p ${GOPATH}/out/yaml
-	cp -aR crds ${GOPATH}/out/yaml/crds
+install-crds: crds
 	kubectl apply -f crds/
 	kubectl wait --for=condition=Established -f crds/
-
-install-crds: ${GOPATH}/out/yaml/crds
 
 # Individual step to install or update base istio.
 # This setup is optimized for migration from 1.1 and testing - note that autoinject is enabled by default,
@@ -264,6 +260,8 @@ report:
 
 E2E_ARGS=--skip_setup --use_local_cluster=true --istio_namespace=${ISTIO_NS}
 
+SIMPLE_AUTH ?= false
+
 # The simple test from istio/istio integration, in permissive mode
 # Will kube-inject and test the ingress and service-to-service
 run-simple-base: ${TMPDIR}
@@ -275,7 +273,7 @@ run-simple-base: ${TMPDIR}
 	kubectl label ns ${NS} istio-injection=disabled --overwrite
 	(set -o pipefail; cd ${GOPATH}/src/istio.io/istio; \
 	 go test -v -timeout 25m ./tests/e2e/tests/simple -args \
-	     --auth_enable=false \
+	     --auth_enable=${SIMPLE_AUTH} \
          --egress=false \
          --ingress=false \
          --rbac_enable=false \
@@ -293,7 +291,7 @@ run-simple:
 
 # Simple test, strict mode
 run-simple-strict:
-	$(MAKE) run-simple-base MODE=strict NS=simple-strict
+	$(MAKE) run-simple-base MODE=strict NS=simple-strict SIMPLE_AUTH=true
 
 run-bookinfo-demo:
 	kubectl create ns bookinfo-demo || /bin/true

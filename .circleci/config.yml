@@ -126,7 +126,9 @@ jobs:
       - run:
           command: make docker-run-test TEST_TARGET="install-crds install-base install-ingress"
       - run:
-          command: make docker-run-test TEST_TARGET="run-simple run-simple-strict"
+          command: make docker-run-test TEST_TARGET="run-simple"
+      - run:
+          command: make docker-run-test TEST_TARGET="run-simple-strict"
       - run:
           command: make docker-run-test TEST_TARGET="run-bookinfo"
           # simple is currently failing

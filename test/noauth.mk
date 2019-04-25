@@ -51,9 +51,11 @@ run-test-noauth-full: install-crds
 		 --set global.controlPlaneSecurityEnabled=false
 	bin/iop ${ISTIO_NS} istio-mixer ${BASE}/istio-telemetry/mixer-telemetry/ --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS} \
 		--set global.controlPlaneSecurityEnabled=false
+
 	kubectl wait deployments istio-telemetry prometheus -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
+
 	# TODO: Autoinject requires certs - they can be created by a tool, see b/...
 	# bin/iop ${ISTIO_NS} istio-autoinject ${BASE}/istio-control/istio-autoinject \
 	#	--set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS} --set global.controlPlaneSecurityEnabled=false
 	#kubectl wait deployments istio-sidecar-injector -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
-	$(MAKE) run-simple
+	#$(MAKE) run-simple

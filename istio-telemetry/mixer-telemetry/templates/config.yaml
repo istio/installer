@@ -212,7 +212,7 @@ metadata:
 spec:
   compiledAdapter: stdio
   params:
-    outputAsJson: {{ .Values.adapters.stdio.outputAsJson }}
+    outputAsJson: {{ .Values.mixer.telemetry.adapters.stdio.outputAsJson }}
 ---
 apiVersion: "config.istio.io/v1alpha2"
 kind: instance
@@ -344,7 +344,7 @@ spec:
     - tcpaccesslog
 {{- end }}
 ---
-{{- if .Values.adapters.prometheus.enabled }}
+{{- if .Values.mixer.telemetry.adapters.prometheus.enabled }}
 apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
@@ -878,7 +878,7 @@ spec:
     - tcpconnectionsclosed
 {{- end }}
 ---
-{{- if .Values.adapters.kubernetesenv.enabled }}
+{{- if .Values.mixer.telemetry.adapters.kubernetesenv.enabled }}
 apiVersion: "config.istio.io/v1alpha2"
 kind: handler
 metadata:

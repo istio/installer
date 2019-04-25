@@ -178,9 +178,7 @@ jobs:
       - run:
           command: make info dep
       - run:
-          command: make sync
-      - run:
-          command: make docker-run-test TEST_TARGET="run-test.integration.kube.presubmit"
+          command: make run-test.integration.kube.presubmit
           # simple is currently failing
       - store_artifacts:
           path: /home/circleci/logs

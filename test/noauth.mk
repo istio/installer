@@ -29,6 +29,15 @@ run-test-noauth-micro: install-crds
 	 	${IOP_OPTS} --set global.controlPlaneSecurityEnabled=false
 	kubectl wait deployments ingressgateway -n ${ISTIO_NS}-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
 
+	# Verify that we can kube-inject using files ( there is no injector in this config )
+	kubectl create ns simple-micro || true
+	istioctl kube-inject -f test/simple/servicesToBeInjected.yaml \
+		-n simple-micro \
+		--meshConfigFile test/simple/mesh.yaml \
+		--valuesFile test/simple/values.yaml \
+		--injectConfigFile istio-control/istio-autoinject/files/injection-template.yaml \
+	 | kubectl apply -n simple-micro -f -
+
 # TODO: pass meshConfigFile, injectConfigFile, valuesFile to test, or skip the kube-inject and do it manually (better)
 # Test won't work otherwise
 #	$(MAKE) run-simple-base MODE=permissive NS=simple-micro ISTIO_NS=${ISTIO_NS}-micro \

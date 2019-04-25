@@ -249,3 +249,4 @@ workflows:
       - integration-presubmit-kind
       - integration-old-kind
       - install-minikube
+      - noauth

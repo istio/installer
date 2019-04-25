@@ -125,6 +125,7 @@ endif
 # 4. make docker-run-test - run the tests in the same KIND environment
 test: info dep maybe-clean maybe-prepare sync docker-run-test maybe-clean
 
+
 # Verify each component can be generated. Create pre-processed yaml files with the defaults.
 # TODO: minimize 'ifs' in templates, and generate alternative files for cases we can't remove. The output could be
 # used directly with kubectl apply -f https://....
@@ -143,14 +144,21 @@ run-build: dep
 	bin/iop ${ISTIO_NS} istio-telemetry ${BASE}/istio-telemetry/prometheus -t > ${OUT}/release/istio-prometheus.yaml
 	bin/iop ${ISTIO_NS} istio-telemetry ${BASE}/istio-telemetry/grafana -t > ${OUT}/release/istio-grafana.yaml
 	bin/iop ${ISTIO_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/istio-policy.yaml
-	#bin/iop ${ISTIO_NS} istio-cni ${BASE}/optional/istio-cni -t > ${OUT}/release/istio-cni.yaml
+	#bin/iop ${ISTIO_NS} istio-cni ${BASE}/istio-cni -t > ${OUT}/release/istio-cni.yaml
 	# TODO: generate single config (merge all yaml)
 	# TODO: different common user-values combinations
 	# TODO: apply to a local kube apiserver to validate against k8s
 
+# Build all templates inside the hermetic docker image. Tools are installed.
 build:
 	docker run -it --rm -v ${GOPATH}:${GOPATH} --entrypoint /bin/bash istionightly/kind:latest \
 		-c "cd ${GOPATH}/src/github.com/istio-ecosystem/istio-installer; ls; make run-build"
+
+# Run a command in the docker image running kind. Command passed as "TARGET" env.
+kind-run:
+	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf  \
+		${KIND_CLUSTER}-control-plane \
+		bash -c "cd ${GOPATH}/src/github.com/istio-ecosystem/istio-installer; make ${TARGET}"
 
 # Runs the test in docker. Will exec into KIND and run "make $TEST_TARGET" (default: run-all-tests)
 docker-run-test:
@@ -258,33 +266,34 @@ E2E_ARGS=--skip_setup --use_local_cluster=true --istio_namespace=${ISTIO_NS}
 
 # The simple test from istio/istio integration, in permissive mode
 # Will kube-inject and test the ingress and service-to-service
-run-simple: ${TMPDIR}
+run-simple-base: ${TMPDIR}
 	mkdir -p  ${GOPATH}/out/logs
-	kubectl create ns simple || /bin/true
+	kubectl create ns ${NS} || /bin/true
 	# Global default may be strict or permissive - make it explicit for this ns
-	kubectl -n simple apply -f test/k8s/mtls_permissive.yaml
-	kubectl -n simple apply -f test/k8s/sidecar-local.yaml
-	kubectl label ns simple istio-injection=disabled --overwrite
+	kubectl -n ${NS} apply -f test/k8s/mtls_${MODE}.yaml
+	kubectl -n ${NS} apply -f test/k8s/sidecar-local.yaml
+	kubectl label ns ${NS} istio-injection=disabled --overwrite
 	(set -o pipefail; cd ${GOPATH}/src/istio.io/istio; \
 	 go test -v -timeout 25m ./tests/e2e/tests/simple -args \
 	     --auth_enable=false \
-         --egress=false --ingress=false \
-         --rbac_enable=false --cluster_wide \
+         --egress=false \
+         --ingress=false \
+         --rbac_enable=false \
+         --cluster_wide \
          --skip_setup \
          --use_local_cluster=true \
          --istio_namespace=${ISTIO_NS} \
-         --namespace=simple   \
+         --namespace=${NS} \
+         ${SIMPLE_EXTRA} \
          --istioctl=${ISTIOCTL_BIN} \
            2>&1 | tee ${GOPATH}/out/logs/$@.log)
 
+run-simple:
+	$(MAKE) run-simple-base MODE=permissive NS=simple
+
 # Simple test, strict mode
-run-simple-strict: ${TMPDIR}
-	kubectl create ns simple-strict || /bin/true
-	kubectl -n simple-strict apply -f test/k8s/mtls_strict.yaml
-	kubectl -n simple-strict apply -f test/k8s/sidecar-local.yaml
-	kubectl label ns simple-strict istio-injection=disabled --overwrite
-	(cd ${GOPATH}/src/istio.io/istio; make e2e_simple_run ${TEST_FLAGS} \
-		E2E_ARGS="${E2E_ARGS} --namespace=simple-strict")
+run-simple-strict:
+	$(MAKE) run-simple-base MODE=strict NS=simple-strict
 
 run-bookinfo-demo:
 	kubectl create ns bookinfo-demo || /bin/true
@@ -450,3 +459,5 @@ ${GOPATH}/bin/ci2gubernator:
 
 lint: ${GOPATH}/bin/helm
 	helm lint istio-control/istio-discovery -f global.yaml
+
+include test/noauth.mk

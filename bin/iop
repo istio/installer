@@ -28,6 +28,11 @@ function iop() {
 
     # Global settings - base is expected to be set to a directory including them
     local cfg="-f $BASE/global.yaml"
+    if [[ "$1" == "-c" ]]; then
+        shift
+        cfg="-f $1"
+        shift
+    fi
 
     # User overrides
     if [ -f $HOME/.istio-values.yaml ]; then
@@ -84,8 +89,9 @@ function render_kube_yaml() {
 }
 
 if [ "$1" == "" ] ; then
-    echo "iop NAMESPACE COMPONENT CONFIGDIR [-t|-d] [HELM_TEMPLATE_OPTIONS]"
+    echo "iop NAMESPACE COMPONENT CONFIGDIR [-c <cfgfile.yaml>] [-t|-d] [HELM_TEMPLATE_OPTIONS]"
     echo ""
+    echo "-c: use <cfgfile.yaml> instead of the default configfile--global.yaml."
     echo "-d: delete the component"
     echo "-t: show the config to be applied"
     echo ""

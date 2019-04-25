@@ -65,7 +65,7 @@ function install_control() {
     step "pilot.."
     bin/iop ${ISTIO_CONTROL_NS} istio-discovery $IBASE/istio-control/istio-discovery  --set global.istioNamespace=${ISTIO_CONTROL_NS} --set global.configNamespace=${ISTIO_CONTROL_NS} $RESOURCES_FLAGS 
     step "auto-injector.."
-    if pod_exists istio-system "k8s-app=istio-cni-node"; then
+    if pod_exists istio-cni "k8s-app=istio-cni-node"; then
         ISTIO_CNI_ENABLED="true"
     fi
     bin/iop ${ISTIO_CONTROL_NS} istio-autoinject $IBASE/istio-control/istio-autoinject --set global.istioNamespace=${ISTIO_CONTROL_NS} --set global.istioNamespace=${ISTIO_CONTROL_NS} ${ISTIO_CNI_ENABLED:+ --set istio_cni.enabled=true} $RESOURCES_FLAGS
@@ -126,7 +126,7 @@ function install_cni() {
     if [[ "${ISTIO_CLUSTER_ISGKE}" == "true" ]]; then
         ISTIO_CNI_ARGS="--set cniBinDir=/home/kubernetes/bin"
     fi
-    bin/iop istio-cni istio-cni $IBASE/istio-cni/ ${ISTIO_CNI_ARGS}
+    bin/iop istio-cni istio-cni $IBASE/istio-cni/ -c $IBASE/istio-cni/values.yaml ${ISTIO_CNI_ARGS} 
     kubectl rollout status ds istio-cni-node -n istio-cni --timeout=$WAIT_TIMEOUT
 }
 
@@ -178,6 +178,7 @@ do
         install_telemetry) COMMAND=$1 ;;
         install_cni) COMMAND=$1 ;;
         switch_istio_control) COMMAND=$1 ;;
+        install_all) COMMAND="install_all" ;;
         "") COMMAND="install_all" ;;
         *) print_help_and_exit ;;
     esac

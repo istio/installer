@@ -70,8 +70,8 @@ jobs:
     # Can run multiple images, first is primary, all use localhost
     steps:
       - checkout
-      - setup_remote_docker: {}
-      # Only on paid version
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           command: |
             mkdir -p $GOPATH/tmp
@@ -107,7 +107,7 @@ jobs:
     # Can run multiple images, first is primary, all use localhost
     steps:
       - checkout
-      - setup_remote_docker: {}
+      - setup_remote_docker:
           docker_layer_caching: true
       - run:
           command: |
@@ -145,7 +145,7 @@ jobs:
     # Can run multiple images, first is primary, all use localhost
     steps:
       - checkout
-      - setup_remote_docker: {}
+      - setup_remote_docker:
           docker_layer_caching: true
       - run:
           command: |

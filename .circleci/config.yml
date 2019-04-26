@@ -96,9 +96,9 @@ jobs:
           command: make kind-logs
       #    docker_layer_caching: true
       - store_test_results:
-          path: /workspace/go/out/tests
+          path: /go/out/tests
       - store_artifacts:
-          path: /workspace/go/out/logs
+          path: /go/out/logs
 
   # Old integration tests - simple (mtls strict and permissive), bookinfo
   integration-old-kind:
@@ -136,9 +136,9 @@ jobs:
           when: always
           command: make kind-logs
       - store_test_results:
-          path: /workspace/go/out/tests
+          path: /go/out/tests
       - store_artifacts:
-          path: /workspace/go/out/logs
+          path: /go/out/logs
 
   # Verify a-la-carte with no certificates ( smallest possible install, and cases without certs/mtls)
   noauth:
@@ -170,9 +170,9 @@ jobs:
           when: always
           command: make kind-logs
       - store_test_results:
-          path: /workspace/go/out/tests
+          path: /go/out/tests
       - store_artifacts:
-          path: /workspace/go/out/logs
+          path: /go/out/logs
 
   # Uses machine and minikube --root, using one-step installation
   # Used to verify that minikube still works, and get a baseline/compare performance.

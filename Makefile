@@ -92,7 +92,7 @@ SKIP_CLEANUP ?= 0
 SKIP_KIND_SETUP ?= 0
 
 # 60s seems to short for telemetry/prom
-WAIT_TIMEOUT ?= 120s
+WAIT_TIMEOUT ?= 240s
 
 IOP_OPTS="-f test/kind/user-values.yaml"
 

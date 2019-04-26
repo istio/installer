@@ -24,7 +24,7 @@ function print_help() {
 # Customizable
 INGRESS_NS=${INGRESS_NS:-istio-ingress}
 
-export WAIT_TIMEOUT=${WAIT_TIMEOUT:-5m}
+export WAIT_TIMEOUT=${WAIT_TIMEOUT:-3m}
 SKIP_CLEANUP=${SKIP_CLEANUP:-0}
 SKIP_SETUP=${SKIP_SETUP:-0}
 while [ $# -gt 0 ]
@@ -66,7 +66,7 @@ if [ "$SKIP_SETUP" -ne 1 ]; then
     # We use the first namespace with sidecar injection enabled to determine the control plane's namespace.
     # Fails in KIND.
     if [ -z "$ISTIO_CONTROL" ]; then
-        ISTIO_CONTROL=$(kubectl get namespaces -o=jsonpath='{$.items[:1].metadata.labels.istio-env}' -l istio-env)
+        ISTIO_CONTROL=$(kubectl get namespaces -o=jsonpath='{$.items[:1].metadata.labels.istio-env}' -l istio-env || true )
     fi
     ISTIO_CONTROL=${ISTIO_CONTROL:-istio-control}
 

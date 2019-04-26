@@ -132,7 +132,7 @@ test: info dep maybe-clean maybe-prepare sync docker-run-test maybe-clean
 # TODO: Add a local test - to check various things are in the right place (jsonpath or equivalent)
 # TODO: run a local etcd/apiserver and verify apiserver accepts the files
 run-build: dep
-	mkdir ${OUT}/release
+	mkdir -p ${OUT}/release
 	cp -aR crds/ ${OUT}/release
 	bin/iop istio-system istio-system-security ${BASE}/security/citadel -t > ${OUT}/release/citadel.yaml
 	bin/iop ${ISTIO_NS} istio-config ${BASE}/istio-control/istio-config -t > ${OUT}/release/istio-config.yaml
@@ -201,6 +201,7 @@ ifeq ($(SKIP_CLEANUP), 0)
 	$(MAKE) clean
 endif
 
+.PHONY: ${GOPATH}/out/yaml/crds
 # Install CRDS
 install-crds: crds
 	kubectl apply -f crds/
@@ -226,6 +227,10 @@ install-base: install-crds
 install-ingress:
 	bin/iop ${ISTIO_NS} istio-ingress ${BASE}/gateways/istio-ingress --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS}
 	kubectl wait deployments ingressgateway -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
+
+install-egress:
+	bin/iop istio-egress istio-egress ${BASE}/gateways/istio-egress --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS}
+	kubectl wait deployments egressgateway -n istio-egress --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 # Telemetry will be installed in istio-control for the tests, until integration tests are changed
 # to expect telemetry in separate namespace
@@ -455,7 +460,19 @@ ${GOPATH}/bin/go-junit-report:
 ${GOPATH}/bin/ci2gubernator:
 	go get -u istio.io/test-infra/toolbox/ci2gubernator
 
-lint: ${GOPATH}/bin/helm
+lint:
+	$(MAKE) kind-run TARGET="run-lint"
+
+run-lint:
 	helm lint istio-control/istio-discovery -f global.yaml
+	helm lint istio-control/istio-config -f global.yaml
+	helm lint istio-control/istio-autoinject -f global.yaml
+	helm lint istio-policy -f global.yaml
+	helm lint istio-telemetry/grafana -f global.yaml
+	helm lint istio-telemetry/mixer-telemetry -f global.yaml
+	helm lint istio-telemetry/prometheus -f global.yaml
+	helm lint security/citadel -f global.yaml
+	helm lint gateways/istio-egress -f global.yaml
+	helm lint gateways/istio-ingress -f global.yaml
 
 include test/noauth.mk

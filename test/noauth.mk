@@ -19,7 +19,7 @@ test-noauth:
 	$(MAKE) KIND_CLUSTER=${KIND_CLUSTER}-noauth kind-run TARGET="run-test-noauth-full"
 
 # Run a test without authentication, minimal possible install. The cluster should have no certs (so we can
-# confirm that all the 'off' is respected.
+# confirm that all the 'off' is respected).
 # Will install 2 control planes, one with only discovery + ingress ( micro ), one with galley, discovery, telemetry
 run-test-noauth-micro: install-crds
 	bin/iop ${ISTIO_NS}-micro istio-discovery ${BASE}/istio-control/istio-discovery ${IOP_OPTS} \

@@ -54,7 +54,7 @@ spec:
           - /etc/config/validatingwebhookconfiguration.yaml
           - --monitoringPort={{ .Values.global.monitoringPort | default "15014" }}
           volumeMounts:
-  {{- if .Values.configValidation }}
+  {{- if .Values.galley.configValidation }}
           - name: istio-certs
             mountPath: /etc/certs
             readOnly: true

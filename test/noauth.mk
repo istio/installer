@@ -23,8 +23,9 @@ test-noauth:
 # Will install 2 control planes, one with only discovery + ingress ( micro ), one with galley, discovery, telemetry
 run-test-noauth-micro: install-crds
 	bin/iop ${ISTIO_NS}-micro istio-discovery ${BASE}/istio-control/istio-discovery ${IOP_OPTS} \
-		--set global.controlPlaneSecurityEnabled=false --set useMCP=false --set plugins="health"
+		--set global.controlPlaneSecurityEnabled=false --set pilot.useMCP=false --set pilot.plugins="health"
 	kubectl wait deployments istio-pilot -n ${ISTIO_NS}-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
+
 	bin/iop ${ISTIO_NS}-micro istio-ingress ${BASE}/gateways/istio-ingress --set global.istioNamespace=${ISTIO_NS}-micro \
 	 	${IOP_OPTS} --set global.controlPlaneSecurityEnabled=false
 	kubectl wait deployments ingressgateway -n ${ISTIO_NS}-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
@@ -46,10 +47,10 @@ run-test-noauth-micro: install-crds
 # Galley, Pilot, Ingress, Telemetry (separate ns)
 run-test-noauth-full: install-crds
 	bin/iop ${ISTIO_NS} istio-config ${BASE}/istio-control/istio-config ${IOP_OPTS} \
-		--set global.controlPlaneSecurityEnabled=false --set configValidation=false
+		--set global.controlPlaneSecurityEnabled=false --set galley.configValidation=false
 
 	bin/iop ${ISTIO_NS} istio-discovery ${BASE}/istio-control/istio-discovery ${IOP_OPTS} \
-    	--set global.controlPlaneSecurityEnabled=false --set plugins="health"
+    	--set global.controlPlaneSecurityEnabled=false --set pilot.plugins="health"
 	kubectl wait deployments istio-pilot istio-galley -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 	bin/iop ${ISTIO_NS} istio-ingress ${BASE}/gateways/istio-ingress --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS} \
 		 --set global.controlPlaneSecurityEnabled=false

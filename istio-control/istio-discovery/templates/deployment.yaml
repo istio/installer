@@ -69,7 +69,7 @@ spec:
           - --trust-domain={{ .Values.global.trustDomain }}
 {{- end }}
 {{- if .Values.plugins }}
-          - --plugins={{ .Values.plugins }}
+          - --plugins={{ .Values.pilot.plugins }}
 {{- end }}
           - --keepaliveMaxServerConnectionAge
           - "{{ .Values.pilot.keepaliveMaxServerConnectionAge }}"

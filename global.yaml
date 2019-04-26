@@ -228,9 +228,6 @@ global:
   # the desired values.
   defaultNodeSelector: {}
 
-  # Whether to perform server-side validation of configuration.
-  configValidation: true
-
   # Custom DNS config for the pod to resolve names of services in other
   # clusters. Use this to add additional search domains, and other settings.
   # see

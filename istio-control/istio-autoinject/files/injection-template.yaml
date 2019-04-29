@@ -1,4 +1,4 @@
-template:
+template: |
   rewriteAppHTTPProbe: {{ valueOrDefault .Values.sidecarInjectorWebhook.rewriteAppHTTPProbe false }}
   {{- if or (not .Values.istio_cni.enabled) .Values.global.proxy.enableCoreDump }}
   initContainers:

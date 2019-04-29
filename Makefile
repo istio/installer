@@ -14,6 +14,7 @@
 # export MOUNT=1            # local directories mounted in the docker running Kind and tests
 # export SKIP_KIND_SETUP=1  # don't create new cluster at each iteration
 # export SKIP_CLEANUP=1     # leave cluster and tests in place, for debugging
+# export ONE_NAMESPACE=1    # deploy all Istio components in one namespace
 #
 # - prepare cluster for development:
 #     make prepare
@@ -71,7 +72,21 @@ export ISTIOCTL_BIN ?= /usr/local/bin/istioctl
 
 # Namespace and environment running the control plane.
 # A cluster must support multiple control plane versions.
-ISTIO_NS ?= istio-control
+ISTIO_SYSTEM_NS ?= istio-system
+ISTIO_TESTING_NS ?= istio-testing
+ifeq ($(ONE_NAMESPACE), 1)
+ISTIO_CONTROL_NS ?= ${ISTIO_SYSTEM_NS}
+ISTIO_TELEMETRY_NS ?= ${ISTIO_SYSTEM_NS}
+ISTIO_POLICY_NS ?= ${ISTIO_SYSTEM_NS}
+ISTIO_INGRESS_NS ?= ${ISTIO_SYSTEM_NS}
+ISTIO_EGRESS_NS ?= ${ISTIO_SYSTEM_NS}
+else
+ISTIO_CONTROL_NS ?= istio-control
+ISTIO_TELEMETRY_NS ?= istio-telemetry
+ISTIO_POLICY_NS ?= istio-policy
+ISTIO_INGRESS_NS ?= istio-ingress
+ISTIO_EGRESS_NS ?= istio-egress
+endif
 
 # TODO: to convert the tests, we're running telemetry/policy in istio-ns - need new tests or fixes to support
 # moving them to separate ns
@@ -134,15 +149,27 @@ build:
 
 # Run a command in the docker image running kind. Command passed as "TARGET" env.
 kind-run:
-	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf  \
+ifeq ($(ONE_NAMESPACE), 1)
+	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf -e ONE_NAMESPACE=1 \
 		${KIND_CLUSTER}-control-plane \
 		bash -c "cd ${GOPATH}/src/istio.io/installer; make ${TARGET}"
+else
+	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf \
+		${KIND_CLUSTER}-control-plane \
+		bash -c "cd ${GOPATH}/src/istio.io/installer; make ${TARGET}"
+endif
 
 # Runs the test in docker. Will exec into KIND and run "make $TEST_TARGET" (default: run-all-tests)
 docker-run-test:
-	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf  \
+ifeq ($(ONE_NAMESPACE), 1)
+	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf -e ONE_NAMESPACE=1 \
 		${KIND_CLUSTER}-control-plane \
 		bash -c "cd ${GOPATH}/src/istio.io/installer; make git.dep ${TEST_TARGET}"
+else
+	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf \
+		${KIND_CLUSTER}-control-plane \
+		bash -c "cd ${GOPATH}/src/istio.io/installer; make git.dep ${TEST_TARGET}"
+endif
 
 # Start a KIND cluster, using current docker environment, and a custom image including helm
 # and additional tools to install istio.

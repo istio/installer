@@ -71,7 +71,11 @@ export ISTIOCTL_BIN ?= /usr/local/bin/istioctl
 
 # Namespace and environment running the control plane.
 # A cluster must support multiple control plane versions.
-ISTIO_NS ?= istio-control
+ISTIO_SYSTEM_NS ?= istio-system
+ISTIO_CONTROL_NS ?= istio-control
+ISTIO_TELEMETRY_NS ?= istio-telemetry
+ISTIO_POLICY_NS ?= istio-policy
+ISTIO_GATEWAYS_NS ?= istio-gateways
 
 # TODO: to convert the tests, we're running telemetry/policy in istio-ns - need new tests or fixes to support
 # moving them to separate ns

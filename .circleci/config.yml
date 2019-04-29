@@ -183,12 +183,7 @@ jobs:
             - GOPATH: /go
             - ISTIO_CONTROL: istio-control
             - TEST_ENV: minikube-none
-            - RESOURCES_FLAGS: >-
-                --set global.defaultResources.requests.cpu=0m
-                --set resources.requests.cpu=0
-                --set resources.requests.memory=0
-                --set global.proxy.resources.requests.cpu=0
-                --set global.proxy.resources.requests.memory=0
+            - RESOURCES_FLAGS: "-f test/kind/user-values.yaml"
     steps:
       - <<: *initWorkingDir
       - checkout

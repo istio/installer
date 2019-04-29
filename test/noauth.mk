@@ -47,7 +47,7 @@ run-test-noauth-micro: install-crds
 # Galley, Pilot, Ingress, Telemetry (separate ns)
 run-test-noauth-full: install-crds
 	bin/iop ${ISTIO_NS} istio-config ${BASE}/istio-control/istio-config ${IOP_OPTS} \
-		--set global.controlPlaneSecurityEnabled=false --set galley.configValidation=false
+		--set global.controlPlaneSecurityEnabled=false --set global.configValidation=false
 
 	bin/iop ${ISTIO_NS} istio-discovery ${BASE}/istio-control/istio-discovery ${IOP_OPTS} \
     	--set global.controlPlaneSecurityEnabled=false --set pilot.plugins="health"

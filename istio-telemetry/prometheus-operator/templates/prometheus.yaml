@@ -1,14 +1,14 @@
-{{- if .Values.createPrometheusResource }}
+{{- if .Values.prometheus.createPrometheusResource }}
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
   name: prometheus
   namespace: {{ .Release.Namespace }}
 spec:
-  image: "{{ .Values.hub }}/prometheus:{{ .Values.tag }}"
-  version: {{ .Values.tag }}
-  retention: {{ .Values.retention }}
-  scrapeInterval: {{ .Values.scrapeInterval }}
+  image: "{{ .Values.prometheus.hub }}/prometheus:{{ .Values.prometheus.tag }}"
+  version: {{ .Values.prometheus.tag }}
+  retention: {{ .Values.prometheus.retention }}
+  scrapeInterval: {{ .Values.prometheus.scrapeInterval }}
   serviceAccountName: prometheus
   serviceMonitorSelector:
     any: true
@@ -93,7 +93,7 @@ spec:
     tls:
       mode: DISABLE
 ---
-{{- if not .Values.service.nodePort.enabled }}
+{{- if not .Values.prometheus.service.nodePort.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -102,7 +102,7 @@ metadata:
   annotations:
     prometheus.io/scrape: 'true'
     {{- if .Values.service }}
-    {{- range $key, $val := .Values.service.annotations }}
+    {{- range $key, $val := .Values.prometheus.service.annotations }}
     {{ $key }}: {{ $val | quote }}
     {{- end }}
     {{- end }}
@@ -130,7 +130,7 @@ spec:
   type: NodePort
   ports:
   - port: 9090
-    nodePort: {{ .Values.service.nodePort.port }}
+    nodePort: {{ .Values.prometheus.service.nodePort.port }}
     name: http-prometheus
   selector:
     app: prometheus

@@ -14,7 +14,7 @@ spec:
       - {{ .Values.global.telemetryNamespace }}
   endpoints:
   - port: prometheus
-    interval: {{ .Values.scrapeInterval }}
+    interval: {{ .Values.prometheus.scrapeInterval }}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -31,7 +31,7 @@ spec:
     any: true
   endpoints:
   - port: http-monitoring 
-    interval: {{ .Values.scrapeInterval }}
+    interval: {{ .Values.prometheus.scrapeInterval }}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -50,7 +50,7 @@ spec:
   endpoints:
   - path: /stats/prometheus
     targetPort: 15090
-    interval: {{ .Values.scrapeInterval }}
+    interval: {{ .Values.prometheus.scrapeInterval }}
     relabelings:
     - sourceLabels: [__meta_kubernetes_pod_container_port_name]
       action: keep
@@ -79,7 +79,7 @@ spec:
     any: true
   jobLabel: kubernetes-pods
   endpoints:
-  - interval: {{ .Values.scrapeInterval }}
+  - interval: {{ .Values.prometheus.scrapeInterval }}
     relabelings:
     - sourceLabels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
       action: keep
@@ -123,7 +123,7 @@ spec:
     any: true
   jobLabel: kubernetes-pods-secure
   endpoints:
-  - interval: {{ .Values.scrapeInterval }}
+  - interval: {{ .Values.prometheus.scrapeInterval }}
     scheme: https
     tlsConfig:
       caFile: /etc/prometheus/secrets/istio.prometheus/root-cert.pem
@@ -178,7 +178,7 @@ spec:
     any: true
   jobLabel: kubernetes-services
   endpoints:
-  - interval: {{ .Values.scrapeInterval }}
+  - interval: {{ .Values.prometheus.scrapeInterval }}
     relabelings:
     - sourceLabels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
       action: keep
@@ -222,7 +222,7 @@ spec:
     any: true
   jobLabel: kubernetes-services-secure
   endpoints:
-  - interval: {{ .Values.scrapeInterval }}
+  - interval: {{ .Values.prometheus.scrapeInterval }}
     scheme: https
     tlsConfig:
       caFile: /etc/prometheus/secrets/istio.prometheus/root-cert.pem

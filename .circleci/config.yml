@@ -1,6 +1,8 @@
 version: 2
 
 # VM environment. Includes docker, can run priv.
+# Avoid - we use it to compare and evaluate the KIND and remote 
+# docker environments running integration suite. 
 integrationDefaults: &integrationDefaults
   machine:
     image: ubuntu-1604:201903-01
@@ -12,7 +14,9 @@ integrationDefaults: &integrationDefaults
     - KUBECONFIG: /go/out/minikube.conf
     - TEST_ENV: minikube-none
 
-# remote docker environment. Appears to be faster
+# remote docker environment. Appears to be faster.
+# Allows a custom driver container with pre-built tools and better caching.
+# The machine environment doesn't allow customization of the base image
 integrationRemote: &integrationRemote
   working_directory: /go/src/github.com/istio-ecosystem/istio-installer
   docker:

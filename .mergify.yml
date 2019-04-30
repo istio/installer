@@ -1,9 +1,13 @@
 pull_request_rules:
   - name: automatic merge on CI success and review
     conditions:
-      - status-success=continuous-integration/circleci/pr
+      - status-success=cla/google
+      - status-success=ci/circleci
       - "#approved-reviews-by>=1"
+      - label!=do-not-merge
+      - label!=do-not-merge/work-in-progress
+      - label!=do-not-merge/hold
     actions:
       merge:
-        method: merge
-        
+        method: squash
+        strict: false

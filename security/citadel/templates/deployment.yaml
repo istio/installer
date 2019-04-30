@@ -58,7 +58,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /version
-              port: {{ .Values.global.monitoringPort }}
+              port: 15014
             initialDelaySeconds: 5
             periodSeconds: 5
           resources:

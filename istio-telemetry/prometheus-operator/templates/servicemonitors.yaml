@@ -32,7 +32,9 @@ spec:
   namespaceSelector:
     any: true
   endpoints:
-  - port: http-monitoring 
+  - port: http-monitoring
+    interval: {{ .Values.prometheus.scrapeInterval }}
+  - port: http-policy-monitoring
     interval: {{ .Values.prometheus.scrapeInterval }}
 ---
 apiVersion: monitoring.coreos.com/v1

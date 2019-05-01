@@ -174,7 +174,7 @@ clean:
 		-v /var/run/docker.sock:/var/run/docker.sock  \
 		-it --entrypoint /bin/bash --rm \
 		istionightly/kind:v1.14.1-1 -c \
-		"/usr/local/bin/kind kind delete cluster --name ${KIND_CLUSTER}" 2>&1 || true
+		"/usr/local/bin/kind delete cluster --name ${KIND_CLUSTER}" 2>&1 || true
 	#kind delete cluster --name ${KIND_CLUSTER} 2>&1 || true
 
 maybe-clean:

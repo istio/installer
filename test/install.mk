@@ -21,11 +21,13 @@ run-build: dep
 	bin/iop ${ISTIO_NS} istio-telemetry ${BASE}/istio-telemetry/mixer-telemetry -t > ${OUT}/release/istio-telemetry.yaml
 	bin/iop ${ISTIO_NS} istio-telemetry ${BASE}/istio-telemetry/prometheus -t > ${OUT}/release/istio-prometheus.yaml
 	bin/iop ${ISTIO_NS} istio-telemetry ${BASE}/istio-telemetry/grafana -t > ${OUT}/release/istio-grafana.yaml
-	bin/iop ${ISTIO_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/istio-policy.yaml
+	#bin/iop ${ISTIO_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/istio-policy.yaml
 	#bin/iop ${ISTIO_NS} istio-cni ${BASE}/istio-cni -t > ${OUT}/release/istio-cni.yaml
 	# TODO: generate single config (merge all yaml)
 	# TODO: different common user-values combinations
 	# TODO: apply to a local kube apiserver to validate against k8s
+	# Short term: will be checked in - for testing apply -k
+	cat crds/*.yaml ${OUT}/release/*.yaml > test/demo/k8s.yaml
 
 run-lint:
 	helm lint istio-control/istio-discovery -f global.yaml

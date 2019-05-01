@@ -228,7 +228,7 @@ kind-shell-root:
 # Grab kind logs to $GOPATH/out/logs
 kind-logs:
 	mkdir -p ${OUT}/logs
-	kind export logs --name  ${KIND_CLUSTER} ${OUT}/logs
+	kind export logs  --loglevel debug --name ${KIND_CLUSTER} ${OUT}/logs || true
 
 # Build the Kind+build tools image that will be useed in CI/CD or local testing
 # This replaces the istio-builder.

@@ -185,7 +185,15 @@ run-micro-tests: install-crds install-base install-ingress run-simple run-simple
 prepare:
 	mkdir -p ${TMPDIR}
 	cat test/kind/kind.yaml | sed s,GOPATH,$(GOPATH), > ${GOPATH}/kind.yaml
-	kind create cluster --loglevel debug --name ${KIND_CLUSTER} --wait 60s ${KIND_CONFIG} --image $(BUILD_IMAGE)
+	# Kind version and node image need to be in sync - that's not ideal, working on a fix.
+	docker run --privileged \
+		-v /usr/bin/docker:/usr/bin/docker \
+		-v /var/run/docker.sock:/var/run/docker.sock  \
+		-it --entrypoint /bin/bash --rm \
+		istionightly/kind:v1.14.1-1 -c \
+		"/usr/local/bin/kind create cluster --loglevel debug --name ${KIND_CLUSTER} --wait 60s ${KIND_CONFIG} --image $(BUILD_IMAGE)"
+
+	#kind create cluster --loglevel debug --name ${KIND_CLUSTER} --wait 60s ${KIND_CONFIG} --image $(BUILD_IMAGE)
 
 ${TMPDIR}:
 	mkdir -p ${TMPDIR}
@@ -196,7 +204,13 @@ ifeq ($(SKIP_KIND_SETUP), 0)
 endif
 
 clean:
-	kind delete cluster --name ${KIND_CLUSTER} 2>&1 || /bin/true
+	docker run --privileged \
+		-v /usr/bin/docker:/usr/bin/docker \
+		-v /var/run/docker.sock:/var/run/docker.sock  \
+		-it --entrypoint /bin/bash --rm \
+		istionightly/kind:v1.14.1-1 -c \
+		"/usr/local/bin/kind kind delete cluster --name ${KIND_CLUSTER}" 2>&1 || true
+	#kind delete cluster --name ${KIND_CLUSTER} 2>&1 || true
 
 maybe-clean:
 ifeq ($(SKIP_CLEANUP), 0)
@@ -213,7 +227,7 @@ install-crds: crds
 # This setup is optimized for migration from 1.1 and testing - note that autoinject is enabled by default,
 # since new integration tests seem to fail to inject
 install-base: install-crds
-	kubectl create ns ${ISTIO_NS} || /bin/true
+	kubectl create ns ${ISTIO_NS} || true
 	# Autoinject global enabled - we won't be able to install injector
 	kubectl label ns ${ISTIO_NS} istio-injection=disabled --overwrite
 	bin/iop istio-system istio-system-security ${BASE}/security/citadel ${IOP_OPTS}
@@ -249,7 +263,7 @@ install-policy:
 
 # Simple bookinfo install and curl command
 run-bookinfo:
-	kubectl create ns bookinfo || /bin/true
+	kubectl create ns bookinfo || true
 	echo ${BASE} ${GOPATH}
 	# Bookinfo test
 	#kubectl label namespace bookinfo istio-env=${ISTIO_NS} --overwrite
@@ -274,7 +288,7 @@ SIMPLE_AUTH ?= false
 # Will kube-inject and test the ingress and service-to-service
 run-simple-base: ${TMPDIR}
 	mkdir -p  ${GOPATH}/out/logs
-	kubectl create ns ${NS} || /bin/true
+	kubectl create ns ${NS} || true
 	# Global default may be strict or permissive - make it explicit for this ns
 	kubectl -n ${NS} apply -f test/k8s/mtls_${MODE}.yaml
 	kubectl -n ${NS} apply -f test/k8s/sidecar-local.yaml
@@ -302,14 +316,14 @@ run-simple-strict:
 	$(MAKE) run-simple-base MODE=strict NS=simple-strict SIMPLE_AUTH=true
 
 run-bookinfo-demo:
-	kubectl create ns bookinfo-demo || /bin/true
+	kubectl create ns bookinfo-demo || true
 	kubectl -n bookinfo-demo apply -f test/k8s/mtls_permissive.yaml
 	kubectl -n bookinfo-demo apply -f test/k8s/sidecar-local.yaml
 	(cd ${GOPATH}/src/istio.io/istio; make e2e_bookinfo_run ${TEST_FLAGS} \
 		E2E_ARGS="${E2E_ARGS} --namespace=bookinfo-demo")
 
 run-mixer:
-	kubectl create ns mixertest || /bin/true
+	kubectl create ns mixertest || true
 	kubectl -n mixertest apply -f test/k8s/mtls_permissive.yaml
 	kubectl -n mixertest apply -f test/k8s/sidecar-local.yaml
 	(cd ${GOPATH}/src/istio.io/istio; make e2e_mixer_run ${TEST_FLAGS} \

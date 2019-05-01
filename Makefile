@@ -128,29 +128,6 @@ endif
 test: info dep maybe-clean maybe-prepare sync docker-run-test maybe-clean
 
 
-# Verify each component can be generated. Create pre-processed yaml files with the defaults.
-# TODO: minimize 'ifs' in templates, and generate alternative files for cases we can't remove. The output could be
-# used directly with kubectl apply -f https://....
-# TODO: Add a local test - to check various things are in the right place (jsonpath or equivalent)
-# TODO: run a local etcd/apiserver and verify apiserver accepts the files
-run-build: dep
-	mkdir -p ${OUT}/release
-	cp -aR crds/ ${OUT}/release
-	bin/iop istio-system istio-system-security ${BASE}/security/citadel -t > ${OUT}/release/citadel.yaml
-	bin/iop ${ISTIO_NS} istio-config ${BASE}/istio-control/istio-config -t > ${OUT}/release/istio-config.yaml
-	bin/iop ${ISTIO_NS} istio-discovery ${BASE}/istio-control/istio-discovery -t > ${OUT}/release/istio-discovery.yaml
-	bin/iop ${ISTIO_NS} istio-autoinject ${BASE}/istio-control/istio-autoinject -t > ${OUT}/release/istio-autoinject.yaml
-	bin/iop ${ISTIO_NS} istio-ingress ${BASE}/gateways/istio-ingress -t > ${OUT}/release/istio-ingress.yaml
-	bin/iop ${ISTIO_NS} istio-egress ${BASE}/gateways/istio-egress -t > ${OUT}/release/istio-egress.yaml
-	bin/iop ${ISTIO_NS} istio-telemetry ${BASE}/istio-telemetry/mixer-telemetry -t > ${OUT}/release/istio-telemetry.yaml
-	bin/iop ${ISTIO_NS} istio-telemetry ${BASE}/istio-telemetry/prometheus -t > ${OUT}/release/istio-prometheus.yaml
-	bin/iop ${ISTIO_NS} istio-telemetry ${BASE}/istio-telemetry/grafana -t > ${OUT}/release/istio-grafana.yaml
-	bin/iop ${ISTIO_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/istio-policy.yaml
-	#bin/iop ${ISTIO_NS} istio-cni ${BASE}/istio-cni -t > ${OUT}/release/istio-cni.yaml
-	# TODO: generate single config (merge all yaml)
-	# TODO: different common user-values combinations
-	# TODO: apply to a local kube apiserver to validate against k8s
-
 # Build all templates inside the hermetic docker image. Tools are installed.
 build:
 	docker run -it --rm -v ${GOPATH}:${GOPATH} --entrypoint /bin/bash $(BUILD_IMAGE) \
@@ -167,18 +144,6 @@ docker-run-test:
 	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf  \
 		${KIND_CLUSTER}-control-plane \
 		bash -c "cd ${GOPATH}/src/istio.io/installer; make git.dep ${TEST_TARGET}"
-
-# Run the istio install and tests. Assumes KUBECONFIG is pointing to a valid cluster.
-# This should run inside a container and using KIND, to reduce dependency on host or k8s environment.
-# It can also be used directly on the host against a real k8s cluster.
-run-all-tests: install-full \
-	run-test.integration.kube.presubmit run-simple run-simple-strict run-bookinfo
-
-install-full: ${TMPDIR} install-crds install-base install-ingress install-telemetry install-policy
-
-# Tests running against 'micro' environment - just citadel + pilot + ingress
-# TODO: also add 'nano' - pilot + ingress without citadel, some users are using this a-la-carte option
-run-micro-tests: install-crds install-base install-ingress run-simple run-simple-strict
 
 # Start a KIND cluster, using current docker environment, and a custom image including helm
 # and additional tools to install istio.
@@ -217,160 +182,11 @@ ifeq ($(SKIP_CLEANUP), 0)
 	$(MAKE) clean
 endif
 
-.PHONY: ${GOPATH}/out/yaml/crds
-# Install CRDS
-install-crds: crds
-	kubectl apply -f crds/
-	kubectl wait --for=condition=Established -f crds/
-
-# Individual step to install or update base istio.
-# This setup is optimized for migration from 1.1 and testing - note that autoinject is enabled by default,
-# since new integration tests seem to fail to inject
-install-base: install-crds
-	kubectl create ns ${ISTIO_NS} || true
-	# Autoinject global enabled - we won't be able to install injector
-	kubectl label ns ${ISTIO_NS} istio-injection=disabled --overwrite
-	bin/iop istio-system istio-system-security ${BASE}/security/citadel ${IOP_OPTS}
-	kubectl wait deployments istio-citadel11 -n istio-system --for=condition=available --timeout=${WAIT_TIMEOUT}
-	bin/iop ${ISTIO_NS} istio-config ${BASE}/istio-control/istio-config ${IOP_OPTS}
-	bin/iop ${ISTIO_NS} istio-discovery ${BASE}/istio-control/istio-discovery ${IOP_OPTS}
-	kubectl wait deployments istio-galley istio-pilot -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
-	bin/iop ${ISTIO_NS} istio-autoinject ${BASE}/istio-control/istio-autoinject --set sidecarInjectorWebhook.enableNamespacesByDefault=true \
-		--set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS}
-	kubectl wait deployments istio-sidecar-injector -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
-
-# Some tests assumes ingress is in same namespace with pilot.
-# TODO: fix test (or replace), break it down in multiple namespaces for isolation/hermecity
-install-ingress:
-	bin/iop ${ISTIO_NS} istio-ingress ${BASE}/gateways/istio-ingress --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS}
-	kubectl wait deployments ingressgateway -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
-
-install-egress:
-	bin/iop istio-egress istio-egress ${BASE}/gateways/istio-egress --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS}
-	kubectl wait deployments egressgateway -n istio-egress --for=condition=available --timeout=${WAIT_TIMEOUT}
-
-# Telemetry will be installed in istio-control for the tests, until integration tests are changed
-# to expect telemetry in separate namespace
-install-telemetry:
-	#bin/iop istio-telemetry istio-grafana $IBASE/istio-telemetry/grafana/ --set global.istioNamespace=${ISTIO_NS}
-	bin/iop ${ISTIO_NS} istio-prometheus ${BASE}/istio-telemetry/prometheus/ --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS}
-	bin/iop ${ISTIO_NS} istio-mixer ${BASE}/istio-telemetry/mixer-telemetry/ --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS}
-	kubectl wait deployments istio-telemetry prometheus -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
-
-install-policy:
-	bin/iop ${ISTIO_NS} istio-policy ${BASE}/istio-policy --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS}
-	kubectl wait deployments istio-policy -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
-
-# Simple bookinfo install and curl command
-run-bookinfo:
-	kubectl create ns bookinfo || true
-	echo ${BASE} ${GOPATH}
-	# Bookinfo test
-	#kubectl label namespace bookinfo istio-env=${ISTIO_NS} --overwrite
-	kubectl -n bookinfo apply -f test/k8s/mtls_permissive.yaml
-	kubectl -n bookinfo apply -f test/k8s/sidecar-local.yaml
-	SKIP_CLEANUP=1 ISTIO_CONTROL=${ISTIO_NS} INGRESS_NS=${ISTIO_NS} SKIP_DELETE=1 SKIP_LABEL=1 bin/test.sh ${GOPATH}/src/istio.io/istio
-
-# Simple fortio install and curl command
-#run-fortio:
-#	kubectl apply -f
 
 # Generate junit reports, upload to testgrid, fail if conditions are met.
 # Failure is based on test status - may exclude some tests.
 report:
 	bin/report.sh
-
-E2E_ARGS=--skip_setup --use_local_cluster=true --istio_namespace=${ISTIO_NS}
-
-SIMPLE_AUTH ?= false
-
-# The simple test from istio/istio integration, in permissive mode
-# Will kube-inject and test the ingress and service-to-service
-run-simple-base: ${TMPDIR}
-	mkdir -p  ${GOPATH}/out/logs
-	kubectl create ns ${NS} || true
-	# Global default may be strict or permissive - make it explicit for this ns
-	kubectl -n ${NS} apply -f test/k8s/mtls_${MODE}.yaml
-	kubectl -n ${NS} apply -f test/k8s/sidecar-local.yaml
-	kubectl label ns ${NS} istio-injection=disabled --overwrite
-	(set -o pipefail; cd ${GOPATH}/src/istio.io/istio; \
-	 go test -v -timeout 25m ./tests/e2e/tests/simple -args \
-	     --auth_enable=${SIMPLE_AUTH} \
-         --egress=false \
-         --ingress=false \
-         --rbac_enable=false \
-         --cluster_wide \
-         --skip_setup \
-         --use_local_cluster=true \
-         --istio_namespace=${ISTIO_NS} \
-         --namespace=${NS} \
-         ${SIMPLE_EXTRA} \
-         --istioctl=${ISTIOCTL_BIN} \
-           2>&1 | tee ${GOPATH}/out/logs/$@.log)
-
-run-simple:
-	$(MAKE) run-simple-base MODE=permissive NS=simple
-
-# Simple test, strict mode
-run-simple-strict:
-	$(MAKE) run-simple-base MODE=strict NS=simple-strict SIMPLE_AUTH=true
-
-run-bookinfo-demo:
-	kubectl create ns bookinfo-demo || true
-	kubectl -n bookinfo-demo apply -f test/k8s/mtls_permissive.yaml
-	kubectl -n bookinfo-demo apply -f test/k8s/sidecar-local.yaml
-	(cd ${GOPATH}/src/istio.io/istio; make e2e_bookinfo_run ${TEST_FLAGS} \
-		E2E_ARGS="${E2E_ARGS} --namespace=bookinfo-demo")
-
-run-mixer:
-	kubectl create ns mixertest || true
-	kubectl -n mixertest apply -f test/k8s/mtls_permissive.yaml
-	kubectl -n mixertest apply -f test/k8s/sidecar-local.yaml
-	(cd ${GOPATH}/src/istio.io/istio; make e2e_mixer_run ${TEST_FLAGS} \
-		E2E_ARGS="${E2E_ARGS} --namespace=mixertest")
-
-INT_FLAGS ?= -istio.test.hub ${HUB} -istio.test.tag ${TAG} -istio.test.pullpolicy IfNotPresent \
- -p 1 -istio.test.env kube --istio.test.kube.config ${KUBECONFIG} --istio.test.ci --istio.test.nocleanup \
- --istio.test.kube.deploy=false -istio.test.kube.systemNamespace ${ISTIO_NS} -istio.test.kube.minikube
-
-# Integration tests create and delete istio-system
-# Need to be fixed to use new installer
-# Requires an environment with telemetry installed
-run-test.integration.kube:
-	export TMPDIR=${GOPATH}/out/tmp
-	mkdir -p ${GOPATH}/out/tmp
-	#(cd ${GOPATH}/src/istio.io/istio; \
-	#	$(GO) test -v ${T} ./tests/integration/... ${INT_FLAGS})
-	kubectl -n default apply -f test/k8s/mtls_permissive.yaml
-	kubectl -n default apply -f test/k8s/sidecar-local.yaml
-	# Test uses autoinject
-	#kubectl label namespace default istio-env=${ISTIO_NS} --overwrite
-	(cd ${GOPATH}/src/istio.io/istio; TAG=${TAG} make test.integration.kube \
-		CI=1 T="-v" K8S_TEST_FLAGS="--istio.test.kube.minikube --istio.test.kube.systemNamespace ${ISTIO_NS} \
-		 --istio.test.nocleanup --istio.test.kube.deploy=false ")
-
-run-test.integration.kube.presubmit:
-	export TMPDIR=${GOPATH}/out/tmp
-	mkdir -p ${GOPATH}/out/tmp ${GOPATH}/out/linux_amd64/release/ ${GOPATH}/out/logs/
-	set -o pipefail; \
-	cd ${GOPATH}/src/istio.io/istio; \
-		${GO} test -p 1 -v \
-			istio.io/istio/tests/integration/echo istio.io/istio/tests/integration/... \
-    --istio.test.kube.deploy=false --istio.test.kube.minikube --istio.test.kube.systemNamespace ${ISTIO_NS}  --istio.test.nocleanup \
-	--istio.test.ci -timeout 30m \
-    --istio.test.select +presubmit \
- 	--istio.test.env kube \
-	--istio.test.kube.config ${KUBECONFIG} \
-	--istio.test.hub=${HUB} \
-	--istio.test.tag=${TAG} \
-	--istio.test.pullpolicy=IfNotPresent  2>&1 | tee ${GOPATH}/out/logs/$@.log
-
-run-stability:
-	 ISTIO_ENV=${ISTIO_NS} bin/iop test stability ${GOPATH}/src/istio.io/tools/perf/stability/allconfig ${IOP_OPTS}
-
-run-mysql:
-	 ISTIO_ENV=${ISTIO_NS} bin/iop mysql mysql ${BASE}/test/mysql ${IOP_OPTS}
-	 ISTIO_ENV=${ISTIO_NS} bin/iop mysqlplain mysqlplain ${BASE}/test/mysql ${IOP_OPTS} --set mtls=false --set Name=plain
 
 info:
 	# Get info about env, for debugging
@@ -483,16 +299,6 @@ ${GOPATH}/bin/ci2gubernator:
 lint:
 	$(MAKE) kind-run TARGET="run-lint"
 
-run-lint:
-	helm lint istio-control/istio-discovery -f global.yaml
-	helm lint istio-control/istio-config -f global.yaml
-	helm lint istio-control/istio-autoinject -f global.yaml
-	helm lint istio-policy -f global.yaml
-	helm lint istio-telemetry/grafana -f global.yaml
-	helm lint istio-telemetry/mixer-telemetry -f global.yaml
-	helm lint istio-telemetry/prometheus -f global.yaml
-	helm lint security/citadel -f global.yaml
-	helm lint gateways/istio-egress -f global.yaml
-	helm lint gateways/istio-ingress -f global.yaml
-
+include test/install.mk
+include test/tests.mk
 include test/noauth.mk

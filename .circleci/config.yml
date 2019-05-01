@@ -87,7 +87,13 @@ jobs:
       - run:
           command: make sync
       - run:
-          command: make docker-run-test TEST_TARGET="install-crds install-base install-telemetry install-ingress"
+          command: make docker-run-test TEST_TARGET="install-crds install-base"
+      - run:
+          command: make docker-run-test TEST_TARGET="install-ingress"
+      - run:
+          command: make docker-run-test TEST_TARGET="install-telemetry"
+      - run:
+          command: make docker-run-test TEST_TARGET="install-policy"
       - run:
           command: make docker-run-test TEST_TARGET="run-test.integration.kube.presubmit"
           # simple is currently failing

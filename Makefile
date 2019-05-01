@@ -57,6 +57,8 @@ export TAG
 EXTRA ?= --set global.hub=${HUB} --set global.tag=${TAG}
 OUT ?= ${GOPATH}/out
 
+BUILD_IMAGE ?= istionightly/kind:v1.14.1-1
+
 GO ?= go
 
 TEST_FLAGS ?=  HUB=${HUB} TAG=${TAG}
@@ -151,7 +153,7 @@ run-build: dep
 
 # Build all templates inside the hermetic docker image. Tools are installed.
 build:
-	docker run -it --rm -v ${GOPATH}:${GOPATH} --entrypoint /bin/bash istionightly/kind:latest \
+	docker run -it --rm -v ${GOPATH}:${GOPATH} --entrypoint /bin/bash $(BUILD_IMAGE) \
 		-c "cd ${GOPATH}/src/github.com/istio-ecosystem/istio-installer; ls; make run-build"
 
 # Run a command in the docker image running kind. Command passed as "TARGET" env.
@@ -183,7 +185,7 @@ run-micro-tests: install-crds install-base install-ingress run-simple run-simple
 prepare:
 	mkdir -p ${TMPDIR}
 	cat test/kind/kind.yaml | sed s,GOPATH,$(GOPATH), > ${GOPATH}/kind.yaml
-	kind create cluster --loglevel debug --name ${KIND_CLUSTER} --wait 60s ${KIND_CONFIG} --image istionightly/kind:latest
+	kind create cluster --loglevel debug --name ${KIND_CLUSTER} --wait 60s ${KIND_CONFIG} --image $(BUILD_IMAGE)
 
 ${TMPDIR}:
 	mkdir -p ${TMPDIR}
@@ -405,7 +407,10 @@ docker.istio-builder: test/docker/Dockerfile ${GOPATH}/bin/istioctl ${GOPATH}/bi
 	curl -Lo - https://github.com/istio/istio/releases/download/${STABLE_TAG}/istio-${STABLE_TAG}-linux.tar.gz | \
     		(cd ${GOPATH}/out/istio-builder;  tar --strip-components=1 -xzf - )
 	cp $^ ${GOPATH}/out/istio-builder/
-	docker build -t istionightly/kind ${GOPATH}/out/istio-builder
+	docker build -t $(BUILD_IMAGE) ${GOPATH}/out/istio-builder
+
+push.docker.istio-builder:
+	docker push $(BUILD_IMAGE)
 
 docker.buildkite: test/buildkite/Dockerfile ${GOPATH}/bin/kind ${GOPATH}/bin/helm ${GOPATH}/bin/go-junit-report ${GOPATH}/bin/repo
 	mkdir -p ${GOPATH}/out/istio-buildkite

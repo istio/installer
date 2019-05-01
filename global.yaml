@@ -402,3 +402,8 @@ global:
   # This field is set to false by default, so 'helm template ...'
   # will ignore the helm test yaml files when generating the template
   enableHelmTest: false
+
+# If set, no iptable init will be added. It assumes CNI is installed.
+# TODO: rename to 'enableIptables' or add 'interceptionMode: CNI'
+istio_cni:
+  enabled: false

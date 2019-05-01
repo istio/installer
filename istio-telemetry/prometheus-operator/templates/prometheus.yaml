@@ -4,6 +4,8 @@ kind: Prometheus
 metadata:
   name: prometheus
   namespace: {{ .Release.Namespace }}
+  labels:
+    release: {{ .Release.Name }}
 spec:
   image: "{{ .Values.prometheus.hub }}/prometheus:{{ .Values.prometheus.tag }}"
   version: {{ .Values.prometheus.tag }}

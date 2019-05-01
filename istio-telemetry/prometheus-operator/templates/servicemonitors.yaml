@@ -5,6 +5,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     monitoring: istio-mesh
+    release: {{ .Release.Name }}
 spec:
   selector:
     matchExpressions:
@@ -23,6 +24,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     monitoring: istio-components
+    release: {{ .Release.Name }}
 spec:
   selector:
     matchExpressions:
@@ -40,6 +42,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     monitoring: istio-proxies
+    release: {{ .Release.Name }}
 spec:
   selector:
     matchExpressions:
@@ -71,6 +74,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     monitoring: kube-pods
+    release: {{ .Release.Name }}
 spec:
   selector:
     matchExpressions:
@@ -115,6 +119,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     monitoring: kube-pods-secure
+    release: {{ .Release.Name }}
 spec:
   selector:
     matchExpressions:
@@ -170,6 +175,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     monitoring: kube-services
+    release: {{ .Release.Name }}
 spec:
   selector:
     matchExpressions:
@@ -214,6 +220,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     monitoring: kube-services-secure
+    release: {{ .Release.Name }}
 spec:
   selector:
     matchExpressions:

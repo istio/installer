@@ -44,7 +44,7 @@
 SHELL := /bin/bash
 
 BASE := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-GOPATH ?= $(shell cd ${BASE}/../../../..; pwd)
+GOPATH ?= $(shell cd ${BASE}/../..; pwd)
 TOP ?= $(GOPATH)
 export GOPATH
 # TAG of the last stable release of istio. Used for upgrade testing and to verify istioctl.

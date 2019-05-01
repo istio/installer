@@ -95,6 +95,7 @@ jobs:
       - run:
           command: make docker-run-test TEST_TARGET="install-policy"
       - run:
+          no_output_timeout: 20m
           command: make docker-run-test TEST_TARGET="run-test.integration.kube.presubmit"
           # simple is currently failing
       - run:
@@ -202,6 +203,7 @@ jobs:
       - run:
           command: make info dep
       - run:
+          no_output_timeout: 20m
           command: make git.dep run-test.integration.kube.presubmit
       - store_artifacts:
           path: /home/circleci/logs

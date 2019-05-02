@@ -14,7 +14,7 @@
 # export MOUNT=1            # local directories mounted in the docker running Kind and tests
 # export SKIP_KIND_SETUP=1  # don't create new cluster at each iteration
 # export SKIP_CLEANUP=1     # leave cluster and tests in place, for debugging
-# export ONE_NAMESPACE=1    # deployemnt all Istio components in one namespace
+# export ONE_NAMESPACE=1    # deploy all Istio components in one namespace
 #
 # - prepare cluster for development:
 #     make prepare

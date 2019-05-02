@@ -24,13 +24,19 @@ test-noauth:
 # confirm that all the 'off' is respected).
 # Will install 2 control planes, one with only discovery + ingress ( micro ), one with galley, discovery, telemetry
 run-test-noauth-micro: install-crds
-	bin/iop ${ISTIO_NS}-micro istio-discovery ${BASE}/istio-control/istio-discovery ${IOP_OPTS} \
+	bin/iop ${ISTIO_CONTROL_NS}-micro istio-discovery ${BASE}/istio-control/istio-discovery ${IOP_OPTS} \
 		--set global.controlPlaneSecurityEnabled=false --set pilot.useMCP=false --set pilot.plugins="health"
-	kubectl wait deployments istio-pilot -n ${ISTIO_NS}-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl wait deployments istio-pilot -n ${ISTIO_CONTROL_NS}-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
 
-	bin/iop ${ISTIO_NS}-micro istio-ingress ${BASE}/gateways/istio-ingress --set global.istioNamespace=${ISTIO_NS}-micro \
+ifeq ($(ONE_NAMESPACE), 1)
+	bin/iop ${ISTIO_CONTROL_NS}-micro istio-ingress ${BASE}/gateways/istio-ingress --set global.istioNamespace=${ISTIO_CONTROL_NS}-micro \
 	 	${IOP_OPTS} --set global.controlPlaneSecurityEnabled=false
-	kubectl wait deployments ingressgateway -n ${ISTIO_NS}-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl wait deployments ingressgateway -n ${ISTIO_CONTROL_NS}-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
+else
+	bin/iop ${ISTIO_GATEWAYS_NS}-micro istio-ingress ${BASE}/gateways/istio-ingress --set global.istioNamespace=${ISTIO_CONTROL_NS}-micro \
+	 	${IOP_OPTS} --set global.controlPlaneSecurityEnabled=false
+	kubectl wait deployments ingressgateway -n ${ISTIO_GATEWAYS_NS}-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
+endif
 
 	# Verify that we can kube-inject using files ( there is no injector in this config )
 	kubectl create ns simple-micro || true
@@ -43,7 +49,7 @@ run-test-noauth-micro: install-crds
 
 # TODO: pass meshConfigFile, injectConfigFile, valuesFile to test, or skip the kube-inject and do it manually (better)
 # Test won't work otherwise
-#	$(MAKE) run-simple-base MODE=permissive NS=simple-micro ISTIO_NS=${ISTIO_NS}-micro \
+#	$(MAKE) run-simple-base MODE=permissive NS=simple-micro ISTIO_CONTROL_NS=${ISTIO_CONTROL_NS}-micro \
 #		SIMPLE_EXTRA="--kube_inject_configmap ${GOPATH}/src/istio.io/istio-installer/istio-control/istio-autoinject/files/injection-template.yaml"
 
 # Galley, Pilot, Ingress, Telemetry (separate ns)
@@ -67,7 +73,7 @@ run-test-noauth-full: install-crds
 	kubectl wait deployments istio-telemetry prometheus -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 	# TODO: Autoinject requires certs - they can be created by a tool, see b/...
-	# bin/iop ${ISTIO_NS} istio-autoinject ${BASE}/istio-control/istio-autoinject \
-	#	--set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS} --set global.controlPlaneSecurityEnabled=false
-	#kubectl wait deployments istio-sidecar-injector -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
+	# bin/iop ${ISTIO_CONTROL_NS} istio-autoinject ${BASE}/istio-control/istio-autoinject \
+	#	--set global.istioNamespace=${ISTIO_CONTROL_NS} ${IOP_OPTS} --set global.controlPlaneSecurityEnabled=false
+	#kubectl wait deployments istio-sidecar-injector -n ${ISTIO_CONTROL_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 	#$(MAKE) run-simple

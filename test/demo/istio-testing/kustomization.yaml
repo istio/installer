@@ -1,0 +1,14 @@
+# Installs istio-demo profile in istio-testing environment
+# TODO: override as much as possible
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+  - github.com/istio/installer/test/demo
+resources:
+  - namespace.yaml
+
+# Demo will be installed in istio-testing
+namespace: istio-testing
+
+

@@ -14,6 +14,7 @@
 # export MOUNT=1            # local directories mounted in the docker running Kind and tests
 # export SKIP_KIND_SETUP=1  # don't create new cluster at each iteration
 # export SKIP_CLEANUP=1     # leave cluster and tests in place, for debugging
+# export ONE_NAMESPACE=1    # deployemnt all Istio components in one namespace
 #
 # - prepare cluster for development:
 #     make prepare
@@ -131,6 +132,46 @@ endif
 test: info dep maybe-clean maybe-prepare sync docker-run-test maybe-clean
 
 
+<<<<<<< HEAD
+=======
+# Verify each component can be generated. If "ONE_NAMESPACE" is set to 1, then create pre-processed yaml files with the defaults
+# all in "istio-control" namespace, otherwise, create pre-processed yaml in isolated namespaces for different components.
+# TODO: minimize 'ifs' in templates, and generate alternative files for cases we can't remove. The output could be
+# used directly with kubectl apply -f https://....
+# TODO: Add a local test - to check various things are in the right place (jsonpath or equivalent)
+# TODO: run a local etcd/apiserver and verify apiserver accepts the files
+run-build: dep
+	mkdir -p ${OUT}/release
+	cp -aR crds/ ${OUT}/release
+ifeq ($(ONE_NAMESPACE), 1)
+	bin/iop ${ISTIO_SYSTEM_NS} istio-system-security ${BASE}/security/citadel -t > ${OUT}/release/citadel.yaml
+	bin/iop ${ISTIO_CONTROL_NS} istio-config ${BASE}/istio-control/istio-config -t > ${OUT}/release/istio-config.yaml
+	bin/iop ${ISTIO_CONTROL_NS} istio-discovery ${BASE}/istio-control/istio-discovery -t > ${OUT}/release/istio-discovery.yaml
+	bin/iop ${ISTIO_CONTROL_NS} istio-autoinject ${BASE}/istio-control/istio-autoinject -t > ${OUT}/release/istio-autoinject.yaml
+	bin/iop ${ISTIO_CONTROL_NS} istio-ingress ${BASE}/gateways/istio-ingress -t > ${OUT}/release/istio-ingress.yaml
+	bin/iop ${ISTIO_CONTROL_NS} istio-egress ${BASE}/gateways/istio-egress -t > ${OUT}/release/istio-egress.yaml
+	bin/iop ${ISTIO_CONTROL_NS} istio-telemetry ${BASE}/istio-telemetry/mixer-telemetry -t > ${OUT}/release/istio-telemetry.yaml
+	bin/iop ${ISTIO_CONTROL_NS} istio-telemetry ${BASE}/istio-telemetry/prometheus -t > ${OUT}/release/istio-prometheus.yaml
+	bin/iop ${ISTIO_CONTROL_NS} istio-telemetry ${BASE}/istio-telemetry/grafana -t > ${OUT}/release/istio-grafana.yaml
+	bin/iop ${ISTIO_CONTROL_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/istio-policy.yaml
+	#bin/iop ${ISTIO_CONTROL_NS} istio-cni ${BASE}/istio-cni -t > ${OUT}/release/istio-cni.yaml
+	# TODO: generate single config (merge all yaml)
+	# TODO: different common user-values combinations
+	# TODO: apply to a local kube apiserver to validate against k8s
+else
+	bin/iop ${ISTIO_SYSTEM_NS} istio-system-security ${BASE}/security/citadel -t > ${OUT}/release/citadel.yaml
+	bin/iop ${ISTIO_CONTROL_NS} istio-config ${BASE}/istio-control/istio-config -t > ${OUT}/release/istio-config.yaml
+	bin/iop ${ISTIO_CONTROL_NS} istio-discovery ${BASE}/istio-control/istio-discovery -t > ${OUT}/release/istio-discovery.yaml
+	bin/iop ${ISTIO_CONTROL_NS} istio-autoinject ${BASE}/istio-control/istio-autoinject -t > ${OUT}/release/istio-autoinject.yaml
+	bin/iop ${ISTIO_GATEWAYS_NS} istio-ingress ${BASE}/gateways/istio-ingress -t > ${OUT}/release/istio-ingress.yaml
+	bin/iop ${ISTIO_GATEWAYS_NS} istio-egress ${BASE}/gateways/istio-egress -t > ${OUT}/release/istio-egress.yaml
+	bin/iop ${ISTIO_TELEMETRY_NS} istio-telemetry ${BASE}/istio-telemetry/mixer-telemetry -t > ${OUT}/release/istio-telemetry.yaml
+	bin/iop ${ISTIO_TELEMETRY_NS} istio-telemetry ${BASE}/istio-telemetry/prometheus -t > ${OUT}/release/istio-prometheus.yaml
+	bin/iop ${ISTIO_TELEMETRY_NS} istio-telemetry ${BASE}/istio-telemetry/grafana -t > ${OUT}/release/istio-grafana.yaml
+	bin/iop ${ISTIO_POLICY_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/istio-policy.yaml
+endif
+
+>>>>>>> add new pipeline to test isolated ns.
 # Build all templates inside the hermetic docker image. Tools are installed.
 build:
 	docker run -it --rm -v ${GOPATH}:${GOPATH} --entrypoint /bin/bash $(BUILD_IMAGE) \

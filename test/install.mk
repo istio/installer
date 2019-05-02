@@ -63,6 +63,7 @@ run-build-demo-testing: dep
 	cat ${OUT}/release/demo-testing/*.yaml > test/demo/istio-testing/k8s.yaml
 
 run-build-kustom:
+	cp crds/*.yaml > ${BASE}/kustomize/crds
 	bin/iop istio-ingress istio-ingress ${BASE}/gateways/istio-ingress -t > ${BASE}/kustomize/istio-ingress/istio-ingress.yaml
 	bin/iop istio-system istio-system-security ${BASE}/security/citadel -t > ${BASE}/kustomize/citadel/citadel.yaml
 
@@ -84,8 +85,8 @@ install-full: ${TMPDIR} install-crds install-base install-ingress install-teleme
 .PHONY: ${GOPATH}/out/yaml/crds
 # Install CRDS
 install-crds: crds
-	kubectl apply -f crds/
-	kubectl wait --for=condition=Established -f crds/
+	kubectl apply -f crds/files
+	kubectl wait --for=condition=Established -f crds/files
 
 # Individual step to install or update base istio.
 # This setup is optimized for migration from 1.1 and testing - note that autoinject is enabled by default,

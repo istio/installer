@@ -35,7 +35,6 @@ DEMO_OPTS="--set global.istioNamespace=istio-system --set global.defaultPodDisru
 run-build-demo: dep
 	mkdir -p ${OUT}/release/demo
 
-	bin/iop istio-system istio-system-security ${BASE}/security/citadel -t  ${DEMO_OPTS}  > ${OUT}/release/demo/citadel.yaml
 	bin/iop istio-system istio-config ${BASE}/istio-control/istio-config -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-config.yaml
 	bin/iop istio-system istio-discovery ${BASE}/istio-control/istio-discovery -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-discovery.yaml
 	bin/iop istio-system istio-autoinject ${BASE}/istio-control/istio-autoinject -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-autoinject.yaml

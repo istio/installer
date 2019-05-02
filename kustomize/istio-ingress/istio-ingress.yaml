@@ -55,7 +55,7 @@ spec:
     spec:
       containers:
         - name: istio-proxy
-          image: "costinm/proxyv2:release-1.1-latest-daily"
+          image: "costinm/proxyv2:nightly-master"
           imagePullPolicy: Always
           ports:
             - containerPort: 80

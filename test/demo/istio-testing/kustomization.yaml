@@ -20,7 +20,5 @@ commonLabels:
   istio-profile: demo-testing
 
 
-# Demo will be installed in istio-testing
-namespace: istio-testing
 
 

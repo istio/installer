@@ -1,5 +1,5 @@
 # To run locally:
-# The Makefile will run against a workspace that is expected to have the istio-installer, istio.io/istio and
+# The Makefile will run against a workspace that is expected to have the installer, istio.io/istio and
 # istio.io/tools repositories checked out. It will copy (TODO: or mount) the sources in a KIND docker container that
 # has all the tools needed to build and test.
 #
@@ -11,8 +11,8 @@
 # Example local workflow for development/testing:
 #
 # export KIND_CLUSTER=local # or other clusters if working on multiple PRs
-# export MOUNT=1            #local directories mounted in the docker running Kind and tests
-# export SKIP_KIND_SETUP=1  #don't create new cluster at each iteration
+# export MOUNT=1            # local directories mounted in the docker running Kind and tests
+# export SKIP_KIND_SETUP=1  # don't create new cluster at each iteration
 # export SKIP_CLEANUP=1     # leave cluster and tests in place, for debugging
 #
 # - prepare cluster for development:
@@ -182,6 +182,8 @@ ifeq ($(SKIP_CLEANUP), 0)
 	$(MAKE) clean
 endif
 
+demo-install:
+	bin/install.sh
 
 # Generate junit reports, upload to testgrid, fail if conditions are met.
 # Failure is based on test status - may exclude some tests.

@@ -118,12 +118,8 @@ template: |
     - --datadogAgentAddress
     - "{{ .ProxyConfig.GetTracing.GetDatadog.GetAddress }}"
   {{- end }}
-  {{- if .Values.global.proxy.logLevel }}
-    - --proxyLogLevel={{ .Values.global.proxy.logLevel }}
-  {{- end}}
-  {{- if .Values.global.proxy.componentLogLevel }}
-    - --proxyComponentLogLevel={{ .Values.global.proxy.componentLogLevel }}
-  {{- end}}
+    - --proxyLogLevel={{ annotation .ObjectMeta `sidecar.istio.io/logLevel` .Values.global.proxy.logLevel}}
+    - --proxyComponentLogLevel={{ annotation .ObjectMeta `sidecar.istio.io/componentLogLevel` .Values.global.proxy.componentLogLevel}}
     - --connectTimeout
     - "{{ formatDuration .ProxyConfig.ConnectTimeout }}"
   {{- if .Values.global.proxy.envoyStatsd.enabled }}

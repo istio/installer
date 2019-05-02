@@ -15,3 +15,8 @@ sidecarInjectorWebhook:
   # health check to redirect request to sidecar. This makes liveness check work
   # even when mTLS is enabled.
   rewriteAppHTTPProbe: false
+
+# If set, no iptable init will be added. It assumes CNI is installed.
+# TODO: rename to 'enableIptables' or add 'interceptionMode: CNI'
+istio_cni:
+  enabled: false

@@ -1,0 +1,2 @@
+bases:
+  - github.com/costinm/istio-installer/test/demo/istio-testing

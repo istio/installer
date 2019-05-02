@@ -128,7 +128,7 @@ spec:
       serviceAccountName: istio-citadel11-service-account
       containers:
         - name: citadel
-          image: "costinm/citadel:nightly-master"
+          image: "istionightly/citadel:nightly-master"
           imagePullPolicy: Always
           args:
             - --append-dns-names=true

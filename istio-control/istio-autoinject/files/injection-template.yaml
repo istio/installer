@@ -11,7 +11,8 @@ template: |
   {{- else }}
     image: "{{ .Values.global.hub }}/{{ .Values.global.proxy_init.image }}:{{ .Values.global.tag }}"
   {{- end }}
-    args:
+    command:
+    - "/usr/local/bin/istio-iptables.sh"
     - "-p"
     - "{{ .MeshConfig.ProxyListenPort }}"
     - "-u"
@@ -87,9 +88,9 @@ template: |
     - --domain
     - $(POD_NAMESPACE).svc.{{ .Values.global.proxy.clusterDomain }}
     - --configPath
-    - "{{ .ProxyConfig.ConfigPath }}"
+    - "/etc/istio/proxy"
     - --binaryPath
-    - "{{ .ProxyConfig.BinaryPath }}"
+    - "/usr/local/bin/envoy"
     - --serviceCluster
     {{ if ne "" (index .ObjectMeta.Labels "app") -}}
     - "{{ index .ObjectMeta.Labels `app` }}.$(POD_NAMESPACE)"

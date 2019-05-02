@@ -63,9 +63,8 @@ run-build-demo-testing: dep
 	cat ${OUT}/release/demo-testing/*.yaml > test/demo/istio-testing/k8s.yaml
 
 run-build-kustom:
-	cp crds/*.yaml > ${BASE}/kustomize/crds
 	bin/iop istio-ingress istio-ingress ${BASE}/gateways/istio-ingress -t > ${BASE}/kustomize/istio-ingress/istio-ingress.yaml
-	bin/iop istio-system istio-system-security ${BASE}/security/citadel -t > ${BASE}/kustomize/citadel/citadel.yaml
+	bin/iop istio-system istio-system-security ${BASE}/security/citadel -t --set kustomize=true > ${BASE}/kustomize/citadel/citadel.yaml
 
 run-lint:
 	helm lint istio-control/istio-discovery -f global.yaml

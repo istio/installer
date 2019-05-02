@@ -123,7 +123,7 @@ with the commands above.
 
 TODO: replicas, cpu allocs, etc.
 
-## Install CRDs
+## Install Istio CRDs
 
 This is the first step of the install. Please do not remove or edit any CRD - config currently requires 
 all CRDs to be present. On each upgrade it is recommended to reapply the file, to make sure 

@@ -151,6 +151,7 @@ prepare:
 	cat test/kind/kind.yaml | sed s,GOPATH,$(GOPATH), > ${GOPATH}/kind.yaml
 	# Kind version and node image need to be in sync - that's not ideal, working on a fix.
 	docker run --privileged \
+		-v /usr/bin/docker:/usr/bin/docker \
 		-v /var/run/docker.sock:/var/run/docker.sock  \
 		-it --entrypoint /bin/bash --rm \
 		istionightly/kind:v1.14.1-1 -c \
@@ -168,6 +169,7 @@ endif
 
 clean:
 	docker run --privileged \
+		-v /usr/bin/docker:/usr/bin/docker \
 		-v /var/run/docker.sock:/var/run/docker.sock  \
 		-it --entrypoint /bin/bash --rm \
 		istionightly/kind:v1.14.1-1 -c \
@@ -268,6 +270,11 @@ git.dep: ${GOPATH}/src/istio.io/istio ${GOPATH}/src/istio.io/tools
 ${TMPDIR}/bin/istioctl:
 	(cd ${GOPATH}/src/istio.io/istio; GOOS=linux make istioctl)
 	cp ${GOPATH}/out/linux_amd64/release/istioctl $@
+
+${GOPATH}/bin/kind:
+	echo ${GOPATH}
+	mkdir -p ${TMPDIR}
+	go get -u sigs.k8s.io/kind
 
 ${GOPATH}/bin/dep:
 	go get -u github.com/golang/dep/cmd/dep

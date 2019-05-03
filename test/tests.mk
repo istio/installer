@@ -13,7 +13,7 @@ run-micro-tests: install-crds install-base install-ingress run-simple run-simple
 
 
 
-E2E_ARGS=--skip_setup --use_local_cluster=true --istio_namespace=${ISTIO_NS}
+E2E_ARGS=--skip_setup --use_local_cluster=true --istio_namespace=${ISTIO_CONTROL_NS}
 
 SIMPLE_AUTH ?= false
 
@@ -35,7 +35,7 @@ run-simple-base: ${TMPDIR}
          --cluster_wide \
          --skip_setup \
          --use_local_cluster=true \
-         --istio_namespace=${ISTIO_NS} \
+         --istio_namespace=${ISTIO_CONTROL_NS} \
          --namespace=${NS} \
          ${SIMPLE_EXTRA} \
          --istioctl=${ISTIOCTL_BIN} \
@@ -60,10 +60,10 @@ run-bookinfo:
 	kubectl create ns bookinfo || true
 	echo ${BASE} ${GOPATH}
 	# Bookinfo test
-	#kubectl label namespace bookinfo istio-env=${ISTIO_NS} --overwrite
+	#kubectl label namespace bookinfo istio-env=${ISTIO_CONTROL_NS} --overwrite
 	kubectl -n bookinfo apply -f test/k8s/mtls_permissive.yaml
 	kubectl -n bookinfo apply -f test/k8s/sidecar-local.yaml
-	SKIP_CLEANUP=1 ISTIO_CONTROL=${ISTIO_NS} INGRESS_NS=${ISTIO_NS} SKIP_DELETE=1 SKIP_LABEL=1 bin/test.sh ${GOPATH}/src/istio.io/istio
+	SKIP_CLEANUP=1 ISTIO_CONTROL=${ISTIO_CONTROL_NS} INGRESS_NS=${ISTIO_INGRESS_NS} SKIP_DELETE=1 SKIP_LABEL=1 bin/test.sh ${GOPATH}/src/istio.io/istio
 
 # Simple fortio install and curl command
 #run-fortio:
@@ -78,7 +78,7 @@ run-mixer:
 
 INT_FLAGS ?= -istio.test.hub ${HUB} -istio.test.tag ${TAG} -istio.test.pullpolicy IfNotPresent \
  -p 1 -istio.test.env kube --istio.test.kube.config ${KUBECONFIG} --istio.test.ci --istio.test.nocleanup \
- --istio.test.kube.deploy=false -istio.test.kube.systemNamespace ${ISTIO_NS} -istio.test.kube.minikube
+ --istio.test.kube.deploy=false -istio.test.kube.systemNamespace ${ISTIO_CONTROL_NS} -istio.test.kube.minikube
 
 # Integration tests create and delete istio-system
 # Need to be fixed to use new installer
@@ -91,9 +91,9 @@ run-test.integration.kube:
 	kubectl -n default apply -f test/k8s/mtls_permissive.yaml
 	kubectl -n default apply -f test/k8s/sidecar-local.yaml
 	# Test uses autoinject
-	#kubectl label namespace default istio-env=${ISTIO_NS} --overwrite
+	#kubectl label namespace default istio-env=${ISTIO_CONTROL_NS} --overwrite
 	(cd ${GOPATH}/src/istio.io/istio; TAG=${TAG} make test.integration.kube \
-		CI=1 T="-v" K8S_TEST_FLAGS="--istio.test.kube.minikube --istio.test.kube.systemNamespace ${ISTIO_NS} \
+		CI=1 T="-v" K8S_TEST_FLAGS="--istio.test.kube.minikube --istio.test.kube.systemNamespace ${ISTIO_CONTROL_NS} \
 		 --istio.test.nocleanup --istio.test.kube.deploy=false ")
 
 run-test.integration.kube.presubmit:
@@ -103,7 +103,7 @@ run-test.integration.kube.presubmit:
 	cd ${GOPATH}/src/istio.io/istio; \
 		${GO} test -p 1 -v \
 			istio.io/istio/tests/integration/echo istio.io/istio/tests/integration/... \
-    --istio.test.kube.deploy=false --istio.test.kube.minikube --istio.test.kube.systemNamespace ${ISTIO_NS}  --istio.test.nocleanup \
+    --istio.test.kube.deploy=false --istio.test.kube.minikube --istio.test.kube.systemNamespace ${ISTIO_CONTROL_NS}  --istio.test.nocleanup \
 	--istio.test.ci -timeout 30m \
     --istio.test.select +presubmit \
  	--istio.test.env kube \
@@ -113,16 +113,16 @@ run-test.integration.kube.presubmit:
 	--istio.test.pullpolicy=IfNotPresent  2>&1 | tee ${GOPATH}/out/logs/$@.log
 
 run-stability:
-	 ISTIO_ENV=${ISTIO_NS} bin/iop test stability ${GOPATH}/src/istio.io/tools/perf/stability/allconfig ${IOP_OPTS}
+	 ISTIO_ENV=${ISTIO_CONTROL_NS} bin/iop test stability ${GOPATH}/src/istio.io/tools/perf/stability/allconfig ${IOP_OPTS}
 
 run-mysql:
-	 ISTIO_ENV=${ISTIO_NS} bin/iop mysql mysql ${BASE}/test/mysql ${IOP_OPTS}
-	 ISTIO_ENV=${ISTIO_NS} bin/iop mysqlplain mysqlplain ${BASE}/test/mysql ${IOP_OPTS} --set mtls=false --set Name=plain
+	 ISTIO_ENV=${ISTIO_CONTROL_NS} bin/iop mysql mysql ${BASE}/test/mysql ${IOP_OPTS}
+	 ISTIO_ENV=${ISTIO_CONTROL_NS} bin/iop mysqlplain mysqlplain ${BASE}/test/mysql ${IOP_OPTS} --set mtls=false --set Name=plain
 
 # This test currently only validates the correct config generation and install in API server.
 # When prom operator config moves out of alpha, this should be incorporated in the other tests
 # and removed.
 run-prometheus-operator-config-test: PROM_OPTS="--set prometheus.createPrometheusResource=true"
 run-prometheus-operator-config-test: install-prometheus-operator install-prometheus-operator-config
-	if [ "$$(kubectl -n ${ISTIO_NS} get servicemonitors -o name | wc -l)" -ne "7" ]; then echo "Failure to find ServiceMonitor resouces!"; return 1; fi
-	kubectl -n ${ISTIO_NS} wait pod/prometheus-prometheus-0 --for=condition=Ready --timeout=${WAIT_TIMEOUT}
+	if [ "$$(kubectl -n ${ISTIO_CONTROL_NS} get servicemonitors -o name | wc -l)" -ne "7" ]; then echo "Failure to find ServiceMonitor resouces!"; return 1; fi
+	kubectl -n ${ISTIO_CONTROL_NS} wait pod/prometheus-prometheus-0 --for=condition=Ready --timeout=${WAIT_TIMEOUT}

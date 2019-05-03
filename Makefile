@@ -111,6 +111,8 @@ else
 	KIND_CONFIG =
 endif
 
+KUBECONFIG ?= ~/.kube/config
+
 # Run the tests, creating a clean test KIND cluster
 # Test can also run in a CI/CD system capable of Docker priv execution.
 # All tests are run in a container - not on local machine.

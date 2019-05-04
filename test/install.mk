@@ -64,7 +64,7 @@ run-build-demo-testing: dep
 	cat ${OUT}/release/demo-testing/*.yaml > test/demo/istio-testing/k8s.yaml
 
 run-build-kustom:
-	bin/iop ${ISTIO_EGRESS_NS} istio-ingress ${BASE}/gateways/istio-ingress -t > ${BASE}/kustomize/istio-ingress/istio-ingress.yaml
+	bin/iop ${ISTIO_INGRESS_NS} istio-ingress ${BASE}/gateways/istio-ingress -t > ${BASE}/kustomize/istio-ingress/istio-ingress.yaml
 	bin/iop ${ISTIO_SYSTEM_NS} istio-system-security ${BASE}/security/citadel -t --set kustomize=true > ${BASE}/kustomize/citadel/citadel.yaml
 
 run-lint:

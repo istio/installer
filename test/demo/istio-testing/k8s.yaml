@@ -13843,7 +13843,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-    app: grafan
+      app: grafana
   template:
     metadata:
       labels:
@@ -14700,24 +14700,6 @@ spec:
   - name: http-prometheus
     protocol: TCP
     port: 9090
-# Using separate ingress for nodeport, to avoid conflict with pilot e2e test configs.
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: prometheus-nodeport
-  namespace: istio-testing
-  labels:
-    app: prometheus
-    release: istio-testing-istio-telemetry
-spec:
-  type: NodePort
-  ports:
-  - port: 9090
-    nodePort: 32090
-    name: http-prometheus
-  selector:
-    app: prometheus
 
 ---
 # Source: prometheus/templates/deployment.yaml

@@ -106,7 +106,7 @@ install-base: install-crds
 	kubectl wait deployments istio-sidecar-injector -n ${ISTIO_CONTROL_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 # Some tests assumes ingress is in same namespace with pilot. If "ONE_NAMESPACE" is set to 1, then install the
-# ingress with the defaults into "istio-control" ns, otherwise, install it into "istio-gateways" ns.
+# ingress with the defaults into "istio-system" ns, otherwise, install it into "istio-gateways" ns.
 install-ingress:
 	bin/iop ${ISTIO_INGRESS_NS} istio-ingress ${BASE}/gateways/istio-ingress  ${IOP_OPTS}
 	kubectl wait deployments ingressgateway -n ${ISTIO_INGRESS_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}

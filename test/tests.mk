@@ -104,12 +104,12 @@ run-test.integration.kube.presubmit:
 		${GO} test -p 1 -v \
 			istio.io/istio/tests/integration/echo istio.io/istio/tests/integration/... \
     --istio.test.kube.deploy=false --istio.test.kube.minikube  --istio.test.nocleanup \
-	--istio.test.kube.IstioNamespace istio-system \
-	--istio.test.kube.ConfigNamespace ${ISTIO_NS} \
-	--istio.test.kube.TelemetryNamespace ${ISTIO_NS} \
-	--istio.test.kube.PolicyNamespace ${ISTIO_NS} \
-	--istio.test.kube.IngressNamespace ${ISTIO_NS} \
-	--istio.test.kube.EgressNamespace ${ISTIO_NS} \
+	--istio.test.kube.istioNamespace istio-system \
+	--istio.test.kube.configNamespace ${ISTIO_NS} \
+	--istio.test.kube.telemetryNamespace ${ISTIO_NS} \
+	--istio.test.kube.policyNamespace ${ISTIO_NS} \
+	--istio.test.kube.ingressNamespace ${ISTIO_NS} \
+	--istio.test.kube.egressNamespace ${ISTIO_NS} \
 	--istio.test.ci -timeout 30m \
     --istio.test.select +presubmit \
  	--istio.test.env kube \

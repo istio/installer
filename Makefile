@@ -255,8 +255,7 @@ GITBASE ?= "https://github.com"
 
 ${GOPATH}/src/istio.io/istio:
 	mkdir -p ${GOPATH}/src/istio.io
-	git clone ${GITBASE}/morvencao/istio.git ${GOPATH}/src/istio.io/istio
-	(cd ${GOPATH}/src/istio.io/istio; git checkout br_support_isolated_namespace_for_test)
+	git clone -b br_support_isolated_namespace_for_test --single-branch ${GITBASE}/morvencao/istio.git ${GOPATH}/src/istio.io/istio
 
 ${GOPATH}/src/istio.io/tools:
 	mkdir -p ${GOPATH}/src/istio.io

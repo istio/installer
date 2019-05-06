@@ -64,7 +64,7 @@ spec:
           - unix:///sock/mixer.socket
 {{- if .Values.global.useMCP }}
     {{- if .Values.global.controlPlaneSecurityEnabled}}
-          - --configStoreURL=mcps://localhost:15019
+          - --configStoreURL=mcp://localhost:15019
     {{- else }}
           - --configStoreURL=mcp://istio-galley.{{ .Values.global.istioNamespace }}.svc:9901
     {{- end }}

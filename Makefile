@@ -268,6 +268,7 @@ git.dep: ${GOPATH}/src/istio.io/istio ${GOPATH}/src/istio.io/tools
 #
 
 ${TMPDIR}/bin/istioctl:
+	mkdir ${TMPDIR}/bin
 	(cd ${GOPATH}/src/istio.io/istio; GOOS=linux make istioctl)
 	cp ${GOPATH}/out/linux_amd64/release/istioctl $@
 
@@ -285,3 +286,4 @@ lint:
 include test/install.mk
 include test/tests.mk
 include test/noauth.mk
+include test/demo.mk

@@ -98,6 +98,8 @@ install-base: install-crds
 	kubectl label ns ${ISTIO_SYSTEM_NS} istio-injection=disabled --overwrite
 	bin/iop ${ISTIO_SYSTEM_NS} istio-system-security ${BASE}/security/citadel ${IOP_OPTS} ${INSTALL_OPTS}
 	kubectl wait deployments istio-citadel11 -n ${ISTIO_SYSTEM_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl create ns ${ISTIO_CONTROL_NS} || true
+	kubectl label ns ${ISTIO_CONTROL_NS} istio-injection=disabled --overwrite
 	bin/iop ${ISTIO_CONTROL_NS} istio-config ${BASE}/istio-control/istio-config ${IOP_OPTS} ${INSTALL_OPTS}
 	bin/iop ${ISTIO_CONTROL_NS} istio-discovery ${BASE}/istio-control/istio-discovery ${IOP_OPTS}  ${INSTALL_OPTS}
 	kubectl wait deployments istio-galley istio-pilot -n ${ISTIO_CONTROL_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
@@ -108,22 +110,30 @@ install-base: install-crds
 # Some tests assumes ingress is in same namespace with pilot. If "ONE_NAMESPACE" is set to 1, then install the
 # ingress with the defaults into "istio-system" ns, otherwise, install it into "istio-gateways" ns.
 install-ingress:
+	kubectl create ns ${ISTIO_INGRESS_NS} || true
+	kubectl label ns ${ISTIO_INGRESS_NS} istio-injection=disabled --overwrite
 	bin/iop ${ISTIO_INGRESS_NS} istio-ingress ${BASE}/gateways/istio-ingress  ${IOP_OPTS}
 	kubectl wait deployments ingressgateway -n ${ISTIO_INGRESS_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 install-egress:
+	kubectl create ns ${ISTIO_EGRESS_NS} || true
+	kubectl label ns ${ISTIO_EGRESS_NS} istio-injection=disabled --overwrite
 	bin/iop ${ISTIO_EGRESS_NS} istio-egress ${BASE}/gateways/istio-egress  ${IOP_OPTS}
 	kubectl wait deployments egressgateway -n ${ISTIO_EGRESS_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 # If "ONE_NAMESPACE" is set to 1, then install the telemetry component with the defaults into "istio-control" ns,
 # otherwise, install it into "istio-telemetry" ns.
 install-telemetry:
+	kubectl create ns ${ISTIO_TELEMETRY_NS} || true
+	kubectl label ns ${ISTIO_TELEMETRY_NS} istio-injection=disabled --overwrite
 	#bin/iop istio-telemetry istio-grafana $IBASE/istio-telemetry/grafana/ 
 	bin/iop ${ISTIO_TELEMETRY_NS} istio-prometheus ${BASE}/istio-telemetry/prometheus/  ${IOP_OPTS}
 	bin/iop ${ISTIO_TELEMETRY_NS} istio-mixer ${BASE}/istio-telemetry/mixer-telemetry/  ${IOP_OPTS}
 	kubectl wait deployments istio-telemetry prometheus -n ${ISTIO_TELEMETRY_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 install-policy:
+	kubectl create ns ${ISTIO_POLICY_NS} || true
+	kubectl label ns ${ISTIO_POLICY_NS} istio-injection=disabled --overwrite
 	bin/iop ${ISTIO_POLICY_NS} istio-policy ${BASE}/istio-policy  ${IOP_OPTS}
 	kubectl wait deployments istio-policy -n ${ISTIO_POLICY_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
@@ -137,5 +147,6 @@ install-prometheus-operator:
 # It is provided as a way to install Istio prometheus operator config in isolation.
 install-prometheus-operator-config:
 	kubectl create ns ${ISTIO_CONTROL_NS} || true
+	kubectl label ns ${ISTIO_CONTROL_NS} istio-injection=disabled --overwrite
 	# NOTE: we don't use iop to install, as it defaults to `--prune`, which is incompatible with the prom operator (it prunes the stateful set)
 	bin/iop ${ISTIO_CONTROL_NS} istio-prometheus-operator ${BASE}/istio-telemetry/prometheus-operator/ -t ${PROM_OPTS} | kubectl apply -n ${ISTIO_CONTROL_NS} -f -

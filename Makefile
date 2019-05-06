@@ -149,15 +149,27 @@ build:
 
 # Run a command in the docker image running kind. Command passed as "TARGET" env.
 kind-run:
-	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf  \
+ifeq ($(ONE_NAMESPACE), 1)
+	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf -e ONE_NAMESPACE=1 \
 		${KIND_CLUSTER}-control-plane \
 		bash -c "cd ${GOPATH}/src/istio.io/installer; make ${TARGET}"
+else
+	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf \
+		${KIND_CLUSTER}-control-plane \
+		bash -c "cd ${GOPATH}/src/istio.io/installer; make ${TARGET}"
+endif
 
 # Runs the test in docker. Will exec into KIND and run "make $TEST_TARGET" (default: run-all-tests)
 docker-run-test:
-	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf  \
+ifeq ($(ONE_NAMESPACE), 1)
+	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf -e ONE_NAMESPACE=1 \
 		${KIND_CLUSTER}-control-plane \
 		bash -c "cd ${GOPATH}/src/istio.io/installer; make git.dep ${TEST_TARGET}"
+else
+	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf \
+		${KIND_CLUSTER}-control-plane \
+		bash -c "cd ${GOPATH}/src/istio.io/installer; make git.dep ${TEST_TARGET}"
+endif
 
 # Start a KIND cluster, using current docker environment, and a custom image including helm
 # and additional tools to install istio.

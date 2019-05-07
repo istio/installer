@@ -1,8 +1,6 @@
 # Test the demo install - in istio-system and the 'side by side'/upgrade mode.
 # This requires a fresh kind cluster.
 
-INSTALL_OPTS="--set global.istioNamespace=${ISTIO_NS} --set global.configNamespace=${ISTIO_NS} --set global.telemetryNamespace=${ISTIO_NS} --set global.policyNamespace=${ISTIO_NS}"
-
 test-demo-simple:
 	$(MAKE) KIND_CLUSTER=${KIND_CLUSTER}-demo maybe-clean maybe-prepare sync
 	$(MAKE) KIND_CLUSTER=${KIND_CLUSTER}-demo kind-run TARGET="run-test-demo"

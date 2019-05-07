@@ -81,7 +81,7 @@ INT_FLAGS ?= -istio.test.hub ${HUB} -istio.test.tag ${TAG} -istio.test.pullpolic
  --istio.test.kube.deploy=false -istio.test.kube.systemNamespace ${ISTIO_CONTROL_NS} -istio.test.kube.minikube
 
 # Test targets to run. Exclude tests that are broken for now
-INT_TARGETS = $(shell go list go list istio.io/istio/tests/integration/... | grep -v /mixer/policy)
+INT_TARGETS = $(shell go list istio.io/istio/tests/integration/... | grep -v /mixer/policy)
 
 # Integration tests create and delete istio-system
 # Need to be fixed to use new installer

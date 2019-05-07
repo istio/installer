@@ -77,7 +77,7 @@ run-mixer:
 		E2E_ARGS="${E2E_ARGS} --namespace=mixertest")
 
 # Test targets to run. Exclude tests that are broken for now
-INT_TARGETS = $(shell go list istio.io/istio/tests/integration/... | grep -v /mixer/policy)
+INT_TARGETS = $(shell GOPATH=${GOPATH} go list ../istio/tests/integration/... | grep -v /mixer/policy)
 
 INT_FLAGS ?= \
 	--istio.test.hub ${HUB} \
@@ -89,6 +89,12 @@ INT_FLAGS ?= \
 	--istio.test.nocleanup \
 	--istio.test.kube.deploy=false \
 	--istio.test.kube.systemNamespace ${ISTIO_NS} \
+	--istio.test.kube.istioNamespace ${ISTIO_NS} \
+	--istio.test.kube.configNamespace ${ISTIO_NS} \
+	--istio.test.kube.telemetryNamespace ${ISTIO_NS} \
+	--istio.test.kube.policyNamespace ${ISTIO_NS} \
+	--istio.test.kube.ingressNamespace ${ISTIO_NS} \
+	--istio.test.kube.egressNamespace ${ISTIO_NS} \
 	--istio.test.kube.minikube \
 	--istio.test.ci -timeout 30m
 

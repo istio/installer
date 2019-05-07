@@ -203,6 +203,7 @@ ifneq ($(MOUNT), 1)
 	docker exec ${KIND_CLUSTER}-control-plane mkdir -p ${GOPATH}/src/istio.io/installer \
 		${GOPATH}/src/istio.io
 	docker cp . ${KIND_CLUSTER}-control-plane:${GOPATH}/src/istio.io/installer
+	docker cp ${GOPATH}/src/istio.io/istio ${KIND_CLUSTER}-control-plane:${GOPATH}/src/istio.io/istio
 endif
 
 # Run an iterative shell in the docker image running the tests and k8s kind

@@ -250,7 +250,7 @@ jobs:
 
   # Install the demo and bookinfo
   install-demo:
-    <<: *integrationRemote
+    <<: *integrationRemoteOneNamespace
 
     # Can run multiple images, first is primary, all use localhost
     steps:

@@ -112,13 +112,13 @@ install-base: install-crds
 install-ingress:
 	kubectl create ns ${ISTIO_INGRESS_NS} || true
 	kubectl label ns ${ISTIO_INGRESS_NS} istio-injection=disabled --overwrite
-	bin/iop ${ISTIO_INGRESS_NS} istio-ingress ${BASE}/gateways/istio-ingress  ${IOP_OPTS}
+	bin/iop ${ISTIO_INGRESS_NS} istio-ingress ${BASE}/gateways/istio-ingress  ${IOP_OPTS} ${INSTALL_OPTS}
 	kubectl wait deployments istio-ingressgateway -n ${ISTIO_INGRESS_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 install-egress:
 	kubectl create ns ${ISTIO_EGRESS_NS} || true
 	kubectl label ns ${ISTIO_EGRESS_NS} istio-injection=disabled --overwrite
-	bin/iop ${ISTIO_EGRESS_NS} istio-egress ${BASE}/gateways/istio-egress  ${IOP_OPTS}
+	bin/iop ${ISTIO_EGRESS_NS} istio-egress ${BASE}/gateways/istio-egress  ${IOP_OPTS} ${INSTALL_OPTS}
 	kubectl wait deployments istio-egressgateway -n ${ISTIO_EGRESS_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 # If "ONE_NAMESPACE" is set to 1, then install the telemetry component with the defaults into "istio-control" ns,
@@ -127,8 +127,8 @@ install-telemetry:
 	kubectl create ns ${ISTIO_TELEMETRY_NS} || true
 	kubectl label ns ${ISTIO_TELEMETRY_NS} istio-injection=disabled --overwrite
 	#bin/iop istio-telemetry istio-grafana $IBASE/istio-telemetry/grafana/ 
-	bin/iop ${ISTIO_TELEMETRY_NS} istio-prometheus ${BASE}/istio-telemetry/prometheus/  ${IOP_OPTS}
-	bin/iop ${ISTIO_TELEMETRY_NS} istio-mixer ${BASE}/istio-telemetry/mixer-telemetry/  ${IOP_OPTS}
+	bin/iop ${ISTIO_TELEMETRY_NS} istio-prometheus ${BASE}/istio-telemetry/prometheus/ ${IOP_OPTS} ${INSTALL_OPTS}
+	bin/iop ${ISTIO_TELEMETRY_NS} istio-mixer ${BASE}/istio-telemetry/mixer-telemetry/ ${IOP_OPTS} ${INSTALL_OPTS}
 	kubectl wait deployments istio-telemetry prometheus -n ${ISTIO_TELEMETRY_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 # Install kiali separately with telemetry
@@ -138,7 +138,7 @@ install-kiali:
 install-policy:
 	kubectl create ns ${ISTIO_POLICY_NS} || true
 	kubectl label ns ${ISTIO_POLICY_NS} istio-injection=disabled --overwrite
-	bin/iop ${ISTIO_POLICY_NS} istio-policy ${BASE}/istio-policy  ${IOP_OPTS}
+	bin/iop ${ISTIO_POLICY_NS} istio-policy ${BASE}/istio-policy  ${IOP_OPTS} ${INSTALL_OPTS}
 	kubectl wait deployments istio-policy -n ${ISTIO_POLICY_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 # This target should only be used in situations in which the prom operator has not already been installed in a cluster.

@@ -126,7 +126,7 @@ function install_cni() {
     if [[ "${ISTIO_CLUSTER_ISGKE}" == "true" ]]; then
         ISTIO_CNI_ARGS="--set cniBinDir=/home/kubernetes/bin"
     fi
-    bin/iop istio-cni istio-cni $IBASE/istio-cni/ -c $IBASE/istio-cni/values.yaml ${ISTIO_CNI_ARGS} 
+    bin/iop istio-cni istio-cni $IBASE/istio-cni/ -f $IBASE/istio-cni/values.yaml ${ISTIO_CNI_ARGS}
     kubectl rollout status ds istio-cni-node -n istio-cni --timeout=$WAIT_TIMEOUT
 }
 

@@ -107,7 +107,7 @@ run-test.integration.kube:
 
 	kubectl -n default apply -f test/k8s/mtls_permissive.yaml
 	kubectl -n default apply -f test/k8s/sidecar-local.yaml
-	
+
 	set -o pipefail; \
 	cd ${GOPATH}/src/istio.io/istio; \
 	${GO} test -v ${INT_TARGETS} --istio.test.select -customsetup ${INT_FLAGS} 2>&1 | tee ${GOPATH}/out/logs/$@.log

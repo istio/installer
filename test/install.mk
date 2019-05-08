@@ -129,10 +129,13 @@ install-policy:
 	kubectl wait deployments istio-policy -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 # This target should only be used in situations in which the prom operator has not already been installed in a cluster.
+install-prometheus-operator: PROM_OP_NS="prometheus-operator"
 install-prometheus-operator:
-	# installs the prom operator in the default namespace
-	kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml
-	kubectl wait --for=condition=available --timeout=${WAIT_TIMEOUT} deploy/prometheus-operator
+	kubectl create ns ${PROM_OP_NS} || true
+	kubectl label ns ${PROM_OP_NS} istio-injection=disabled --overwrite
+	curl -s https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml | sed "s/namespace: default/namespace: ${PROM_OP_NS}/g" | kubectl apply -n ${PROM_OP_NS} -f -
+	# kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml
+	kubectl -n ${PROM_OP_NS} wait --for=condition=available --timeout=${WAIT_TIMEOUT} deploy/prometheus-operator
 
 # This target expects that the prometheus operator (and its CRDs have already been installed).
 # It is provided as a way to install Istio prometheus operator config in isolation.

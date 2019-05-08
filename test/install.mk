@@ -133,9 +133,10 @@ install-prometheus-operator: PROM_OP_NS="prometheus-operator"
 install-prometheus-operator:
 	kubectl create ns ${PROM_OP_NS} || true
 	kubectl label ns ${PROM_OP_NS} istio-injection=disabled --overwrite
-	curl -s https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml | sed "s/namespace: default/namespace: ${PROM_OP_NS}/g" | kubectl apply -n ${PROM_OP_NS} -f -
-	# kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml
+	curl -s https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml | sed "s/namespace: default/namespace: ${PROM_OP_NS}/g" | kubectl apply -f -
 	kubectl -n ${PROM_OP_NS} wait --for=condition=available --timeout=${WAIT_TIMEOUT} deploy/prometheus-operator
+	kubectl wait crds/prometheuses.monitoring.coreos.com crds/servicemonitors.monitoring.coreos.com --for=condition=established --timeout=${WAIT_TIMEOUT}
+
 
 # This target expects that the prometheus operator (and its CRDs have already been installed).
 # It is provided as a way to install Istio prometheus operator config in isolation.

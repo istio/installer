@@ -281,7 +281,7 @@ ${GOPATH}/src/sigs.k8s.io/kind:
 ${GOPATH}/bin/kind: ${GOPATH}/src/sigs.k8s.io/kind
 	echo ${GOPATH}
 	mkdir -p ${TMPDIR}
-	cd ${GOPATH}/src/sigs.k8s.io/kind; make build
+	GO111MODULE="on" go get -u sigs.k8s.io/kind@master
 
 ${GOPATH}/bin/dep:
 	go get -u github.com/golang/dep/cmd/dep

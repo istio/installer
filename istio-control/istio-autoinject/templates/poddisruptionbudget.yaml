@@ -2,17 +2,17 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: istio-galley
+  name: istio-sidecar-injector
   namespace: {{ .Release.Namespace }}
   labels:
-    app: galley
+    app: sidecar-injector
     release: {{ .Release.Name }}
-    istio: galley
+    istio: sidecar-injector
 spec:
   minAvailable: 1
   selector:
     matchLabels:
-      app: galley
+      app: sidecar-injector
       release: {{ .Release.Name }}
-      istio: galley
+      istio: sidecar-injector
 {{- end }}

@@ -273,12 +273,15 @@ gitdep:
 #
 git.dep: ${GOPATH}/src/istio.io/istio ${GOPATH}/src/istio.io/tools
 
+${GOPATH}/src/sigs.k8s.io/kind:
+	git clone https://github.com/sigs.k8s.io/kind ${GOPATH}/src/sigs.k8s.io/kind
+
 # Istio releases: deb and charts on https://storage.googleapis.com/istio-release
 #
-${GOPATH}/bin/kind:
+${GOPATH}/bin/kind: ${GOPATH}/src/sigs.k8s.io/kind
 	echo ${GOPATH}
 	mkdir -p ${TMPDIR}
-	go get -u sigs.k8s.io/kind
+	cd ${GOPATH}/src/sigs.k8s.io/kind; make build
 
 ${GOPATH}/bin/dep:
 	go get -u github.com/golang/dep/cmd/dep

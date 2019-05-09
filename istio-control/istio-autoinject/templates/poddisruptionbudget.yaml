@@ -1,0 +1,20 @@
+{{- if .Values.global.defaultPodDisruptionBudget.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: istio-sidecar-injector
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: sidecar-injector
+    release: {{ .Release.Name }}
+    istio: sidecar-injector
+spec:
+{{- if .Values.global.defaultPodDisruptionBudget.enabled }}
+  minAvailable: 1
+{{- end }}
+  selector:
+    matchLabels:
+      app: sidecar-injector
+      release: {{ .Release.Name }}
+      istio: sidecar-injector
+{{- end }}

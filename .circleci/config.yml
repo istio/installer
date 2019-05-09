@@ -284,6 +284,30 @@ jobs:
       - store_test_results:
           path: /go/out/tests
 
+  run-minimal-test:
+    <<: *integrationRemote
+
+    # Can run multiple images, first is primary, all use localhost
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: make gitdep
+      - run:
+          # Create KIND cluster (separate so we get time info)
+          command: make info dep prepare
+      - run:
+          command: make sync
+      - run:
+          command: make docker-run-test TEST_TARGET="run-minimal-test"
+      - run:
+          when: always
+          command: make kind-logs
+      - store_test_results:
+          path: /go/out/tests
+      - store_artifacts:
+          path: /go/out/logs
+
 workflows:
   version: 2
   nightly:
@@ -303,6 +327,7 @@ workflows:
       - install-minikube
       - install-demo
       - noauth
+      - run-minimal-test
 
   all:
     jobs:
@@ -313,3 +338,4 @@ workflows:
       - install-minikube
       - install-demo
       - noauth
+      - run-minimal-test

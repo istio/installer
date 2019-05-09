@@ -9,9 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     istio: sidecar-injector
 spec:
-{{- if .Values.global.defaultPodDisruptionBudget.enabled }}
   minAvailable: 1
-{{- end }}
   selector:
     matchLabels:
       app: sidecar-injector

@@ -23,11 +23,11 @@ integrationRemoteOneNamespace: &integrationRemoteOneNamespace
         ONE_NAMESPACE: 1
         TMPDIR: /go/tmp
 
-# remote docker environment for isolated namespaces.
+# remote docker environment for one namespace. Appears to be faster
 integrationRemoteIsolatedNamespaces: &integrationRemoteIsolatedNamespaces
   working_directory: /go/src/istio.io/installer
   docker:
-    - image: istio/ci:go1.11-k8s1.10.4-helm2.7.2-minikube0.25
+    - image: istionightly/ci:2019-05-09
       environment:
         GOPATH: /go
         SKIP_CLEANUP: 1

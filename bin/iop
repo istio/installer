@@ -2,6 +2,7 @@
 
 # Example script to install - will be replaced by operator or other tools, used for testing and as sample.
 
+RESTORE_SET_X=$(shopt -po xtrace)
 set -x
 
 BASE=${BASE:-`pwd`}
@@ -83,6 +84,15 @@ function render_kube_yaml() {
         fi
 }
 
+IBASE=${IBASE:-`pwd`}
+
+if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
+    # The script is being sourced.
+    $RESTORE_SET_X
+    unset RESTORE_SET_X
+    return
+fi
+
 if [ "$1" == "" ] ; then
     echo "iop NAMESPACE COMPONENT CONFIGDIR [-t|-d] [HELM_TEMPLATE_OPTIONS]"
     echo ""
@@ -97,8 +107,6 @@ if [ "$1" == "" ] ; then
     echo ""
     exit 1
 fi
-
-IBASE=${IBASE:-`pwd`}
 
 iop $*
 

@@ -139,7 +139,6 @@ run-prometheus-operator-config-test: install-prometheus-operator install-prometh
 
 run-minimal-test:
 	mkdir -p ${GOPATH}/out/logs ${GOPATH}/out/tmp
-	$(MAKE) install-base ENABLE_NAMESPACES_BY_DEFAULT=false
 	(set -o pipefail; cd ${GOPATH}/src/istio.io/istio; \
 		go test ./tests/integration/echo/ \
 			-istio.test.env kube \

@@ -299,6 +299,8 @@ jobs:
       - run:
           command: make sync
       - run:
+          command: make kind-run TARGET="install-base ENABLE_NAMESPACES_BY_DEFAULT=false"
+      - run:
           command: make docker-run-test TEST_TARGET="run-minimal-test"
       - run:
           when: always

@@ -24,6 +24,13 @@ spec:
   affinity:
   {{- include "nodeaffinity" . | indent 2 }}
   {{- include "podAntiAffinity" . | indent 2 }}
+{{- if .Values.prometheus.tolerations }}
+  tolerations:
+{{ toYaml .Values.prometheus.tolerations | indent 2 }}
+{{- else if .Values.global.defaultTolerations }}
+  tolerations:
+{{ toYaml .Values.global.defaultTolerations | indent 2 }}
+{{- end }}
   podMetadata:
     labels:
       app: prometheus

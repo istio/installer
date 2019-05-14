@@ -8,6 +8,10 @@ prometheus:
   # a service account. Only use this option if you have not already created and configured
   # a prometheus resource and/or you desire a distinct prometheus resource for Istio.
   createPrometheusResource: false
+
+  # Enabling this will generate a ServiceMonitor to monitor Kubelet cAdvisor.
+  createKubeletMonitor: true
+
   hub: docker.io/prom
   tag: v2.8.0
   retention: 6h

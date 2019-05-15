@@ -32,22 +32,8 @@ gateways:
     cpu:
       targetAverageUtilization: 80
 
-    # Support legacy k8s ingress.
-    k8sIngress: false
-
-    # Single server certificate supported, not tested
-    k8sIngressHttps: false
-
     # Debug level for envoy. Can be set to 'debug'
     debug: info
-
-    # If true, don't auto-generate a Service object.
-    # User can manually create one, with selector "app:ingressgateway" and any settings he needs.
-    # Note that user needs to maintain the list of ports in the manual Service.
-    customService: false
-
-    drainDuration: 45s
-    connectTimeout: 10s
 
     loadBalancerIP: ""
     loadBalancerSourceRanges: []

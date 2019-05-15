@@ -282,14 +282,8 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   endpoints:
-  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-    honorLabels: true
-    interval: 30s
-    port: https-metrics
-    scheme: https
-    tlsConfig:
-      insecureSkipVerify: true
-  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+  -   
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     honorLabels: true
     interval: 30s
     metricRelabelings:
@@ -302,11 +296,10 @@ spec:
     scheme: https
     tlsConfig:
       insecureSkipVerify: true
-  jobLabel: k8s-app
+  jobLabel: kubernetes-cadvisor
   namespaceSelector:
-    matchNames:
-    - kube-system
+    any: true
   selector:
-    matchLabels:
-      k8s-app: kubelet
+    matchExpressions:
+      - {key: istio-prometheus-ignore, operator: DoesNotExist}
 {{- end }}

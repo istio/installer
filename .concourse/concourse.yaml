@@ -103,7 +103,7 @@ jobs:
             export KUBECONFIG=/tmp/kubeconfig.yaml
             istio-installer/bin/test.sh --skip-cleanup src/github.com/istio/istio/
 
-  - name: install-old-master # we probably want 1.1 here, but we would need an old installer
+  - name: install-release-1.1
     serial_groups: [ cluster ]
     plan:
     - get: 24h
@@ -113,9 +113,9 @@ jobs:
       trigger: true
       passed: [ test-after-install ]
 
-    - task: install-old-master
-      params: &params-master-old
-        TAG: master-20190506-09-16
+    - task: install-release-1.1
+      params: &params-1-1-daily
+        TAG: release-1.1-latest-daily
         HUB: gcr.io/istio-release
         RESOURCES_FLAGS: "--set global.resources.requests.cpu=0m --set resources.requests.cpu=0 --set resources.requests.memory=0 --set global.proxy.resources.requests.cpu=0 --set global.proxy.resources.requests.memory=0"
         KUBECONFIG: ((KUBECONFIG))
@@ -132,22 +132,28 @@ jobs:
           args:
           - -ec
           - |
+            # see github issue #65, so we take an older version that works with 1.1
+            cd istio-installer
+            git fetch origin master
+            git checkout 02d6d54442fb1f48528742a40a37c3a37888db79
+            cd ..
+
             echo "$KUBECONFIG" > /tmp/kubeconfig.yaml
             export KUBECONFIG=/tmp/kubeconfig.yaml
             istio-installer/bin/cleanup.sh
             istio-installer/bin/install.sh
     
-  - name: test-after-install-old-master
+  - name: test-after-install-release-1.1
     serial_groups: [ cluster ]
     plan:
     - get: istio-installer
-      passed: [ install-old-master ]
+      passed: [ install-release-1.1 ]
       trigger: true
     - get: istio-master
       trigger: false
     - get: 24h
       trigger: true
-      passed: [ install-old-master ]
+      passed: [ install-release-1.1 ]
     - task: install-bookinfo
       params:
         KUBECONFIG: ((KUBECONFIG))
@@ -175,9 +181,9 @@ jobs:
     plan:
     - get: 24h
       trigger: true
-      passed: [ test-after-install-old-master ]
+      passed: [ test-after-install-release-1.1 ]
     - get: istio-installer
-      passed: [ test-after-install-old-master ]
+      passed: [ test-after-install-release-1.1 ]
       trigger: true
     - task: update-master-daily
       config:

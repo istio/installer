@@ -72,6 +72,12 @@ global:
         cpu: 2000m
         memory: 128Mi
 
+    # proxy.interceptionControl
+    # values:
+    #  init -- the istio-init container will setup the proxy traffic interception
+    #  cni -- the CNI will setup the proxy traffic interception (use this with istio-cni)
+    interceptionControl: cni
+
     # Controls number of Proxy worker threads.
     # If set to 0 (default), then start worker thread for each CPU thread/core.
     concurrency: 2
@@ -403,4 +409,3 @@ global:
   # This field is set to false by default, so 'helm template ...'
   # will ignore the helm test yaml files when generating the template
   enableHelmTest: false
-

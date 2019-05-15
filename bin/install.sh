@@ -23,21 +23,6 @@ function step() {
     echo "${METHOD}ing $1"
 }
 
-# utility to check for pod existence
-function pod_exists() {
-    local ns=$1
-    shift
-    local labelmatch=$1
-    shift
-
-    found_pods=$(kubectl get pods -n ${ns} ${labelmatch:+ -l ${labelmatch}} -o "jsonpath={.items..metadata.name}")
-    if [[ "$found_pods" != "" ]]; then
-        true
-    else
-        false
-    fi
-}
-
 # Install istio crds
 
 function install_crds() {
@@ -65,10 +50,7 @@ function install_control() {
     step "pilot.."
     bin/iop ${ISTIO_CONTROL_NS} istio-discovery $IBASE/istio-control/istio-discovery  --set global.istioNamespace=${ISTIO_CONTROL_NS} --set global.configNamespace=${ISTIO_CONTROL_NS} $RESOURCES_FLAGS 
     step "auto-injector.."
-    if pod_exists istio-cni "k8s-app=istio-cni-node"; then
-        ISTIO_CNI_ENABLED="true"
-    fi
-    bin/iop ${ISTIO_CONTROL_NS} istio-autoinject $IBASE/istio-control/istio-autoinject --set global.istioNamespace=${ISTIO_CONTROL_NS} --set global.istioNamespace=${ISTIO_CONTROL_NS} ${ISTIO_CNI_ENABLED:+ --set istio_cni.enabled=true} $RESOURCES_FLAGS
+    bin/iop ${ISTIO_CONTROL_NS} istio-autoinject $IBASE/istio-control/istio-autoinject --set global.istioNamespace=${ISTIO_CONTROL_NS} --set global.istioNamespace=${ISTIO_CONTROL_NS} $RESOURCES_FLAGS
 
     # Assure that webhook is deleted whenever sidecar-injector is deleted
     INJECTOR_UID=$(kubectl get deployments -n ${ISTIO_CONTROL_NS} istio-sidecar-injector -o jsonpath="{.metadata.uid}")
@@ -122,11 +104,10 @@ function install_telemetry() {
 function install_cni() {
     step "cni.."
     ISTIO_CNI_ARGS=
-    # TODO: What k8s data can we use for this check for whether GKE?
     if [[ "${ISTIO_CLUSTER_ISGKE}" == "true" ]]; then
         ISTIO_CNI_ARGS="--set cniBinDir=/home/kubernetes/bin"
     fi
-    bin/iop istio-cni istio-cni $IBASE/istio-cni/ -f $IBASE/istio-cni/values.yaml ${ISTIO_CNI_ARGS}
+    bin/iop istio-cni istio-cni $IBASE/istio-cni/ ${ISTIO_CNI_ARGS}
     kubectl rollout status ds istio-cni-node -n istio-cni --timeout=$WAIT_TIMEOUT
 }
 

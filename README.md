@@ -238,11 +238,9 @@ the default disabled, test it, and move the default from istio-system to istio-c
 
 
 ```bash
-    # determine whether the istio-cni is installed
-    cni_pods=$(kubectl get pods -n istio-cni -l k8s-app=istio-cni-node -o "jsonpath={.items..metadata.name}")
-    
+    # determine whether the istio-cni is installed    
     iop istio-control istio-autoinject $IBASE/istio-control/istio-autoinject --set enableNamespacesByDefault=true \
-        ${cni_pods:+ --set istio_cni.enabled=true}
+        --set global.proxy.interceptionControl=CNI
     
     # Second auto-inject using master version of istio
     # Notice the different options

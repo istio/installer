@@ -51,8 +51,3 @@ sidecarInjectorWebhook:
 
   neverInjectSelector: []
   alwaysInjectSelector: []
-
-# If set, no iptable init will be added. It assumes CNI is installed.
-# TODO: rename to 'enableIptables' or add 'interceptionMode: CNI'
-istio_cni:
-  enabled: false

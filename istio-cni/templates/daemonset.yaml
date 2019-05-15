@@ -1,61 +1,3 @@
-# Istio-CNI Version v0.1-dev
-#
-# This manifest installs the following component versions:
-#   istio-cni:v0.1
-
-
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: istio-cni
-rules:
-  - apiGroups: [""]
-    resources:
-      - pods
-      - nodes
-    verbs:
-      - get
-
----
-
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  name: istio-cni
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: istio-cni
-subjects:
-- kind: ServiceAccount
-  name: istio-cni
-  namespace: {{ .Release.Namespace }}
-
----
-# This ConfigMap is used to configure a self-hosted Istio CNI installation.
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: istio-cni-config
-  namespace: {{ .Release.Namespace }}
-  labels:
-    {{- template "common_labels" . }}
-data:
-  # The CNI network configuration to add to the plugin chain on each node.  The special
-  # values in this config will be automatically populated.
-  cni_network_config: |-
-        {
-          "type": "istio-cni",
-          "log_level": {{ quote .Values.logLevel }},
-          "kubernetes": {
-              "kubeconfig": "__KUBECONFIG_FILEPATH__",
-              "cni_bin_dir": {{ quote .Values.cniBinDir }},
-              "exclude_namespaces": [ {{ range $idx, $ns := .Values.excludeNamespaces }}{{ if $idx }}, {{ end }}{{ quote $ns }}{{ end }} ]
-          }
-        }
-
----
-
 # This manifest installs the Istio install-cni container, as well
 # as the Istio CNI plugin and config on
 # each master and worker node in a Kubernetes cluster.
@@ -106,14 +48,14 @@ spec:
         # This container installs the Istio CNI binaries
         # and CNI network config file on each node.
         - name: install-cni
-          image: {{ .Values.hub }}/install-cni:{{ .Values.tag }}
-          imagePullPolicy: {{ .Values.pullPolicy }}
+          image: {{ .Values.cni.hub }}/install-cni:{{ .Values.cni.tag }}
+          imagePullPolicy: {{ .Values.cni.pullPolicy | default .Values.global.imagePullPolicy }}
           command: ["/install-cni.sh"]
           env:
-{{- if .Values.cniConfFileName }}
+{{- if .Values.cni.cniConfFileName }}
             # Name of the CNI config file to create.
             - name: CNI_CONF_NAME
-              value: "{{ .Values.cniConfFileName }}"
+              value: "{{ .Values.cni.cniConfFileName }}"
 {{- end }}
             # The CNI network config to install on each node.
             - name: CNI_NETWORK_CONFIG
@@ -130,14 +72,7 @@ spec:
         # Used to install CNI.
         - name: cni-bin-dir
           hostPath:
-            path: {{ default "/opt/cni/bin" .Values.cniBinDir }}
+            path: {{ default "/opt/cni/bin" .Values.cni.cniBinDir }}
         - name: cni-net-dir
           hostPath:
-            path: {{ default "/etc/cni/net.d" .Values.cniConfDir }}
----
-
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: istio-cni
-  namespace: {{ .Release.Namespace }}
+            path: {{ default "/etc/cni/net.d" .Values.cni.cniConfDir }}

@@ -99,9 +99,6 @@ spec:
 {{- if .Values.grafana.tolerations }}
       tolerations:
 {{ toYaml .Values.grafana.tolerations | indent 6 }}
-{{- else if .Values.global.defaultTolerations }}
-      tolerations:
-{{ toYaml .Values.global.defaultTolerations | indent 6 }}
 {{- end }}
       volumes:
       - name: config

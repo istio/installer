@@ -10,24 +10,39 @@ INSTALL_OPTS="--set global.istioNamespace=${ISTIO_NS} --set global.configNamespa
 # used directly with kubectl apply -f https://....
 # TODO: Add a local test - to check various things are in the right place (jsonpath or equivalent)
 # TODO: run a local etcd/apiserver and verify apiserver accepts the files
-run-build: dep run-build-demo run-build-kustom run-build-demo-testing
-	mkdir -p ${OUT}/release/multi
+run-build:  dep run-build-demo run-build-kustom run-build-demo-testing run-build-multi run-build-micro
 
-	bin/iop istio-system istio-system-security ${BASE}/security/citadel -t > ${OUT}/release/multi/citadel.yaml
-	bin/iop ${ISTIO_NS} istio-config ${BASE}/istio-control/istio-config -t > ${OUT}/release/multi/istio-config.yaml
-	bin/iop ${ISTIO_NS} istio-discovery ${BASE}/istio-control/istio-discovery -t > ${OUT}/release/multi/istio-discovery.yaml
-	bin/iop ${ISTIO_NS} istio-autoinject ${BASE}/istio-control/istio-autoinject -t > ${OUT}/release/multi/istio-autoinject.yaml
-	bin/iop ${ISTIO_NS} istio-ingress ${BASE}/gateways/istio-ingress -t > ${OUT}/release/multi/istio-ingress.yaml
-	bin/iop ${ISTIO_NS} istio-egress ${BASE}/gateways/istio-egress -t > ${OUT}/release/multi/istio-egress.yaml
-	bin/iop ${ISTIO_NS} istio-telemetry ${BASE}/istio-telemetry/mixer-telemetry -t > ${OUT}/release/multi/istio-telemetry.yaml
-	bin/iop ${ISTIO_NS} istio-telemetry ${BASE}/istio-telemetry/prometheus -t > ${OUT}/release/multi/istio-prometheus.yaml
-	bin/iop ${ISTIO_NS} istio-telemetry ${BASE}/istio-telemetry/grafana -t > ${OUT}/release/multi/istio-grafana.yaml
+run-build-multi:
+
+	bin/iop istio-system istio-system-security ${BASE}/security/citadel -t > kustomize/citadel/citadel.yaml
+
+	bin/iop istio-control istio-config ${BASE}/istio-control/istio-config -t > kustomize/istio-control/istio-config.yaml
+	bin/iop istio-control istio-discovery ${BASE}/istio-control/istio-discovery -t > kustomize/istio-control/discovery/discovery.yaml
+	bin/iop istio-control istio-autoinject ${BASE}/istio-control/istio-autoinject -t > kustomize/istio-control/istio-autoinject.yaml
+
+	bin/iop istio-ingress istio-ingress ${BASE}/gateways/istio-ingress -t > kustomize/istio-ingress/istio-ingress.yaml
+
+	bin/iop istio-telemetry istio-telemetry ${BASE}/istio-telemetry/mixer-telemetry -t > kustomize/istio-telemetry/mixer-telemetry.yaml
+	bin/iop istio-telemetry istio-telemetry ${BASE}/istio-telemetry/prometheus -t > kustomize/istio-telemetry/istio-prometheus.yaml
+	bin/iop istio-telemetry istio-telemetry ${BASE}/istio-telemetry/grafana -t > kustomize/istio-telemetry/istio-grafana.yaml
+
 	#bin/iop ${ISTIO_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/multi/istio-policy.yaml
 	#bin/iop ${ISTIO_NS} istio-cni ${BASE}/istio-cni -t > ${OUT}/release/multi/istio-cni.yaml
 	# TODO: generate single config (merge all yaml)
 	# TODO: different common user-values combinations
 	# TODO: apply to a local kube apiserver to validate against k8s
 	# Short term: will be checked in - for testing apply -k
+
+run-build-micro:
+	bin/iop istio-micro istio-discovery ${BASE}/istio-control/istio-discovery  -t \
+	  --set global.controlPlaneSecurityEnabled=false \
+	  --set pilot.useMCP=false \
+	  --set pilot.plugins="health" > kustomize/micro/discovery.yaml
+	bin/iop istio-micro istio-ingress ${BASE}/gateways/istio-ingress  -t \
+	  --set global.istioNamespace=istio-micro \
+      --set global.controlPlaneSecurityEnabled=false \
+      > kustomize/micro/istio-ingress.yaml
+
 
 
 DEMO_OPTS="-f test/demo/values.yaml --set global.istioNamespace=istio-system --set global.configNamespace=istio-system --set global.telemetryNamespace=istio-system --set global.defaultPodDisruptionBudget.enabled=false"

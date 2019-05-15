@@ -1,0 +1,11 @@
+# Base config for multiple namespaces
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+  - ../../crds
+  - ../citadel
+  - ../istio-control
+  - ../istio-ingress
+  - ../istio-telemetry

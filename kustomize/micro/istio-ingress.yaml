@@ -5,17 +5,17 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: ingressgateway
-  namespace: istio-ingress
+  namespace: istio-micro
   labels:
     app: ingressgateway
-    release: istio-ingress-istio-ingress
+    release: istio-micro-istio-ingress
     istio: ingressgateway
 spec:
   minAvailable: 1
   selector:
     matchLabels:
       app: ingressgateway
-      release: istio-ingress-istio-ingress
+      release: istio-micro-istio-ingress
       istio: ingressgateway
 
 ---
@@ -25,11 +25,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: istio-ingressgateway
-  namespace: istio-ingress
+  namespace: istio-micro
   annotations:
   labels:
     app: ingressgateway
-    release: istio-ingress-istio-ingress
+    release: istio-micro-istio-ingress
 spec:
   type: LoadBalancer
   selector:
@@ -61,11 +61,11 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: ingressgateway
-  namespace: istio-ingress
+  namespace: istio-micro
   labels:
     app: ingressgateway
     istio: ingressgateway
-    release: istio-ingress-istio-ingress
+    release: istio-micro-istio-ingress
 spec:
   replicas: 1
   template:
@@ -115,9 +115,9 @@ spec:
           - --statusPort
           - "15020"
           - --controlPlaneAuthPolicy
-          - MUTUAL_TLS
+          - NONE
           - --discoveryAddress
-          - istio-pilot.istio-control:15011
+          - istio-pilot.istio-micro:15010
           readinessProbe:
             failureThreshold: 30
             httpGet:
@@ -227,9 +227,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: ingressgateway
-  namespace: istio-ingress
+  namespace: istio-micro
   labels:
-    release: istio-ingress-istio-ingress
+    release: istio-micro-istio-ingress
 spec:
   selector:
     istio: ingressgateway
@@ -250,12 +250,12 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: ingressgateway
-  namespace: istio-ingress
+  namespace: istio-micro
   labels:
     app: ingressgateway
     chart: ingressgateway
     heritage: Tiller
-    release: istio-ingress-istio-ingress
+    release: istio-micro-istio-ingress
 spec:
   maxReplicas: 5
   minReplicas: 1
@@ -276,9 +276,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Sidecar
 metadata:
   name: default
-  namespace: istio-ingress
+  namespace: istio-micro
   labels:
-    release: istio-ingress-istio-ingress
+    release: istio-micro-istio-ingress
 spec:
   egress:
     - hosts:

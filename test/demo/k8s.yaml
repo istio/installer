@@ -12,10 +12,16 @@ metadata:
     istio: sidecar-injector
 data:
   values: |-
-    {"configValidation":true,"gateways":{"istio-egressgateway":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}}},"istio-ingressgateway":{"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}}}},"global":{"arch":{"amd64":2,"ppc64le":2,"s390x":2},"configNamespace":"istio-system","configValidation":true,"controlPlaneSecurityEnabled":true,"defaultNodeSelector":{},"defaultPodDisruptionBudget":{"enabled":false},"defaultResources":{"requests":{"cpu":"0m","memory":"1Mi"}},"disablePolicyChecks":false,"enableHelmTest":false,"enableTracing":true,"hub":"istionightly","imagePullPolicy":"Always","imagePullSecrets":null,"istioNamespace":"istio-system","k8sIngress":{"enableHttps":false,"enabled":false,"gatewayName":"ingressgateway"},"localityLbSetting":{},"logging":{"level":"default:info"},"meshExpansion":{"enabled":false,"useILB":false},"meshNetworks":{},"mtls":{"enabled":false},"multiCluster":{"enabled":false},"oneNamespace":false,"outboundTrafficPolicy":{"mode":"ALLOW_ANY"},"policyCheckFailOpen":false,"policyNamespace":"istio-policy","priorityClassName":"","proxy":{"accessLogEncoding":"TEXT","accessLogFile":"/dev/stdout","accessLogFormat":"","autoInject":"enabled","clusterDomain":"cluster.local","componentLogLevel":"misc:error","concurrency":2,"dnsRefreshRate":"5s","enableCoreDump":false,"envoyMetricsService":{"enabled":false,"host":null,"port":null},"envoyStatsd":{"enabled":false,"host":null,"port":null},"excludeIPRanges":"","excludeInboundPorts":"","image":"proxyv2","includeIPRanges":"*","includeInboundPorts":"*","kubevirtInterfaces":"","logLevel":"warning","privileged":false,"readinessFailureThreshold":30,"readinessInitialDelaySeconds":1,"readinessPeriodSeconds":2,"resources":{"limits":{"cpu":"2000m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}},"statusPort":15020,"tracer":"zipkin"},"proxy_init":{"image":"proxy_init"},"sds":{"enabled":false,"udsPath":"","useNormalJwt":false,"useTrustworthyJwt":false},"sidecarInjectorWebhook":{"enabled":true,"rewriteAppHTTPProbe":false},"tag":"nightly-master","telemetryNamespace":"istio-system","tracer":{"datadog":{"address":"$(HOST_IP):8126"},"lightstep":{"accessToken":"","address":"","cacertPath":"","secure":true},"zipkin":{"address":""}},"trustDomain":"","useMCP":true},"grafana":{"enabled":true},"istio_cni":{"enabled":false},"kiali":{"createDemoSecret":true,"enabled":true},"mixer":{"adapters":{"stdio":{"enabled":true}},"policy":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"10m","memory":"100Mi"}}},"telemetry":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"50m","memory":"100Mi"}}}},"pilot":{"resources":{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"10m","memory":"100Mi"}},"traceSampling":100},"resources":{"requests":{"cpu":"0m","memory":"1Mi"}},"sidecarInjectorWebhook":{"enableNamespacesByDefault":false,"image":"sidecar_injector","podAntiAffinityLabelSelector":{},"podAntiAffinityTermLabelSelector":{},"replicaCount":1,"rewriteAppHTTPProbe":false,"selfSigned":false},"tracing":{"enabled":true}}
+    {"gateways":{"istio-egressgateway":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}}},"istio-ingressgateway":{"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}}}},"global":{"arch":{"amd64":2,"ppc64le":2,"s390x":2},"configNamespace":"istio-system","configValidation":true,"controlPlaneSecurityEnabled":true,"defaultNodeSelector":{},"defaultPodDisruptionBudget":{"enabled":false},"defaultResources":{"requests":{"cpu":"10m"}},"disablePolicyChecks":false,"enableHelmTest":false,"enableTracing":true,"hub":"istionightly","imagePullPolicy":"Always","imagePullSecrets":null,"istioNamespace":"istio-system","k8sIngress":{"enableHttps":false,"enabled":false,"gatewayName":"ingressgateway"},"localityLbSetting":{},"logging":{"level":"default:info"},"meshExpansion":{"enabled":false,"useILB":false},"meshNetworks":{},"mtls":{"enabled":false},"multiCluster":{"enabled":false},"oneNamespace":false,"outboundTrafficPolicy":{"mode":"ALLOW_ANY"},"policyCheckFailOpen":false,"policyNamespace":"istio-policy","priorityClassName":"","proxy":{"accessLogEncoding":"TEXT","accessLogFile":"/dev/stdout","accessLogFormat":"","autoInject":"enabled","clusterDomain":"cluster.local","componentLogLevel":"misc:error","concurrency":2,"dnsRefreshRate":"300s","enableCoreDump":false,"envoyMetricsService":{"enabled":false,"host":null,"port":null},"envoyStatsd":{"enabled":false,"host":null,"port":null},"excludeIPRanges":"","excludeInboundPorts":"","image":"proxyv2","includeIPRanges":"*","includeInboundPorts":"*","kubevirtInterfaces":"","logLevel":"warning","privileged":false,"readinessFailureThreshold":30,"readinessInitialDelaySeconds":1,"readinessPeriodSeconds":2,"resources":{"limits":{"cpu":"2000m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}},"statusPort":15020,"tracer":"zipkin"},"proxy_init":{"image":"costinm/proxy_init:tproxy"},"sds":{"enabled":false,"udsPath":"","useNormalJwt":false,"useTrustworthyJwt":false},"sidecarInjectorWebhook":{"enabled":true,"rewriteAppHTTPProbe":false},"tag":"nightly-master","telemetryNamespace":"istio-system","tracer":{"datadog":{"address":"$(HOST_IP):8126"},"lightstep":{"accessToken":"","address":"","cacertPath":"","secure":true},"zipkin":{"address":""}},"trustDomain":"","useMCP":true},"grafana":{"enabled":true},"istio_cni":{"enabled":false},"kiali":{"createDemoSecret":true,"enabled":true},"mixer":{"adapters":{"stdio":{"enabled":true}},"policy":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"10m","memory":"100Mi"}}},"telemetry":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"50m","memory":"100Mi"}}}},"pilot":{"resources":{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"10m","memory":"100Mi"}},"traceSampling":100},"sidecarInjectorWebhook":{"alwaysInjectSelector":[],"enableNamespacesByDefault":false,"image":"sidecar_injector","neverInjectSelector":[],"podAntiAffinityLabelSelector":[],"podAntiAffinityTermLabelSelector":[],"replicaCount":1,"rewriteAppHTTPProbe":false,"selfSigned":false},"tracing":{"enabled":true}}
 
   config: |-
     policy: enabled
+    alwaysInjectSelector:
+      []
+      
+    neverInjectSelector:
+      []
+      
     template: |
       rewriteAppHTTPProbe: {{ valueOrDefault .Values.sidecarInjectorWebhook.rewriteAppHTTPProbe false }}
       {{- if or (not .Values.istio_cni.enabled) .Values.global.proxy.enableCoreDump }}
@@ -503,8 +509,7 @@ spec:
             periodSeconds: 4
           resources:
             requests:
-              cpu: 0m
-              memory: 1Mi
+              cpu: 10m
             
       volumes:
       - name: config-volume
@@ -1489,7 +1494,7 @@ metadata:
     release: istio-system-istio-discovery
     istio: pilot
   annotations:
-    checksum/config-volume:  eceeb77621ba73ed3d1a23e131bb8c953c6e8ad64de872332d413ca75b1577af
+    checksum/config-volume:  47964a4bdf050e857eabc7e2781c76e1836b643246235a3b01bcb0504463b188
 spec:
   strategy:
     rollingUpdate:
@@ -1741,14 +1746,12 @@ metadata:
   namespace: istio-system
   annotations:
   labels:
-    app: egressgateway
-    chart: egressgateway
-    heritage: Tiller
+    app: istio-egressgateway
     release: istio-system-istio-egress
 spec:
   type: ClusterIP
   selector:
-    app: egressgateway
+    app: istio-egressgateway
   ports:
     -
       name: http2
@@ -1765,28 +1768,26 @@ spec:
 ---
 # Source: istio-egress/templates/deployment.yaml
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: egressgateway
   namespace: istio-system
   labels:
-    app: egressgateway
-    chart: egressgateway
-    heritage: Tiller
+    app: istio-egressgateway
+    istio: egressgateway
     release: istio-system-istio-egress
-    istio: istio-system
 spec:
-  replicas: 1
+  selector:
+    matchLabels:
+      app: istio-egressgateway
+      istio: egressgateway
   template:
     metadata:
       labels:
-        chart: egressgateway
-        heritage: Tiller
         release: istio-system-istio-egress
-        version: 1.1.0
-        app: egressgateway
-        istio: istio-system
+        app: istio-egressgateway
+        istio: egressgateway
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
@@ -1804,10 +1805,11 @@ spec:
           args:
           - proxy
           - router
-          - --log_output_level
-          - 'info'
-          - --proxyLogLevel
-          - 'info'
+          - --domain
+          - $(POD_NAMESPACE).svc.cluster.local
+          - --proxyLogLevel=warning
+          - --proxyComponentLogLevel=misc:error
+          - --log_output_level=default:info
           - --drainDuration
           - '45s' #drainDuration
           - --parentShutdownDuration
@@ -1815,15 +1817,27 @@ spec:
           - --connectTimeout
           - '10s' #connectTimeout
           - --serviceCluster
-          - egressgateway
+          - istio-egressgateway
           - --zipkinAddress
           - zipkin.istio-system:9411
           - --proxyAdminPort
           - "15000"
+          - --statusPort
+          - "15020"
           - --controlPlaneAuthPolicy
           - MUTUAL_TLS
           - --discoveryAddress
           - istio-pilot.istio-system:15011
+          readinessProbe:
+            failureThreshold: 30
+            httpGet:
+              path: /healthz/ready
+              port: 15020
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 2
+            successThreshold: 1
+            timeoutSeconds: 1
           resources:
             limits:
               cpu: 100m
@@ -1833,6 +1847,11 @@ spec:
               memory: 40Mi
             
           env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
           - name: POD_NAME
             valueFrom:
               fieldRef:
@@ -1848,23 +1867,44 @@ spec:
               fieldRef:
                 apiVersion: v1
                 fieldPath: status.podIP
+          - name: HOST_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.hostIP
           - name: ISTIO_META_POD_NAME
             valueFrom:
               fieldRef:
-                fieldPath: metadata.name
-          - name: ISTIO_META_ROUTER_MODE
-            value: sni-dnat
-          
+                apiVersion: v1
+                fieldPath: metadata.name           
+          - name: ISTIO_META_CONFIG_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
           volumeMounts:
           
           - name: istio-certs
             mountPath: /etc/certs
+            readOnly: true
+          - name: egressgateway-certs
+            mountPath: "/etc/istio/egressgateway-certs"
+            readOnly: true
+          - name: egressgateway-ca-certs
+            mountPath: "/etc/istio/egressgateway-ca-certs"
             readOnly: true
       volumes:
       
       - name: istio-certs
         secret:
           secretName: istio.default
+          optional: true
+      - name: egressgateway-certs
+        secret:
+          secretName: "istio-egressgateway-certs"
+          optional: true
+      - name: egressgateway-ca-certs
+        secret:
+          secretName: "istio-egressgateway-ca-certs"
           optional: true
       affinity:      
         nodeAffinity:
@@ -1910,13 +1950,11 @@ metadata:
   name: istio-multicluster-egressgateway
   namespace: istio-system
   labels:
-    app: egressgateway
-    chart: egressgateway
-    heritage: Tiller
+    app: istio-egressgateway
     release: istio-system-istio-egress
 spec:
   selector:
-    istio: istio-system-istio-egress
+    istio: egressgateway
   servers:
   - hosts:
     - "*.global"
@@ -1932,9 +1970,7 @@ metadata:
   name: istio-multicluster-egressgateway
   namespace: istio-system 
   labels:
-    app: egressgateway
-    chart: egressgateway
-    heritage: Tiller
+    app: istio-egressgateway
     release: istio-system-istio-egress
 spec:
   gateways:
@@ -1959,13 +1995,11 @@ metadata:
   name: istio-multicluster-egressgateway
   namespace: istio-system
   labels:
-    app: istio-egress
-    chart: istio-egress
-    heritage: Tiller
+    app: istio-egressgateway
     release: istio-system-istio-egress
 spec:
    workloadLabels:
-     istio: istio-system
+     istio: egressgateway
    filters:
    - listenerMatch:
        portNumber: 15443
@@ -1981,9 +2015,7 @@ metadata:
   name: istio-multicluster-destinationrule
   namespace: istio-system
   labels:
-    app: istio-egress
-    chart: istio-egress
-    heritage: Tiller
+    app: istio-egressgateway
     release: istio-system-istio-egress
 spec:
   host: "*.global"
@@ -2001,15 +2033,13 @@ metadata:
   name: egressgateway
   namespace: istio-system
   labels:
-    app: egressgateway
-    chart: egressgateway
-    heritage: Tiller
+    app: istio-egressgateway
     release: istio-system-istio-egress
 spec:
   maxReplicas: 5
   minReplicas: 1
   scaleTargetRef:
-    apiVersion: apps/v1beta1
+    apiVersion: apps/v1
     kind: Deployment
     name: egressgateway
   metrics:
@@ -2021,6 +2051,10 @@ spec:
 
 ---
 # Source: istio-egress/templates/poddisruptionbudget.yaml
+
+
+---
+# Source: istio-egress/templates/serviceaccount.yaml
 
 
 ---
@@ -7206,7 +7240,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(istio_requests_total{reporter=\"destination\", connection_security_policy=\"mutual_tls\", destination_service=~\"$service\",response_code!~\"5.*\", destination_workload=~\"$dstwl\", destination_workload_namespace=~\"$dstns\"}[5m])) by (destination_workload, destination_workload_namespace) / sum(rate(istio_requests_total{reporter=\"destination\", connection_security_policy=\"mutual_tls\", destination_service=~\"$service\", destination_workload=~\"$dstwl\", destination_workload_namespace=~\"$dstns\"}[5m])) by (destination_workload, destination_workload_namespace)",
+          "expr": "sum(irate(istio_requests_total{reporter=\"destination\", connection_security_policy=\"mutual_tls\", destination_service=~\"$service\",response_code!~\"5.*\", destination_workload=~\"$dstwl\", destination_workload_namespace=~\"$dstns\"}[5m])) by (destination_workload, destination_workload_namespace) / sum(irate(istio_requests_total{reporter=\"destination\", connection_security_policy=\"mutual_tls\", destination_service=~\"$service\", destination_workload=~\"$dstwl\", destination_workload_namespace=~\"$dstns\"}[5m])) by (destination_workload, destination_workload_namespace)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
@@ -7215,7 +7249,7 @@ data:
           "step": 2
         },
         {
-          "expr": "sum(irate(istio_requests_total{reporter=\"destination\", connection_security_policy!=\"mutual_tls\", destination_service=~\"$service\",response_code!~\"5.*\", destination_workload=~\"$dstwl\", destination_workload_namespace=~\"$dstns\"}[5m])) by (destination_workload, destination_workload_namespace) / sum(rate(istio_requests_total{reporter=\"destination\", connection_security_policy!=\"mutual_tls\", destination_service=~\"$service\", destination_workload=~\"$dstwl\", destination_workload_namespace=~\"$dstns\"}[5m])) by (destination_workload, destination_workload_namespace)",
+          "expr": "sum(irate(istio_requests_total{reporter=\"destination\", connection_security_policy!=\"mutual_tls\", destination_service=~\"$service\",response_code!~\"5.*\", destination_workload=~\"$dstwl\", destination_workload_namespace=~\"$dstns\"}[5m])) by (destination_workload, destination_workload_namespace) / sum(irate(istio_requests_total{reporter=\"destination\", connection_security_policy!=\"mutual_tls\", destination_service=~\"$service\", destination_workload=~\"$dstwl\", destination_workload_namespace=~\"$dstns\"}[5m])) by (destination_workload, destination_workload_namespace)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
@@ -8731,7 +8765,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(istio_requests_total{reporter=\"destination\", connection_security_policy=\"mutual_tls\", destination_workload_namespace=~\"$namespace\", destination_workload=~\"$workload\",response_code!~\"5.*\", source_workload=~\"$srcwl\", source_workload_namespace=~\"$srcns\"}[5m])) by (source_workload, source_workload_namespace) / sum(rate(istio_requests_total{reporter=\"destination\", connection_security_policy=\"mutual_tls\", destination_workload_namespace=~\"$namespace\", destination_workload=~\"$workload\", source_workload=~\"$srcwl\", source_workload_namespace=~\"$srcns\"}[5m])) by (source_workload, source_workload_namespace)",
+          "expr": "sum(irate(istio_requests_total{reporter=\"destination\", connection_security_policy=\"mutual_tls\", destination_workload_namespace=~\"$namespace\", destination_workload=~\"$workload\",response_code!~\"5.*\", source_workload=~\"$srcwl\", source_workload_namespace=~\"$srcns\"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter=\"destination\", connection_security_policy=\"mutual_tls\", destination_workload_namespace=~\"$namespace\", destination_workload=~\"$workload\", source_workload=~\"$srcwl\", source_workload_namespace=~\"$srcns\"}[5m])) by (source_workload, source_workload_namespace)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
@@ -8740,7 +8774,7 @@ data:
           "step": 2
         },
         {
-          "expr": "sum(irate(istio_requests_total{reporter=\"destination\", connection_security_policy!=\"mutual_tls\", destination_workload_namespace=~\"$namespace\", destination_workload=~\"$workload\",response_code!~\"5.*\", source_workload=~\"$srcwl\", source_workload_namespace=~\"$srcns\"}[5m])) by (source_workload, source_workload_namespace) / sum(rate(istio_requests_total{reporter=\"destination\", connection_security_policy!=\"mutual_tls\", destination_workload_namespace=~\"$namespace\", destination_workload=~\"$workload\", source_workload=~\"$srcwl\", source_workload_namespace=~\"$srcns\"}[5m])) by (source_workload, source_workload_namespace)",
+          "expr": "sum(irate(istio_requests_total{reporter=\"destination\", connection_security_policy!=\"mutual_tls\", destination_workload_namespace=~\"$namespace\", destination_workload=~\"$workload\",response_code!~\"5.*\", source_workload=~\"$srcwl\", source_workload_namespace=~\"$srcns\"}[5m])) by (source_workload, source_workload_namespace) / sum(irate(istio_requests_total{reporter=\"destination\", connection_security_policy!=\"mutual_tls\", destination_workload_namespace=~\"$namespace\", destination_workload=~\"$workload\", source_workload=~\"$srcwl\", source_workload_namespace=~\"$srcns\"}[5m])) by (source_workload, source_workload_namespace)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
@@ -13854,8 +13888,6 @@ metadata:
   annotations:
   labels:
     app: grafana
-    chart: grafana
-    heritage: Tiller
     release: istio-system-istio-telemetry
 spec:
   type: ClusterIP
@@ -13916,8 +13948,7 @@ spec:
             value: /data/grafana
           resources:
             requests:
-              cpu: 0m
-              memory: 1Mi
+              cpu: 10m
             
           volumeMounts:
           - name: data
@@ -14793,8 +14824,7 @@ spec:
               port: 9090
           resources:
             requests:
-              cpu: 0m
-              memory: 1Mi
+              cpu: 10m
             
           volumeMounts:
           - name: config-volume
@@ -15237,6 +15267,7 @@ metadata:
   namespace: istio-system
   labels:
     app: istio-telemetry
+    istio: mixer
     release: istio-system-istio-telemetry
 spec:
   ports:

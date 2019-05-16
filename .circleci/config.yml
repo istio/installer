@@ -284,7 +284,7 @@ jobs:
       - store_test_results:
           path: /go/out/tests
 
-  run-minimal-test:
+  run-test-on-base-installation:
     <<: *integrationRemote
 
     # Can run multiple images, first is primary, all use localhost
@@ -329,7 +329,7 @@ workflows:
       - install-minikube
       - install-demo
       - noauth
-      - run-minimal-test
+      - run-test-on-base-installation
 
   all:
     jobs:
@@ -340,4 +340,4 @@ workflows:
       - install-minikube
       - install-demo
       - noauth
-      - run-minimal-test
+      - run-test-on-base-installation

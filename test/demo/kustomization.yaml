@@ -7,6 +7,7 @@ bases:
 # Namespace created by citadel, all goes to istio-system
 resources:
   - k8s.yaml
+  - namespace.yaml
 
 # Everything will be forced to istio-system - demo is single-namespace
 namespace: istio-system

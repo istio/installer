@@ -76,7 +76,7 @@ global:
     # values:
     #  init -- the istio-init container will setup the proxy traffic interception
     #  cni -- the CNI will setup the proxy traffic interception (use this with istio-cni)
-    interceptionControl: cni
+    interceptionControl: init
 
     # Controls number of Proxy worker threads.
     # If set to 0 (default), then start worker thread for each CPU thread/core.

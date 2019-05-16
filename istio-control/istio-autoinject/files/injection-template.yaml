@@ -1,9 +1,9 @@
 template: |
   rewriteAppHTTPProbe: {{ valueOrDefault .Values.sidecarInjectorWebhook.rewriteAppHTTPProbe false }}
-  {{- if or (eq .Values.global.proxy.interceptionControl "init") .Values.global.proxy.enableCoreDump }}
+  {{- if or (or (eq .Values.global.proxy.interceptionControl "init") .Values.istio_cni.enabled) .Values.global.proxy.enableCoreDump }}
   initContainers:
   {{ if ne (annotation .ObjectMeta `sidecar.istio.io/interceptionMode` .ProxyConfig.InterceptionMode) `NONE` }}
-  {{- if eq .Values.global.proxy.interceptionControl "init" }}
+  {{- if or (eq .Values.global.proxy.interceptionControl "init") .Values.istio_cni.enabled }}
   - name: istio-init
   {{- if contains "/" .Values.global.proxy_init.image }}
     # TODO: use proxy image, to speed up stratup

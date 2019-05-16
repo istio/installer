@@ -16,6 +16,10 @@ spec:
   replicas: 1
 {{- end }}
 {{- end }}
+  selector:
+    matchLabels:
+      app: ingressgateway
+      istio: ingressgateway
   template:
     metadata:
       labels:

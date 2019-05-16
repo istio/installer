@@ -225,6 +225,7 @@ data:
     keepaliveMaxServerConnectionAge: 30m
     meshNetworks:
       networks: {}
+    nodeSelector: {}
     podAntiAffinityLabelSelector: []
     podAntiAffinityTermLabelSelector: []
     policy:
@@ -236,6 +237,7 @@ data:
         memory: 2048Mi
     telemetry:
       enabled: true
+    tolerations: []
     traceSampling: 1
     useMCP: true
     
@@ -402,7 +404,7 @@ metadata:
     release: istio-control-istio-discovery
     istio: pilot
   annotations:
-    checksum/config-volume:  bca00f22235c9585a20d14911e909a5e663e1bba22f9d3ea598bf4d09cdb0cbf
+    checksum/config-volume:  f5608eb625ac0b08c5335fb4a92c5eaf337e72916f468045707cfc7523c27ce7
 spec:
   strategy:
     rollingUpdate:

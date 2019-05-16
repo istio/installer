@@ -332,7 +332,7 @@ metadata:
 
 ---
 # Source: mixer-telemetry/templates/clusterrole.yaml
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: istio-mixer-istio-telemetry
@@ -349,16 +349,12 @@ rules:
 - apiGroups: [""]
   resources: ["configmaps", "endpoints", "pods", "services", "namespaces", "secrets", "replicationcontrollers"]
   verbs: ["get", "list", "watch"]
-- apiGroups: ["extensions"]
+- apiGroups: ["extensions", "apps"]
   resources: ["replicasets"]
   verbs: ["get", "list", "watch"]
-- apiGroups: ["apps"]
-  resources: ["replicasets"]
-  verbs: ["get", "list", "watch"]
-
 ---
 # Source: mixer-telemetry/templates/clusterrolebinding.yaml
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: istio-mixer-admin-role-binding-istio-telemetry
@@ -400,7 +396,7 @@ spec:
 
 ---
 # Source: mixer-telemetry/templates/deployment.yaml
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: istio-telemetry
@@ -437,6 +433,10 @@ spec:
           optional: true
       - name: uds-socket
         emptyDir: {}
+      - name: telemetry-adapter-secret
+        secret:
+          secretName: telemetry-adapter-secret
+          optional: true
       - name: telemetry-envoy-config
         configMap:
           name: telemetry-envoy-config
@@ -481,17 +481,26 @@ spec:
         - containerPort: 15014
         - containerPort: 42422
         args:
+          - --monitoringPort=15014
           - --address
           - unix:///sock/mixer.socket
+          - --log_output_level=default:info
           - --configStoreURL=mcp://localhost:15019
-          - --configDefaultNamespace=istio-telemetry
-          - --trace_zipkin_url=http://zipkin:9411/api/v1/spans
+          - --configDefaultNamespace=istio-control
+          - --useAdapterCRDs=false
+          - --useTemplateCRDs=false
+          - --trace_zipkin_url=http://zipkin.istio-telemetry:9411/api/v1/spans
         env:
         - name: GODEBUG
-          value: "gctrace=2"
+          value: "gctrace=1"
+        - name: GOMAXPROCS
+          value: "6"
         resources:
+          limits:
+            cpu: 4800m
+            memory: 4G
           requests:
-            cpu: 900m
+            cpu: 1000m
             memory: 1G
           
         volumeMounts:
@@ -500,6 +509,9 @@ spec:
           readOnly: true
         - name: uds-socket
           mountPath: /sock
+        - name: telemetry-adapter-secret
+          mountPath: /var/run/secrets/istio.io/telemetry/adapter
+          readOnly: true
         livenessProbe:
           httpGet:
             path: /version
@@ -518,6 +530,8 @@ spec:
           name: http-envoy-prom
         args:
         - proxy
+        - --domain
+        - $(POD_NAMESPACE).svc.cluster.local
         - --serviceCluster
         - istio-telemetry
         - --templateFile
@@ -572,7 +586,7 @@ spec:
     maxReplicas: 5
     minReplicas: 1
     scaleTargetRef:
-      apiVersion: apps/v1beta1
+      apiVersion: apps/v1
       kind: Deployment
       name: istio-telemetry
     metrics:

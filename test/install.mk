@@ -10,11 +10,11 @@ INSTALL_OPTS="--set global.istioNamespace=${ISTIO_NS} --set global.configNamespa
 # used directly with kubectl apply -f https://....
 # TODO: Add a local test - to check various things are in the right place (jsonpath or equivalent)
 # TODO: run a local etcd/apiserver and verify apiserver accepts the files
-run-build:  dep run-build-demo run-build-kustom run-build-demo-testing run-build-multi run-build-micro
+run-build:  dep run-build-demo run-build-multi run-build-micro
 
 run-build-multi:
 
-	bin/iop istio-system istio-system-security ${BASE}/security/citadel -t > kustomize/citadel/citadel.yaml
+	bin/iop istio-system istio-system-security ${BASE}/security/citadel -t --set kustomize=true > kustomize/citadel/citadel.yaml
 
 	bin/iop istio-control istio-config ${BASE}/istio-control/istio-config -t > kustomize/istio-control/istio-config.yaml
 	bin/iop istio-control istio-discovery ${BASE}/istio-control/istio-discovery -t > kustomize/istio-control/discovery/discovery.yaml
@@ -63,26 +63,6 @@ run-build-demo: dep
 	#bin/iop ${ISTIO_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/demo/istio-policy.yaml
 	cat ${OUT}/release/demo/*.yaml > test/demo/k8s.yaml
 
-# Validation is singleton, can only be installed in istio-system or istio-control currently (like citadel)
-DEMO_TEST_OPTS="--set global.configValidation=false --set global.istioNamespace=istio-testing --set global.configNamespace=istio-testing --set global.policyNamespace=istio-testing --set global.telemetryNamespace=istio-testing --set global.defaultPodDisruptionBudget.enabled=false"
-
-run-build-demo-testing: dep
-	mkdir -p ${OUT}/release/demo-testing
-
-	bin/iop istio-testing istio-config ${BASE}/istio-control/istio-config -t ${DEMO_OPTS} > ${OUT}/release/demo-testing/istio-config.yaml
-	bin/iop istio-testing istio-discovery ${BASE}/istio-control/istio-discovery -t ${DEMO_OPTS} > ${OUT}/release/demo-testing/istio-discovery.yaml
-	bin/iop istio-testing istio-autoinject ${BASE}/istio-control/istio-autoinject -t ${DEMO_OPTS} > ${OUT}/release/demo-testing/istio-autoinject.yaml
-	bin/iop istio-testing istio-ingress ${BASE}/gateways/istio-ingress -t ${DEMO_OPTS} > ${OUT}/release/demo-testing/istio-ingress.yaml
-	bin/iop istio-testing istio-egress ${BASE}/gateways/istio-egress -t ${DEMO_OPTS} > ${OUT}/release/demo-testing/istio-egress.yaml
-	bin/iop istio-testing istio-telemetry ${BASE}/istio-telemetry/mixer-telemetry -t ${DEMO_OPTS} > ${OUT}/release/demo-testing/istio-telemetry.yaml
-	bin/iop istio-testing istio-telemetry ${BASE}/istio-telemetry/prometheus -t ${DEMO_OPTS} > ${OUT}/release/demo-testing/istio-prometheus.yaml
-	bin/iop istio-testing istio-telemetry ${BASE}/istio-telemetry/grafana -t ${DEMO_OPTS} > ${OUT}/release/demo-testing/istio-grafana.yaml
-	#bin/iop ${ISTIO_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/demo/istio-policy.yaml
-	cat ${OUT}/release/demo-testing/*.yaml > test/demo/istio-testing/k8s.yaml
-
-run-build-kustom:
-	bin/iop istio-ingress istio-ingress ${BASE}/gateways/istio-ingress -t > ${BASE}/kustomize/istio-ingress/istio-ingress.yaml
-	bin/iop istio-system istio-system-security ${BASE}/security/citadel -t --set kustomize=true > ${BASE}/kustomize/citadel/citadel.yaml
 
 run-lint:
 	helm lint istio-control/istio-discovery -f global.yaml

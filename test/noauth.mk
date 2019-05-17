@@ -19,6 +19,7 @@ test-noauth:
 	$(MAKE) KIND_CLUSTER=${KIND_CLUSTER}-noauth maybe-clean maybe-prepare sync
 	$(MAKE) KIND_CLUSTER=${KIND_CLUSTER}-noauth kind-run TARGET="run-test-noauth-micro"
 	$(MAKE) KIND_CLUSTER=${KIND_CLUSTER}-noauth kind-run TARGET="run-test-noauth-full"
+	$(MAKE) KIND_CLUSTER=${KIND_CLUSTER}-noauth kind-run TARGET="run-test-knative"
 
 # Run a test without authentication, minimal possible install. The cluster should have no certs (so we can
 # confirm that all the 'off' is respected).
@@ -30,7 +31,7 @@ run-test-noauth-micro: install-crds
 
 	bin/iop ${ISTIO_NS}-micro istio-ingress ${BASE}/gateways/istio-ingress --set global.istioNamespace=${ISTIO_NS}-micro \
 	 	${IOP_OPTS} --set global.controlPlaneSecurityEnabled=false
-	kubectl wait deployments ingressgateway -n ${ISTIO_NS}-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl wait deployments istio-ingressgateway -n ${ISTIO_NS}-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 	# Verify that we can kube-inject using files ( there is no injector in this config )
 	kubectl create ns simple-micro || true
@@ -40,6 +41,26 @@ run-test-noauth-micro: install-crds
 		--valuesFile test/simple/values.yaml \
 		--injectConfigFile istio-control/istio-autoinject/files/injection-template.yaml \
 	 | kubectl apply -n simple-micro -f -
+
+# Installs minimal istio (pilot + ingressgateway) to support knative serving.
+# Then installs a simple service and waits for the route to be ready.
+run-test-knative: install-crds
+	bin/iop istio-system istio-discovery ${BASE}/istio-control/istio-discovery ${IOP_OPTS} \
+		--set global.controlPlaneSecurityEnabled=false --set pilot.useMCP=false --set pilot.plugins="health"
+	kubectl wait deployments istio-pilot -n istio-system --for=condition=available --timeout=${WAIT_TIMEOUT}
+
+	bin/iop istio-system istio-ingress ${BASE}/gateways/istio-ingress --set global.istioNamespace=istio-system \
+		${IOP_OPTS} --set global.controlPlaneSecurityEnabled=false
+	kubectl wait deployments ingressgateway -n istio-system --for=condition=available --timeout=${WAIT_TIMEOUT}
+
+	kubectl apply --selector=knative.dev/crd-install=true \
+	  --filename test/knative/serving.yaml
+	kubectl apply --filename test/knative/serving.yaml
+	kubectl wait deployments webhook controller activator autoscaler \
+	  -n knative-serving --for=condition=available --timeout=${WAIT_TIMEOUT}
+
+	kubectl apply --filename test/knative/service.yaml
+	kubectl wait routes helloworld-go --for=condition=ready --timeout=${WAIT_TIMEOUT}
 
 # TODO: pass meshConfigFile, injectConfigFile, valuesFile to test, or skip the kube-inject and do it manually (better)
 # Test won't work otherwise
@@ -56,7 +77,7 @@ run-test-noauth-full: install-crds
 	kubectl wait deployments istio-pilot istio-galley -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 	bin/iop ${ISTIO_NS} istio-ingress ${BASE}/gateways/istio-ingress ${INSTALL_OPTS} ${IOP_OPTS} \
 		 --set global.controlPlaneSecurityEnabled=false
-	kubectl wait deployments ingressgateway -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl wait deployments istio-ingressgateway -n ${ISTIO_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 	bin/iop ${ISTIO_NS} istio-telemetry ${BASE}/istio-telemetry/mixer-telemetry --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS} \
          --set global.controlPlaneSecurityEnabled=false ${INSTALL_OPTS}
 	bin/iop ${ISTIO_NS} istio-prometheus ${BASE}/istio-telemetry/prometheus/ --set global.istioNamespace=${ISTIO_NS} ${IOP_OPTS} \

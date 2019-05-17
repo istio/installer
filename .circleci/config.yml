@@ -208,39 +208,8 @@ jobs:
           path: /go/out/logs
 
   # Verify a-la-carte with no certificates ( smallest possible install, and cases without certs/mtls)
-  noauth_one_namespace:
-    <<: *integrationRemoteOneNamespace
-
-    # Can run multiple images, first is primary, all use localhost
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          command: |
-            mkdir -p $GOPATH/tmp
-            mkdir -p $GOPATH/src/istio.io/
-            git clone https://github.com/istio/istio.git $GOPATH/src/istio.io/istio
-            git clone https://github.com/istio/tools.git $GOPATH/src/istio.io/tools
-      - run:
-          command: make info dep prepare
-      - run:
-          command: make sync
-      - run:
-          command: make docker-run-test TEST_TARGET="run-test-noauth-micro"
-      - run:
-          command: make docker-run-test TEST_TARGET="run-test-noauth-full"
-      - run:
-          when: always
-          command: make kind-logs
-      - store_test_results:
-          path: /go/out/tests
-      - store_artifacts:
-          path: /go/out/logs
-
-  # Verify a-la-carte with no certificates ( smallest possible install, and cases without certs/mtls)
-  noauth_isolated_namespaces:
-    <<: *integrationRemoteIsolatedNamespaces
+  noauth:
+    <<: *integrationRemote
 
     # Can run multiple images, first is primary, all use localhost
     steps:
@@ -332,8 +301,7 @@ workflows:
       - integration-old-kind
       - install-minikube
       - install-demo
-      - noauth_one_namespace
-      - noauth_isolated_namespaces
+      - noauth
 
   all:
     jobs:
@@ -343,5 +311,4 @@ workflows:
       - integration-old-kind
       - install-minikube
       - install-demo
-      - noauth_one_namespace
-      - noauth_isolated_namespaces
+      - noauth

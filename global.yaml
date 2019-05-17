@@ -72,12 +72,6 @@ global:
         cpu: 2000m
         memory: 128Mi
 
-    # proxy.interceptionControl
-    # values:
-    #  init -- the istio-init container will setup the proxy traffic interception
-    #  cni -- the CNI will setup the proxy traffic interception (use this with istio-cni)
-    interceptionControl: init
-
     # Controls number of Proxy worker threads.
     # If set to 0 (default), then start worker thread for each CPU thread/core.
     concurrency: 2

@@ -238,9 +238,9 @@ the default disabled, test it, and move the default from istio-system to istio-c
 
 
 ```bash
-    # determine whether the istio-cni is installed    
+    # ENABLE_CNI is set to true if istio-cni is installed    
     iop istio-control istio-autoinject $IBASE/istio-control/istio-autoinject --set enableNamespacesByDefault=true \
-        --set global.proxy.interceptionControl=CNI
+        --set istio_cni.enabled=${ENABLE_CNI}
     
     # Second auto-inject using master version of istio
     # Notice the different options

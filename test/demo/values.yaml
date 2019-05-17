@@ -9,7 +9,6 @@ global:
       requests:
         cpu: 10m
         memory: 40Mi
-    interceptionControl: init
 
   disablePolicyChecks: false
 

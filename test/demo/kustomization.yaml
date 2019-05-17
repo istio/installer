@@ -11,5 +11,3 @@ resources:
 # Everything will be forced to istio-system - demo is single-namespace
 namespace: istio-system
 
-commonLabels:
-  istio-profile: demo

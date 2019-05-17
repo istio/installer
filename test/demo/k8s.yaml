@@ -1787,7 +1787,6 @@ spec:
   template:
     metadata:
       labels:
-        release: istio-system-istio-egress
         app: istio-egressgateway
         istio: egressgateway
       annotations:
@@ -13919,7 +13918,10 @@ spec:
     metadata:
       labels:
         app: grafana
-        release: istio-system-istio-telemetry
+        chart: grafana
+        heritage: Foo
+        release: istio-system
+        foo: bar
       annotations:
         sidecar.istio.io/inject: "false"
     spec:

@@ -11859,7 +11859,10 @@ spec:
     metadata:
       labels:
         app: grafana
-        release: istio-telemetry-istio-telemetry
+        chart: grafana
+        heritage: Tiller
+        release: istio-system
+        foo: bar
       annotations:
         sidecar.istio.io/inject: "false"
     spec:

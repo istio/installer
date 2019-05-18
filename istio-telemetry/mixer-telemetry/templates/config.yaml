@@ -245,10 +245,10 @@ spec:
       destinationPrincipal: destination.principal | ""
       apiClaims: request.auth.raw_claims | ""
       apiKey: request.api_key | request.headers["x-api-key"] | ""
-      protocol: request.scheme | context.protocol | "http"
+      protocol: conditional((context.protocol | "http") == "grpc", "grpc", (request.scheme | "http"))
       method: request.method | ""
       url: request.path | ""
-      responseCode: response.code | 0
+      responseCode: conditional((context.protocol | "http") == "grpc", grpcToHttp(response.grpc_status | "0"), response.code | 0)
       responseFlags: context.proxy_error_code | ""
       responseSize: response.size | 0
       permissiveResponseCode: rbac.permissive.response_code | "none"
@@ -373,7 +373,7 @@ spec:
       destination_service_name: destination.service.name | "unknown"
       destination_service_namespace: destination.service.namespace | "unknown"
       request_protocol: api.protocol | context.protocol | "unknown"
-      response_code: response.code | 200
+      response_code: conditional((api.protocol | context.protocol | "unknown") == "grpc", grpcToHttp(response.grpc_status	| "0") , response.code | 200)
       response_flags: context.proxy_error_code | "-"
       permissive_response_code: rbac.permissive.response_code | "none"
       permissive_response_policyid: rbac.permissive.effective_policy_id | "none"
@@ -408,7 +408,7 @@ spec:
       destination_service_name: destination.service.name | "unknown"
       destination_service_namespace: destination.service.namespace | "unknown"
       request_protocol: api.protocol | context.protocol | "unknown"
-      response_code: response.code | 200
+      response_code: conditional((api.protocol | context.protocol | "unknown") == "grpc", grpcToHttp(response.grpc_status	| "0") , response.code | 200)
       response_flags: context.proxy_error_code | "-"
       permissive_response_code: rbac.permissive.response_code | "none" 
       permissive_response_policyid: rbac.permissive.effective_policy_id | "none"
@@ -443,7 +443,7 @@ spec:
       destination_service_name: destination.service.name | "unknown"
       destination_service_namespace: destination.service.namespace | "unknown"
       request_protocol: api.protocol | context.protocol | "unknown"
-      response_code: response.code | 200
+      response_code: conditional((api.protocol | context.protocol | "unknown") == "grpc", grpcToHttp(response.grpc_status	| "0") , response.code | 200)
       response_flags: context.proxy_error_code | "-"
       permissive_response_code: rbac.permissive.response_code | "none" 
       permissive_response_policyid: rbac.permissive.effective_policy_id | "none"
@@ -478,7 +478,7 @@ spec:
       destination_service_name: destination.service.name | "unknown"
       destination_service_namespace: destination.service.namespace | "unknown"
       request_protocol: api.protocol | context.protocol | "unknown"
-      response_code: response.code | 200
+      response_code: conditional((api.protocol | context.protocol | "unknown") == "grpc", grpcToHttp(response.grpc_status	| "0") , response.code | 200)
       response_flags: context.proxy_error_code | "-"
       permissive_response_code: rbac.permissive.response_code | "none" 
       permissive_response_policyid: rbac.permissive.effective_policy_id | "none"

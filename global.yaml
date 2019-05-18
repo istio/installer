@@ -21,9 +21,6 @@ global:
   istioNamespace: istio-control
   configNamespace: istio-control
 
-  # Applications namespace list pilot manages, separated by comma, if it contains multiple namespaces.
-  appNamespace: ""
-
   # Telemetry namespace, including tracing.
   telemetryNamespace: istio-telemetry
 

@@ -108,9 +108,9 @@ spec:
             value: "1"
           - name: CONFIG_NAMESPACE
             value: {{ .Values.pilot.configNamespace }}
-{{- if .Value.global.appNamespace }}
+{{- if .Values.pilot.appNamespaces }}
           - name: APP_NAMESPACE
-            value: {{ .Values.global.appNamespace }}
+            value: {{ join "," .Values.pilot.appNamespaces }}
 {{- end }}
           resources:
 {{- if .Values.pilot.resources }}

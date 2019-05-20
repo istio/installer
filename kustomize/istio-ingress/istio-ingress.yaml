@@ -70,7 +70,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ingressgateway
+  name: istio-ingressgateway
   namespace: istio-ingress
   labels:
     app: istio-ingressgateway

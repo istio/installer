@@ -12,7 +12,7 @@ metadata:
     istio: sidecar-injector
 data:
   values: |-
-    {"gateways":{"istio-egressgateway":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}}},"istio-ingressgateway":{"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}}}},"global":{"arch":{"amd64":2,"ppc64le":2,"s390x":2},"configNamespace":"istio-system","configValidation":true,"controlPlaneSecurityEnabled":true,"defaultNodeSelector":{},"defaultPodDisruptionBudget":{"enabled":false},"defaultResources":{"requests":{"cpu":"10m"}},"disablePolicyChecks":false,"enableHelmTest":false,"enableTracing":true,"hub":"istionightly","imagePullPolicy":"Always","imagePullSecrets":null,"istioNamespace":"istio-system","k8sIngress":{"enableHttps":false,"enabled":false,"gatewayName":"ingressgateway"},"localityLbSetting":{},"logging":{"level":"default:info"},"meshExpansion":{"enabled":false,"useILB":false},"meshNetworks":{},"mtls":{"enabled":false},"multiCluster":{"enabled":false},"oneNamespace":false,"outboundTrafficPolicy":{"mode":"ALLOW_ANY"},"policyCheckFailOpen":false,"policyNamespace":"istio-policy","priorityClassName":"","proxy":{"accessLogEncoding":"TEXT","accessLogFile":"/dev/stdout","accessLogFormat":"","autoInject":"enabled","clusterDomain":"cluster.local","componentLogLevel":"misc:error","concurrency":2,"dnsRefreshRate":"300s","enableCoreDump":false,"envoyMetricsService":{"enabled":false,"host":null,"port":null},"envoyStatsd":{"enabled":false,"host":null,"port":null},"excludeIPRanges":"","excludeInboundPorts":"","image":"proxyv2","includeIPRanges":"*","includeInboundPorts":"*","kubevirtInterfaces":"","logLevel":"warning","privileged":false,"readinessFailureThreshold":30,"readinessInitialDelaySeconds":1,"readinessPeriodSeconds":2,"resources":{"limits":{"cpu":"2000m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}},"statusPort":15020,"tracer":"zipkin"},"proxy_init":{"image":"costinm/proxy_init:tproxy"},"sds":{"enabled":false,"udsPath":"","useNormalJwt":false,"useTrustworthyJwt":false},"sidecarInjectorWebhook":{"enabled":true,"rewriteAppHTTPProbe":false},"tag":"nightly-master","telemetryNamespace":"istio-system","tracer":{"datadog":{"address":"$(HOST_IP):8126"},"lightstep":{"accessToken":"","address":"","cacertPath":"","secure":true},"zipkin":{"address":""}},"trustDomain":"","useMCP":true},"grafana":{"enabled":true},"istio_cni":{"enabled":false},"kiali":{"createDemoSecret":true,"enabled":true},"mixer":{"adapters":{"stdio":{"enabled":true}},"policy":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"10m","memory":"100Mi"}}},"telemetry":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"50m","memory":"100Mi"}}}},"pilot":{"resources":{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"10m","memory":"100Mi"}},"traceSampling":100},"sidecarInjectorWebhook":{"alwaysInjectSelector":[],"enableNamespacesByDefault":false,"image":"sidecar_injector","neverInjectSelector":[],"nodeSelector":{},"podAntiAffinityLabelSelector":[],"podAntiAffinityTermLabelSelector":[],"replicaCount":1,"rewriteAppHTTPProbe":false,"selfSigned":false,"tolerations":[]},"tracing":{"enabled":true}}
+    {"gateways":{"istio-egressgateway":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}}},"istio-ingressgateway":{"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}}}},"global":{"arch":{"amd64":2,"ppc64le":2,"s390x":2},"configNamespace":"istio-system","configValidation":true,"controlPlaneSecurityEnabled":true,"defaultNodeSelector":{},"defaultPodDisruptionBudget":{"enabled":false},"defaultResources":{"requests":{"cpu":"10m"}},"disablePolicyChecks":false,"enableHelmTest":false,"enableTracing":true,"hub":"istionightly","imagePullPolicy":"Always","imagePullSecrets":null,"istioNamespace":"istio-system","k8sIngress":{"enableHttps":false,"enabled":false,"gatewayName":"ingressgateway"},"localityLbSetting":{},"logging":{"level":"default:info"},"meshExpansion":{"enabled":false,"useILB":false},"meshNetworks":{},"mtls":{"enabled":false},"multiCluster":{"enabled":false},"oneNamespace":false,"outboundTrafficPolicy":{"mode":"ALLOW_ANY"},"policyCheckFailOpen":false,"policyNamespace":"istio-policy","priorityClassName":"","proxy":{"accessLogEncoding":"TEXT","accessLogFile":"/dev/stdout","accessLogFormat":"","autoInject":"enabled","clusterDomain":"cluster.local","componentLogLevel":"misc:error","concurrency":2,"dnsRefreshRate":"300s","enableCoreDump":false,"envoyMetricsService":{"enabled":false,"host":null,"port":null},"envoyStatsd":{"enabled":false,"host":null,"port":null},"excludeIPRanges":"","excludeInboundPorts":"","excludeOutboundPorts":"","image":"proxyv2","includeIPRanges":"*","includeInboundPorts":"*","kubevirtInterfaces":"","logLevel":"warning","privileged":false,"readinessFailureThreshold":30,"readinessInitialDelaySeconds":1,"readinessPeriodSeconds":2,"resources":{"limits":{"cpu":"2000m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}},"statusPort":15020,"tracer":"zipkin"},"proxy_init":{"image":"proxy_init"},"sds":{"enabled":false,"udsPath":"","useNormalJwt":false,"useTrustworthyJwt":false},"sidecarInjectorWebhook":{"enabled":true,"rewriteAppHTTPProbe":false},"tag":"nightly-master","telemetryNamespace":"istio-system","tracer":{"datadog":{"address":"$(HOST_IP):8126"},"lightstep":{"accessToken":"","address":"","cacertPath":"","secure":true},"zipkin":{"address":""}},"trustDomain":"","useMCP":true},"grafana":{"enabled":true},"istio_cni":{"enabled":false},"kiali":{"createDemoSecret":true,"enabled":true},"mixer":{"adapters":{"stdio":{"enabled":true}},"policy":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"10m","memory":"100Mi"}}},"telemetry":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"50m","memory":"100Mi"}}}},"pilot":{"resources":{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"10m","memory":"100Mi"}},"traceSampling":100},"sidecarInjectorWebhook":{"alwaysInjectSelector":[],"enableNamespacesByDefault":false,"image":"sidecar_injector","neverInjectSelector":[],"nodeSelector":{},"podAntiAffinityLabelSelector":[],"podAntiAffinityTermLabelSelector":[],"replicaCount":1,"rewriteAppHTTPProbe":false,"selfSigned":false,"tolerations":[]},"tracing":{"enabled":true}}
 
   config: |-
     policy: enabled
@@ -51,6 +51,10 @@ data:
         - "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeInboundPorts` (includeInboundPorts .Spec.Containers) }}"
         - "-d"
         - "{{ excludeInboundPort (annotation .ObjectMeta `status.sidecar.istio.io/port` .Values.global.proxy.statusPort) (annotation .ObjectMeta `traffic.sidecar.istio.io/excludeInboundPorts` .Values.global.proxy.excludeInboundPorts) }}"
+        {{ if or (isset .ObjectMeta.Annotations `traffic.sidecar.istio.io/excludeOutboundPorts`) (ne (valueOrDefault .Values.global.proxy.excludeOutboundPorts "") "") -}}
+        - "-o"
+        - "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/excludeOutboundPorts` .Values.global.proxy.excludeOutboundPorts }}"
+        {{ end -}}
         {{ if (isset .ObjectMeta.Annotations `traffic.sidecar.istio.io/kubevirtInterfaces`) -}}
         - "-k"
         - "{{ index .ObjectMeta.Annotations `traffic.sidecar.istio.io/kubevirtInterfaces` }}"
@@ -1744,7 +1748,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: egressgateway
+  name: istio-egressgateway
   namespace: istio-system
   annotations:
   labels:
@@ -1773,7 +1777,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: egressgateway
+  name: istio-egressgateway
   namespace: istio-system
   labels:
     app: istio-egressgateway
@@ -1787,6 +1791,7 @@ spec:
   template:
     metadata:
       labels:
+        release: istio-system-istio-egress
         app: istio-egressgateway
         istio: egressgateway
       annotations:
@@ -4867,42 +4872,6 @@ metadata:
     istio: grafana
 data:
   istio-performance-dashboard.json: '{
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "5.2.3"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": "5.0.0"
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "5.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "text",
-      "name": "Text",
-      "version": "5.0.0"
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -4919,23 +4888,66 @@ data:
   "editable": false,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": null,
+  "id": 9,
   "links": [],
   "panels": [
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 21,
+      "panels": [
+        {
+          "content": "The charts on this dashboard are intended to show Istio main components cost in terms resources utilization under steady load.\n\n- **vCPU/1k rps:** shows vCPU utilization by the main Istio components normalized by 1000 requests/second. When idle or low traffic, this chart will be blank. The curve for istio-proxy refers to the services sidecars only.\n- **vCPU:** vCPU utilization by Istio components, not normalized.\n- **Memory:** memory footprint for the components. Telemetry and policy are normalized by 1k rps, and no data is shown  when there is no traffic. For ingress and istio-proxy, the data is per instance.\n- **Bytes transferred/ sec:** shows the number of bytes flowing through each Istio component.\n\n\n",
+          "gridPos": {
+            "h": 6,
+            "w": 24,
+            "x": 0,
+            "y": 1
+          },
+          "id": 19,
+          "links": [],
+          "mode": "markdown",
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Performance Dashboard README",
+          "transparent": true,
+          "type": "text"
+        }
+      ],
+      "title": "Performance Dashboard Notes",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 6,
+      "panels": [],
+      "title": "vCPU Usage",
+      "type": "row"
+    },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
       "fill": 1,
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 2
       },
-      "id": 8,
+      "id": 4,
       "legend": {
         "avg": false,
         "current": false,
@@ -4950,7 +4962,7 @@ data:
       "links": [],
       "nullPointMode": "null",
       "percentage": false,
-      "pointradius": 1,
+      "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
@@ -4959,28 +4971,30 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(rate(container_cpu_usage_seconds_total{pod_name=~\"istio-telemetry-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
+          "expr": "(sum(irate(container_cpu_usage_seconds_total{pod_name=~\"istio-telemetry-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"ingressgateway\"}[1m])) >bool 10)",
           "format": "time_series",
+          "hide": false,
           "intervalFactor": 1,
           "legendFormat": "istio-telemetry",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{pod_name=~\"istio-ingressgateway-.*\",container_name=\"istio-proxy\"}[1m])) / (round(sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\", reporter=\"source\"}[1m])), 0.001)/1000)",
+          "expr": "(sum(irate(container_cpu_usage_seconds_total{pod_name=~\"ingressgateway-.*\",container_name=\"istio-proxy\"}[1m])) / (round(sum(irate(istio_requests_total{source_workload=\"ingressgateway\", reporter=\"source\"}[1m])), 0.001)/1000))",
           "format": "time_series",
+          "hide": false,
           "intervalFactor": 1,
-          "legendFormat": "istio-ingressgateway",
+          "legendFormat": "ingressgateway",
           "refId": "B"
         },
         {
-          "expr": "(sum(rate(container_cpu_usage_seconds_total{namespace!=\"istio-system\",container_name=\"istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
+          "expr": "(sum(irate(container_cpu_usage_seconds_total{namespace!=\"istio-control\",container_name=\"istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"ingressgateway\"}[1m])) >bool 10)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-proxy",
           "refId": "C"
         },
         {
-          "expr": "(sum(rate(container_cpu_usage_seconds_total{pod_name=~\"istio-policy-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000)) / (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
+          "expr": "(sum(irate(container_cpu_usage_seconds_total{pod_name=~\"istio-policy-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"ingressgateway\"}[1m])) >bool 10)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-policy",
@@ -4989,6 +5003,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "vCPU / 1k rps",
       "tooltip": {
@@ -5032,15 +5047,453 @@ data:
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 2
+      },
+      "id": 7,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{pod_name=~\"istio-telemetry-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "istio-telemetry",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{pod_name=~\"ingressgateway-.*\",container_name=\"istio-proxy\"}[1m]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "ingressgateway",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace!=\"istio-control\",container_name=\"istio-proxy\"}[1m]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "istio-proxy",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{pod_name=~\"istio-policy-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "istio-policy",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "vCPU",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 13,
+      "panels": [],
+      "title": "Memory and Data Rates",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 11
+      },
+      "id": 902,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "(sum(container_memory_usage_bytes{pod_name=~\"istio-telemetry-.*\"}) / (sum(irate(istio_requests_total[1m])) / 1000)) / (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "istio-telemetry / 1k rps",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(container_memory_usage_bytes{pod_name=~\"ingressgateway-.*\"}) / count(container_memory_usage_bytes{pod_name=~\"ingressgateway-.*\",container_name!=\"POD\"})",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "per ingressgateway",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(container_memory_usage_bytes{namespace!=\"istio-control\",container_name=\"istio-proxy\"}) / count(container_memory_usage_bytes{namespace!=\"istio-control\",container_name=\"istio-proxy\"})",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "per istio proxy",
+          "refId": "C"
+        },
+        {
+          "expr": "(sum(container_memory_usage_bytes{pod_name=~\"istio-policy-.*\"}) / (sum(irate(istio_requests_total[1m])) / 1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "istio-policy / 1k rps",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Memory Usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "id": 11,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(irate(istio_response_bytes_sum{destination_workload=\"istio-telemetry\"}[1m])) + sum(irate(istio_request_bytes_sum{destination_workload=\"istio-telemetry\"}[1m]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "istio-telemetry",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(irate(istio_response_bytes_sum{source_workload=\"ingressgateway\", reporter=\"source\"}[1m]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "ingressgateway",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(irate(istio_response_bytes_sum{source_workload_namespace!=\"istio-control\", reporter=\"source\"}[1m])) + sum(irate(istio_response_bytes_sum{destination_workload_namespace!=\"istio-control\", reporter=\"destination\"}[1m])) + sum(irate(istio_request_bytes_sum{source_workload_namespace!=\"istio-control\", reporter=\"source\"}[1m])) + sum(irate(istio_request_bytes_sum{destination_workload_namespace!=\"istio-control\", reporter=\"destination\"}[1m]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "istio-proxy",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(irate(istio_response_bytes_sum{destination_workload=\"istio-policy\"}[1m])) + sum(irate(istio_request_bytes_sum{destination_workload=\"istio-policy\"}[1m]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "istio_policy",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Bytes transferred / sec",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "Bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 17,
+      "panels": [],
+      "title": "Istio Component Versions",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "id": 15,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(istio_build) by (component, tag)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{ component }}: {{ tag }}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Istio Components by Version",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 31
+      },
+      "id": 71,
+      "panels": [],
+      "title": "Proxy Resource Usage",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
       "datasource": "Prometheus",
       "fill": 1,
       "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 0
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 32
       },
-      "id": 9,
+      "id": 72,
       "legend": {
         "avg": false,
         "current": false,
@@ -5064,36 +5517,105 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{pod_name=~\"istio-telemetry-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))",
+          "expr": "sum(container_memory_usage_bytes{container_name=\"istio-proxy\"})",
           "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "istio-telemetry",
-          "refId": "A"
-        },
-        {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{pod_name=~\"istio-ingressgateway-.*\",container_name=\"istio-proxy\"}[1m]))",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "istio-ingressgateway",
-          "refId": "B"
-        },
-        {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace!=\"istio-system\",container_name=\"istio-proxy\"}[1m]))",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "istio-proxy",
-          "refId": "C"
-        },
-        {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{pod_name=~\"istio-policy-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "istio-policy",
-          "refId": "D"
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "{{ container_name }} (k8s)",
+          "refId": "B",
+          "step": 2
         }
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Memory",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 6,
+        "y": 32
+      },
+      "id": 73,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=\"istio-proxy\"}[1m]))",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "Total (k8s)",
+          "refId": "A",
+          "step": 2
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "vCPU",
       "tooltip": {
@@ -5140,12 +5662,12 @@ data:
       "datasource": "Prometheus",
       "fill": 1,
       "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 9
+        "h": 7,
+        "w": 6,
+        "x": 12,
+        "y": 32
       },
-      "id": 7,
+      "id": 702,
       "legend": {
         "avg": false,
         "current": false,
@@ -5169,38 +5691,19 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(container_memory_usage_bytes{pod_name=~\"istio-telemetry-.*\"}) / (sum(irate(istio_requests_total[1m])) / 1000)) / (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
+          "expr": "sum(container_fs_usage_bytes{container_name=\"istio-proxy\"})",
           "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "istio-telemetry / 1k rps",
-          "refId": "A"
-        },
-        {
-          "expr": "sum(container_memory_usage_bytes{pod_name=~\"istio-ingressgateway-.*\"}) / count(container_memory_usage_bytes{pod_name=~\"istio-ingressgateway-.*\",container_name!=\"POD\"})",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "per istio-ingressgateway",
-          "refId": "C"
-        },
-        {
-          "expr": "sum(container_memory_usage_bytes{namespace!=\"istio-system\",container_name=\"istio-proxy\"}) / count(container_memory_usage_bytes{namespace!=\"istio-system\",container_name=\"istio-proxy\"})",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "per istio-proxy",
-          "refId": "B"
-        },
-        {
-          "expr": "(sum(container_memory_usage_bytes{pod_name=~\"istio-policy-.*\"}) / (sum(irate(istio_requests_total[1m])) / 1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "istio-policy / 1k rps",
-          "refId": "D"
+          "intervalFactor": 2,
+          "legendFormat": "{{ container_name }}",
+          "refId": "B",
+          "step": 2
         }
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
-      "title": "Memory",
+      "title": "Disk",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -5216,26 +5719,40 @@ data:
       },
       "yaxes": [
         {
-          "format": "decbytes",
-          "label": null,
+          "format": "bytes",
+          "label": "",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
+          "decimals": null,
+          "format": "none",
+          "label": "",
+          "logBase": 1024,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 39
+      },
+      "id": 69,
+      "panels": [],
+      "title": "Pilot Resource Usage",
+      "type": "row"
     },
     {
       "aliasColors": {},
@@ -5245,10 +5762,10 @@ data:
       "datasource": "Prometheus",
       "fill": 1,
       "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 9
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 40
       },
       "id": 5,
       "legend": {
@@ -5274,38 +5791,87 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(istio_response_bytes_sum{destination_workload=\"istio-telemetry\"}[1m])) + sum(irate(istio_request_bytes_sum{destination_workload=\"istio-telemetry\"}[1m]))",
+          "expr": "process_virtual_memory_bytes{job=\"pilot\"}",
           "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "istio-telemetry",
+          "instant": false,
+          "intervalFactor": 2,
+          "legendFormat": "Virtual Memory",
+          "refId": "I",
+          "step": 2
+        },
+        {
+          "expr": "process_resident_memory_bytes{job=\"pilot\"}",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Resident Memory",
+          "refId": "H",
+          "step": 2
+        },
+        {
+          "expr": "go_memstats_heap_sys_bytes{job=\"pilot\"}",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 2,
+          "legendFormat": "heap sys",
           "refId": "A"
         },
         {
-          "expr": "sum(irate(istio_response_bytes_sum{source_workload=\"istio-ingressgateway\", reporter=\"source\"}[1m]))",
+          "expr": "go_memstats_heap_alloc_bytes{job=\"pilot\"}",
           "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "istio-ingressgateway",
-          "refId": "C"
-        },
-        {
-          "expr": "sum(irate(istio_response_bytes_sum{source_workload_namespace!=\"istio-system\", reporter=\"source\"}[1m])) + sum(irate(istio_response_bytes_sum{destination_workload_namespace!=\"istio-system\", reporter=\"destination\"}[1m])) + sum(irate(istio_request_bytes_sum{source_workload_namespace!=\"istio-system\", reporter=\"source\"}[1m])) + sum(irate(istio_request_bytes_sum{destination_workload_namespace!=\"istio-system\", reporter=\"destination\"}[1m]))",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "istio-proxy",
+          "hide": true,
+          "intervalFactor": 2,
+          "legendFormat": "heap alloc",
           "refId": "D"
         },
         {
-          "expr": "sum(irate(istio_response_bytes_sum{destination_workload=\"istio-policy\"}[1m])) + sum(irate(istio_request_bytes_sum{destination_workload=\"istio-policy\"}[1m]))",
+          "expr": "go_memstats_alloc_bytes{job=\"pilot\"}",
           "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "istio-policy",
-          "refId": "E"
+          "intervalFactor": 2,
+          "legendFormat": "Alloc",
+          "refId": "F",
+          "step": 2
+        },
+        {
+          "expr": "go_memstats_heap_inuse_bytes{job=\"pilot\"}",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "Heap in-use",
+          "refId": "E",
+          "step": 2
+        },
+        {
+          "expr": "go_memstats_stack_inuse_bytes{job=\"pilot\"}",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Stack in-use",
+          "refId": "G",
+          "step": 2
+        },
+        {
+          "expr": "sum(container_memory_usage_bytes{container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"})",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "Total (k8s)",
+          "refId": "C",
+          "step": 2
+        },
+        {
+          "expr": "container_memory_usage_bytes{container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"}",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "{{ container_name }} (k8s)",
+          "refId": "B",
+          "step": 2
         }
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
-      "title": "Bytes transferred / sec",
+      "title": "Memory",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -5334,7 +5900,7 @@ data:
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
@@ -5350,19 +5916,17 @@ data:
       "datasource": "Prometheus",
       "fill": 1,
       "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 18
+        "h": 7,
+        "w": 6,
+        "x": 6,
+        "y": 40
       },
-      "id": 8,
+      "id": 602,
       "legend": {
-        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
         "min": false,
-        "rightSide": false,
         "show": true,
         "total": false,
         "values": false
@@ -5381,23 +5945,43 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(istio_build) by (component, tag)",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"}[1m]))",
           "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{ component }}: {{ tag }}",
-          "refId": "A"
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "Total (k8s)",
+          "refId": "A",
+          "step": 2
+        },
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"}[1m])) by (container_name)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "{{ container_name }} (k8s)",
+          "refId": "B",
+          "step": 2
+        },
+        {
+          "expr": "irate(process_cpu_seconds_total{job=\"pilot\"}[1m])",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "pilot (self-reported)",
+          "refId": "C",
+          "step": 2
         }
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
-      "title": "Istio Components by Version",
+      "title": "vCPU",
       "tooltip": {
         "shared": true,
         "sort": 0,
         "value_type": "individual"
       },
-      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -5421,6 +6005,103 @@ data:
           "logBase": 1,
           "max": null,
           "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 12,
+        "y": 40
+      },
+      "id": 74,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "process_open_fds{job=\"pilot\"}",
+          "format": "time_series",
+          "hide": true,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "Open FDs (pilot)",
+          "refId": "A"
+        },
+        {
+          "expr": "container_fs_usage_bytes{container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"}",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "{{ container_name }}",
+          "refId": "B",
+          "step": 2
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Disk",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "decimals": null,
+          "format": "none",
+          "label": "",
+          "logBase": 1024,
+          "max": null,
+          "min": null,
           "show": false
         }
       ],
@@ -5430,22 +6111,549 @@ data:
       }
     },
     {
-      "content": "The charts on this dashboard are intended to show Istio main components cost in terms resources utilization under steady load.\n\n- **vCPU/1k rps:** shows vCPU utilization by the main Istio components normalized by 1000 requests/second. When idle or low traffic, this chart will be blank. The curve for istio-proxy refers to the services sidecars only. \n- **vCPU:** vCPU utilization by Istio components, not normalized.\n- **Memory:** memory footprint for the components. Telemetry and policy are normalized by 1k rps, and no data is shown  when there is no traffic. For ingress and istio-proxy, the data is per instance. \n- **Bytes transferred/ sec:** shows the number of bytes flowing through each Istio component.",
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "fill": 1,
       "gridPos": {
-        "h": 4,
+        "h": 7,
+        "w": 6,
+        "x": 18,
+        "y": 40
+      },
+      "id": 402,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "go_goroutines{job=\"pilot\"}",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Number of Goroutines",
+          "refId": "A",
+          "step": 2
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Goroutines",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 47
       },
-      "id": 11,
+      "id": 93,
+      "panels": [],
+      "title": "Mixer Resource Usage",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 48
+      },
+      "id": 94,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
       "links": [],
-      "mode": "markdown",
-      "title": "Istio Performance Dashboard Readme",
-      "type": "text"
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "process_virtual_memory_bytes{job=\"pilot\"}",
+          "format": "time_series",
+          "instant": false,
+          "intervalFactor": 2,
+          "legendFormat": "Virtual Memory",
+          "refId": "I",
+          "step": 2
+        },
+        {
+          "expr": "process_resident_memory_bytes{job=\"pilot\"}",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Resident Memory",
+          "refId": "H",
+          "step": 2
+        },
+        {
+          "expr": "go_memstats_heap_sys_bytes{job=\"pilot\"}",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 2,
+          "legendFormat": "heap sys",
+          "refId": "A"
+        },
+        {
+          "expr": "go_memstats_heap_alloc_bytes{job=\"pilot\"}",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 2,
+          "legendFormat": "heap alloc",
+          "refId": "D"
+        },
+        {
+          "expr": "go_memstats_alloc_bytes{job=\"pilot\"}",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Alloc",
+          "refId": "F",
+          "step": 2
+        },
+        {
+          "expr": "go_memstats_heap_inuse_bytes{job=\"pilot\"}",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "Heap in-use",
+          "refId": "E",
+          "step": 2
+        },
+        {
+          "expr": "go_memstats_stack_inuse_bytes{job=\"mixer\"}",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Stack in-use",
+          "refId": "G",
+          "step": 2
+        },
+        {
+          "expr": "sum(container_memory_usage_bytes{container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*\"})",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "Total (k8s)",
+          "refId": "C",
+          "step": 2
+        },
+        {
+          "expr": "container_memory_usage_bytes{container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*\"}",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "{{ container_name }} (k8s)",
+          "refId": "B",
+          "step": 2
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Memory",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 6,
+        "y": 48
+      },
+      "id": 95,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*\"}[1m]))",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "Total (k8s)",
+          "refId": "A",
+          "step": 2
+        },
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*\"}[1m])) by (container_name)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "{{ container_name }} (k8s)",
+          "refId": "B",
+          "step": 2
+        },
+        {
+          "expr": "irate(process_cpu_seconds_total{job=\"mixer\"}[1m])",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "pilot (self-reported)",
+          "refId": "C",
+          "step": 2
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "vCPU",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 12,
+        "y": 48
+      },
+      "id": 96,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "process_open_fds{job=\"mixer\"}",
+          "format": "time_series",
+          "hide": true,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "Open FDs (pilot)",
+          "refId": "A"
+        },
+        {
+          "expr": "container_fs_usage_bytes{container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*\"}",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "{{ container_name }}",
+          "refId": "B",
+          "step": 2
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Disk",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "decimals": null,
+          "format": "none",
+          "label": "",
+          "logBase": 1024,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 18,
+        "y": 48
+      },
+      "id": 97,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "go_goroutines{job=\"istio-telemetry\"}",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "Number of Goroutines",
+          "refId": "A",
+          "step": 2
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Goroutines",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
-  "refresh": "5s",
-  "schemaVersion": 16,
+  "refresh": "10s",
+  "schemaVersion": 18,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -5482,7 +6690,8 @@ data:
   },
   "timezone": "",
   "title": "Istio Performance Dashboard",
-  "version": 4
+  "uid": "vu8e0VWZk",
+  "version": 22
 }
 '
 ---
@@ -12245,42 +13454,6 @@ metadata:
     istio: grafana
 data:
   pilot-dashboard.json: '{
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "5.2.3"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": "5.0.0"
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "5.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "text",
-      "name": "Text",
-      "version": "5.0.0"
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -12297,24 +13470,21 @@ data:
   "editable": false,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": null,
+  "id": 6,
   "links": [],
   "panels": [
     {
-      "content": "<center><h2>Deployed Versions</h2></center>",
+      "collapsed": false,
       "gridPos": {
-        "h": 3,
+        "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
       },
-      "height": "40",
-      "id": 58,
-      "links": [],
-      "mode": "html",
-      "title": "",
-      "transparent": true,
-      "type": "text"
+      "id": 60,
+      "panels": [],
+      "title": "Deployed Versions",
+      "type": "row"
     },
     {
       "aliasColors": {},
@@ -12327,7 +13497,7 @@ data:
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 1
       },
       "id": 56,
       "legend": {
@@ -12362,6 +13532,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Pilot Versions",
       "tooltip": {
@@ -12401,20 +13572,17 @@ data:
       }
     },
     {
-      "content": "<center><h2>Resource Usage</h2></center>",
+      "collapsed": false,
       "gridPos": {
-        "h": 3,
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 6
       },
-      "height": "40",
-      "id": 29,
-      "links": [],
-      "mode": "html",
-      "title": "",
-      "transparent": true,
-      "type": "text"
+      "id": 62,
+      "panels": [],
+      "title": "Resource Usage",
+      "type": "row"
     },
     {
       "aliasColors": {},
@@ -12427,7 +13595,7 @@ data:
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 11
+        "y": 7
       },
       "id": 5,
       "legend": {
@@ -12531,6 +13699,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Memory",
       "tooltip": {
@@ -12580,7 +13749,7 @@ data:
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 11
+        "y": 7
       },
       "id": 6,
       "legend": {
@@ -12635,6 +13804,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "CPU",
       "tooltip": {
@@ -12684,7 +13854,7 @@ data:
         "h": 7,
         "w": 6,
         "x": 12,
-        "y": 11
+        "y": 7
       },
       "id": 7,
       "legend": {
@@ -12730,6 +13900,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Disk",
       "tooltip": {
@@ -12780,7 +13951,7 @@ data:
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 11
+        "y": 7
       },
       "id": 4,
       "legend": {
@@ -12816,6 +13987,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Goroutines",
       "tooltip": {
@@ -12855,19 +14027,238 @@ data:
       }
     },
     {
-      "content": "<center><h2>xDS</h2></center>",
+      "collapsed": false,
       "gridPos": {
-        "h": 3,
+        "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 14
       },
-      "id": 28,
+      "id": 58,
+      "panels": [],
+      "title": "Pilot Push Information",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "description": "Shows pilot pushes",
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 15
+      },
+      "id": 622,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
       "links": [],
-      "mode": "html",
-      "title": "",
-      "transparent": true,
-      "type": "text"
+      "nullPointMode": "null as zero",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(rate(pilot_xds_pushes{type!~\".*_senderr\"}[1m])) by (type)",
+          "format": "time_series",
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{ type }}",
+          "refId": "B",
+          "step": 2
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Pilot Pushes",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": [
+          "total"
+        ]
+      },
+      "yaxes": [
+        {
+          "format": "ops",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "description": "Captures a variety of pilot errors",
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 15
+      },
+      "id": 67,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "label_replace(sum(pilot_xds_cds_reject{job=\"pilot\"}) by (node, err), \"node\", \"$1\", \"node\", \".*~.*~(.*)~.*\")",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "Rejected CDS Configs - {{ node }}: {{ err }}",
+          "refId": "C"
+        },
+        {
+          "expr": "pilot_xds_eds_reject{job=\"pilot\"}",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "Rejected EDS Configs",
+          "refId": "D"
+        },
+        {
+          "expr": "rate(pilot_xds_write_timeout{job=\"pilot\"}[1m])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "Write Timeouts",
+          "refId": "F"
+        },
+        {
+          "expr": "rate(pilot_xds_push_timeout{job=\"pilot\"}[1m])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "Push Timeouts",
+          "refId": "G"
+        },
+        {
+          "expr": "sum(rate(pilot_xds_push_errors{job=\"pilot\"}[1m]))",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "Push Errors ({{ type }})",
+          "refId": "I"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Pilot Errors",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 64,
+      "panels": [],
+      "title": "xDS",
+      "type": "row"
     },
     {
       "aliasColors": {},
@@ -12880,7 +14271,7 @@ data:
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 21
+        "y": 24
       },
       "id": 40,
       "legend": {
@@ -12916,6 +14307,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Updates",
       "tooltip": {
@@ -12965,7 +14357,7 @@ data:
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 21
+        "y": 24
       },
       "id": 42,
       "legend": {
@@ -13001,6 +14393,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Failures",
       "tooltip": {
@@ -13050,7 +14443,7 @@ data:
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 21
+        "y": 24
       },
       "id": 41,
       "legend": {
@@ -13086,6 +14479,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Active Connections",
       "tooltip": {
@@ -13135,7 +14529,7 @@ data:
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 27
+        "y": 30
       },
       "id": 45,
       "legend": {
@@ -13191,6 +14585,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Conflicts",
       "tooltip": {
@@ -13240,7 +14635,7 @@ data:
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 27
+        "y": 30
       },
       "id": 47,
       "legend": {
@@ -13333,6 +14728,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "ADS Monitoring",
       "tooltip": {
@@ -13382,7 +14778,7 @@ data:
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 27
+        "y": 30
       },
       "id": 49,
       "legend": {
@@ -13417,6 +14813,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Rejected CDS Configs",
       "tooltip": {
@@ -13466,7 +14863,7 @@ data:
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 35
+        "y": 38
       },
       "id": 52,
       "legend": {
@@ -13501,6 +14898,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Rejected EDS Configs",
       "tooltip": {
@@ -13550,7 +14948,7 @@ data:
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 35
+        "y": 38
       },
       "id": 54,
       "legend": {
@@ -13585,6 +14983,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Rejected LDS Configs",
       "tooltip": {
@@ -13634,7 +15033,7 @@ data:
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 35
+        "y": 38
       },
       "id": 53,
       "legend": {
@@ -13669,6 +15068,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Rejected RDS Configs",
       "tooltip": {
@@ -13720,7 +15120,7 @@ data:
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 42
+        "y": 45
       },
       "id": 51,
       "legend": {
@@ -13760,6 +15160,7 @@ data:
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "EDS Instances",
       "tooltip": {
@@ -13800,7 +15201,7 @@ data:
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 16,
+  "schemaVersion": 18,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -13837,7 +15238,8 @@ data:
   },
   "timezone": "browser",
   "title": "Istio Pilot Dashboard",
-  "version": 4
+  "uid": "3--MLVZZk",
+  "version": 1
 }
 '
 ---
@@ -13918,10 +15320,7 @@ spec:
     metadata:
       labels:
         app: grafana
-        chart: grafana
-        heritage: Foo
-        release: istio-system
-        foo: bar
+        release: istio-system-istio-telemetry
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
@@ -13930,7 +15329,7 @@ spec:
         fsGroup: 472
       containers:
         - name: grafana
-          image: "grafana/grafana:6.0.2"
+          image: "grafana/grafana:6.1.6"
           imagePullPolicy: Always
           ports:
           - containerPort: 3000
@@ -14143,7 +15542,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ingressgateway
+  name: istio-ingressgateway
   namespace: istio-system
   labels:
     app: istio-ingressgateway

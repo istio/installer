@@ -210,7 +210,7 @@ jobs:
 
   # Verify a-la-carte with no certificates ( smallest possible install, and cases without certs/mtls)
   noauth:
-    <<: *integrationRemote
+    <<: *integrationRemoteOneNamespace
 
     # Can run multiple images, first is primary, all use localhost
     steps:

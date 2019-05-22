@@ -8,7 +8,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: istio-cni-node
-    {{- template "common_labels" . }}
+    release: {{ .Release.Name }}
 spec:
   selector:
     matchLabels:
@@ -26,7 +26,8 @@ spec:
         # marks the pod as a critical add-on, ensuring it gets
         # priority scheduling and that its resources are reserved
         # if it ever gets evicted.
-        scheduler.alpha.kubernetes.io/critical-pod: ''
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+        sidecar.istio.io/inject: "false"
     spec:
       nodeSelector:
         beta.kubernetes.io/os: linux

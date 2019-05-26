@@ -4,6 +4,9 @@ kind: handler
 metadata:
   name: stackdriver
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledAdapter: stackdriver
   params:
@@ -167,6 +170,9 @@ kind: rule
 metadata:
   name: stackdriver-server
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   match: (context.protocol == "http" || context.protocol == "grpc") && (context.reporter.kind | "inbound" == "inbound")
   actions:
@@ -182,6 +188,9 @@ kind: rule
 metadata:
   name: stackdriver-client
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   match: (context.protocol == "http" || context.protocol == "grpc") && (context.reporter.kind | "inbound" == "outbound")
   actions:
@@ -197,6 +206,9 @@ kind: rule
 metadata:
   name: stackdriver-tcp-server
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   match: context.protocol == "tcp" && (context.reporter.kind | "inbound" == "inbound")
   actions:
@@ -210,6 +222,9 @@ kind: rule
 metadata:
   name: stackdriver-tcp-client
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   match: context.protocol == "tcp" && (context.reporter.kind | "inbound" == "outbound")
   actions:
@@ -223,6 +238,9 @@ kind: instance
 metadata:
   name: server-request-count
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: metric
   params:
@@ -259,6 +277,9 @@ kind: instance
 metadata:
   name: client-request-count
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: metric
   params:
@@ -294,6 +315,9 @@ kind: instance
 metadata:
   name: server-request-bytes
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: metric
   params:
@@ -330,6 +354,9 @@ kind: instance
 metadata:
   name: client-request-bytes
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: metric
   params:
@@ -365,6 +392,9 @@ kind: instance
 metadata:
   name: server-response-bytes
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: metric
   params:
@@ -401,6 +431,9 @@ kind: instance
 metadata:
   name: client-response-bytes
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: metric
   params:
@@ -436,6 +469,9 @@ kind: instance
 metadata:
   name: server-response-latencies
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: metric
   params:
@@ -472,6 +508,9 @@ kind: instance
 metadata:
   name: client-roundtrip-latencies
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: metric
   params:
@@ -507,6 +546,9 @@ kind: instance
 metadata:
   name: server-received-bytes-count
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: metric
   params:
@@ -539,6 +581,9 @@ kind: instance
 metadata:
   name: client-received-bytes-count
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: metric
   params:
@@ -570,6 +615,9 @@ kind: instance
 metadata:
   name: server-sent-bytes-count
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: metric
   params:
@@ -602,6 +650,9 @@ kind: instance
 metadata:
   name: client-sent-bytes-count
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: metric
   params:
@@ -633,6 +684,9 @@ kind: instance
 metadata:
   name: server-accesslog-stackdriver
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: logentry
   params:
@@ -689,6 +743,9 @@ kind: instance
 metadata:
   name: server-tcp-accesslog-stackdriver
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   compiledTemplate: logentry
   params:
@@ -735,6 +792,9 @@ kind: rule
 metadata:
   name: stackdriver-log
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   match: (context.protocol == "http" || context.protocol == "grpc") && (context.reporter.kind | "inbound" == "inbound")
   actions:
@@ -747,6 +807,9 @@ kind: rule
 metadata:
   name: stackdriver-log-tcp
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: istio-telemetry
+    release: {{ .Release.Name }}
 spec:
   match: (context.protocol == "tcp") && (context.reporter.kind | "inbound" == "inbound")
   actions:

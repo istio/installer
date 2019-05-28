@@ -98,7 +98,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(irate(container_cpu_usage_seconds_total{pod_name=~\"istio-telemetry-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"ingressgateway\"}[1m])) >bool 10)",
+          "expr": "(sum(irate(container_cpu_usage_seconds_total{pod_name=~\"istio-telemetry-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
@@ -106,22 +106,22 @@
           "refId": "A"
         },
         {
-          "expr": "(sum(irate(container_cpu_usage_seconds_total{pod_name=~\"ingressgateway-.*\",container_name=\"istio-proxy\"}[1m])) / (round(sum(irate(istio_requests_total{source_workload=\"ingressgateway\", reporter=\"source\"}[1m])), 0.001)/1000))",
+          "expr": "(sum(irate(container_cpu_usage_seconds_total{pod_name=~\"istio-ingressgateway-.*\",container_name=\"istio-proxy\"}[1m])) / (round(sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\", reporter=\"source\"}[1m])), 0.001)/1000))",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
-          "legendFormat": "ingressgateway",
+          "legendFormat": "istio-ingressgateway",
           "refId": "B"
         },
         {
-          "expr": "(sum(irate(container_cpu_usage_seconds_total{namespace!=\"istio-control\",container_name=\"istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"ingressgateway\"}[1m])) >bool 10)",
+          "expr": "(sum(irate(container_cpu_usage_seconds_total{namespace!=\"istio-control\",container_name=\"istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-proxy",
           "refId": "C"
         },
         {
-          "expr": "(sum(irate(container_cpu_usage_seconds_total{pod_name=~\"istio-policy-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"ingressgateway\"}[1m])) >bool 10)",
+          "expr": "(sum(irate(container_cpu_usage_seconds_total{pod_name=~\"istio-policy-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-policy",
@@ -212,10 +212,10 @@
           "refId": "A"
         },
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{pod_name=~\"ingressgateway-.*\",container_name=\"istio-proxy\"}[1m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{pod_name=~\"istio-ingressgateway-.*\",container_name=\"istio-proxy\"}[1m]))",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "ingressgateway",
+          "legendFormat": "istio-ingressgateway",
           "refId": "B"
         },
         {
@@ -323,17 +323,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(container_memory_usage_bytes{pod_name=~\"istio-telemetry-.*\"}) / (sum(irate(istio_requests_total[1m])) / 1000)) / (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
+          "expr": "(sum(container_memory_usage_bytes{pod_name=~\"istio-telemetry-.*\"}) / (sum(irate(istio_requests_total[1m])) / 1000)) / (sum(irate(istio_requests_total{source_workload=\"istio-istio-ingressgateway\"}[1m])) >bool 10)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-telemetry / 1k rps",
           "refId": "A"
         },
         {
-          "expr": "sum(container_memory_usage_bytes{pod_name=~\"ingressgateway-.*\"}) / count(container_memory_usage_bytes{pod_name=~\"ingressgateway-.*\",container_name!=\"POD\"})",
+          "expr": "sum(container_memory_usage_bytes{pod_name=~\"istio-ingressgateway-.*\"}) / count(container_memory_usage_bytes{pod_name=~\"istio-ingressgateway-.*\",container_name!=\"POD\"})",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "per ingressgateway",
+          "legendFormat": "per istio-ingressgateway",
           "refId": "B"
         },
         {
@@ -344,7 +344,7 @@
           "refId": "C"
         },
         {
-          "expr": "(sum(container_memory_usage_bytes{pod_name=~\"istio-policy-.*\"}) / (sum(irate(istio_requests_total[1m])) / 1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
+          "expr": "(sum(container_memory_usage_bytes{pod_name=~\"istio-policy-.*\"}) / (sum(irate(istio_requests_total[1m])) / 1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-istio-ingressgateway\"}[1m])) >bool 10)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-policy / 1k rps",
@@ -435,10 +435,10 @@
           "refId": "A"
         },
         {
-          "expr": "sum(irate(istio_response_bytes_sum{source_workload=\"ingressgateway\", reporter=\"source\"}[1m]))",
+          "expr": "sum(irate(istio_response_bytes_sum{source_workload=\"istio-ingressgateway\", reporter=\"source\"}[1m]))",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "ingressgateway",
+          "legendFormat": "istio-ingressgateway",
           "refId": "B"
         },
         {
@@ -1274,7 +1274,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "go_goroutines{job=\"pilot\"}",
+          "expr": "go_goroutines{job=\"istio-pilot\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Number of Goroutines",

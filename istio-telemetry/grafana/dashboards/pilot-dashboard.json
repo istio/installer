@@ -522,7 +522,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "go_goroutines{job=\"pilot\"}",
+          "expr": "go_goroutines{job=\"istio-pilot\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Number of Goroutines",

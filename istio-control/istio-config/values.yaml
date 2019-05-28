@@ -1,6 +1,6 @@
 galley:
   image: galley
-  replicaCount: 1
+  # replicaCount: 2
 
   resources:
     requests:

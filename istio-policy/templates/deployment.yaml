@@ -8,7 +8,15 @@ metadata:
     istio: mixer
     release: {{ .Release.Name }}
 spec:
+{{- if .Values.mixer.policy.replicaCount }}
   replicas: {{ .Values.mixer.policy.replicaCount }}
+{{- else }}
+{{- if .Values.global.defaultPodDisruptionBudget.enabled }}
+  replicas: 2
+{{- else }}
+  replicas: 1
+{{- end }}
+{{- end }}
   strategy:
     rollingUpdate:
       maxSurge: 1

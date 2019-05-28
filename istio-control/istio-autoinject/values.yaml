@@ -2,7 +2,7 @@ sidecarInjectorWebhook:
   # sidecar-injector webhook configuration.
   # If down, new pods will fail to start or restart for a short time, but they will
   # retry.
-  replicaCount: 1
+  # replicaCount: 2
 
   image: sidecar_injector
 

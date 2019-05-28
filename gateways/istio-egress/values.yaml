@@ -25,9 +25,9 @@ gateways:
 
 
     # Scalability tunning
-    # replicaCount: 1
+    # replicaCount: 2
     autoscaleEnabled: true
-    autoscaleMin: 1
+    # autoscaleMin: 2
     autoscaleMax: 5
     resources:
       requests:

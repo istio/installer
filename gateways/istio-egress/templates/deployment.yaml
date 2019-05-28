@@ -13,7 +13,11 @@ spec:
 {{- if $gateway.replicaCount }}
   replicas: {{ $gateway.replicaCount }}
 {{- else }}
+{{- if .Values.global.defaultPodDisruptionBudget.enabled }}
+  replicas: 2
+{{- else }}
   replicas: 1
+{{- end }}
 {{- end }}
 {{- end }}
   selector:

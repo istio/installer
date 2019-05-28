@@ -8,7 +8,15 @@ metadata:
     release: {{ .Release.Name }}
     istio: sidecar-injector
 spec:
+{{- if .Values.sidecarInjectorWebhook.replicaCount }}
   replicas: {{ .Values.sidecarInjectorWebhook.replicaCount }}
+{{- else }}
+{{- if .Values.global.defaultPodDisruptionBudget.enabled }}
+  replicas: 2
+{{- else }}
+  replicas: 1
+{{- end }}
+{{- end }}
   selector:
     matchLabels:
       istio: sidecar-injector

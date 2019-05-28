@@ -18,7 +18,11 @@ spec:
 {{- if .Values.pilot.replicaCount }}
   replicas: {{ .Values.pilot.replicaCount }}
 {{- else }}
+{{- if .Values.global.defaultPodDisruptionBudget.enabled }}
+  replicas: 2
+{{- else }}
   replicas: 1
+{{- end }}
 {{- end }}
 {{- end }}
   strategy:

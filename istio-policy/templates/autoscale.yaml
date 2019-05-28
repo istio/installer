@@ -9,7 +9,15 @@ metadata:
     release: {{ .Release.Name }}
 spec:
     maxReplicas: {{ .Values.mixer.policy.autoscaleMax }}
+{{- if .Values.mixer.policy.autoscaleMin }}
     minReplicas: {{ .Values.mixer.policy.autoscaleMin }}
+{{- else }}
+{{- if .Values.global.defaultPodDisruptionBudget.enabled }}
+    minReplicas: 2
+{{- else }}
+    minReplicas: 1
+{{- end }}
+{{- end }}
     scaleTargetRef:
       apiVersion: apps/v1
       kind: Deployment

@@ -7,7 +7,15 @@ metadata:
     app: certmanager
     release: {{ .Release.Name }}
 spec:
+{{- if .Values.certmanager.replicaCount }}
   replicas: {{ .Values.certmanager.replicaCount }}
+{{- else }}
+{{- if .Values.global.defaultPodDisruptionBudget.enabled }}
+  replicas: 2
+{{- else }}
+  replicas: 1
+{{- end }}
+{{- end }}
   selector:
     matchLabels:
       app: certmanager

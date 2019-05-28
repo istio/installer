@@ -8,7 +8,15 @@ metadata:
     istio: galley
     release: {{ .Release.Name }}
 spec:
+{{- if .Values.galley.replicaCount }}
   replicas: {{ .Values.galley.replicaCount }}
+{{- else }}
+{{- if .Values.global.defaultPodDisruptionBudget.enabled }}
+  replicas: 2
+{{- else }}
+  replicas: 1
+{{- end }}
+{{- end }}
   selector:
     matchLabels:
       app: galley

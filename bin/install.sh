@@ -74,6 +74,7 @@ function install_control() {
 
 # Install discovery and ingress into namespace istio-ingress
 
+
 function install_ingress() {
     step "pilot.."
     bin/iop istio-ingress istio-discovery $IBASE/istio-control/istio-discovery  --set global.istioNamespace=${ISTIO_CONTROL_NS} --set global.configNamespace=${ISTIO_CONTROL_NS} $RESOURCES_FLAGS
@@ -183,9 +184,13 @@ case "$COMMAND" in
     install_cni) install_cni ;;
     install_kiali) install_kiali ;;
     switch_istio_control) switch_istio_control ;;
-    install_all) install_crds &&  install_system && install_control && install_ingress && install_telemetry ;;
+    install_all)
+        install_crds
+        install_system
+        install_control
+        install_ingress
+        install_telemetry ;;
 esac
 
-# Temporarily disabled - fails in circle:  && switch_istio_control
 
 echo "Finished"

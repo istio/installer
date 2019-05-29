@@ -48,7 +48,7 @@ jobs:
 
     - task: install-master
       params:
-        TAG: master-daily
+        TAG: master-latest-daily
         HUB: gcr.io/istio-release
         KUBECONFIG: ((KUBECONFIG))
         # Remove overly generous resource request to avoid unnecessarily scaling up k8s nodes

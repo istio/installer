@@ -25,14 +25,14 @@ data:
     accessLogFile: "{{ .Values.global.proxy.accessLogFile }}"
     #
 
-    {{- if .Values.mixer.telemetry.reportBatchMaxEntries }}
+    {{- if .Values.pilot.telemetry.reportBatchMaxEntries }}
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
-    reportBatchMaxEntries: {{ .Values.mixer.telemetry.reportBatchMaxEntries }}
+    reportBatchMaxEntries: {{ .Values.pilot.telemetry.reportBatchMaxEntries }}
     {{- end }}
 
-    {{- if .Values.mixer.telemetry.reportBatchMaxTime }}
+    {{- if .Values.pilot.telemetry.reportBatchMaxTime }}
     # reportBatchMaxTime is the max waiting time before the telemetry data of a request is sent to the mixer server
-    reportBatchMaxTime: {{ .Values.mixer.telemetry.reportBatchMaxTime }}
+    reportBatchMaxTime: {{ .Values.pilot.telemetry.reportBatchMaxTime }}
     {{- end }}
 
     {{- if .Values.pilot.telemetry.enabled }}

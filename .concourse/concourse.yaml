@@ -67,7 +67,7 @@ jobs:
             echo "$KUBECONFIG" > /tmp/kubeconfig.yaml
             export KUBECONFIG=/tmp/kubeconfig.yaml
 
-            kubectl delete namepace istio-system --ignore-not-found
+            kubectl delete namespace istio-system --ignore-not-found
             kubectl apply -k istio-installer/crds
             kubectl apply -k istio-installer/test/demo
     

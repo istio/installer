@@ -20,14 +20,15 @@ resources:
       branch: master
 
 jobs:
-  - name: install
+  - name: install-and-test
     serial_groups: [ cluster ]
     plan:
     - get: 24h
       trigger: true
     - get: istio-installer
       trigger: true
-  
+    - get: istio-master
+      trigger: false
     - task: log-used-repo
       config:
         platform: linux
@@ -69,19 +70,7 @@ jobs:
             kubectl delete namespace istio-system --ignore-not-found
             kubectl apply -k istio-installer/crds
             kubectl apply -k istio-installer/test/demo
-    
-  - name: test-after-install
-    serial_groups: [ cluster ]
-    plan:
-    - get: istio-installer
-      passed: [ install ]
-      trigger: true
-    - get: istio-master
-      trigger: false
-    - get: 24h
-      trigger: true
-      passed: [install]
-    - task: install-bookinfo
+    - task: install-and-test-bookinfo
       params:
         KUBECONFIG: ((KUBECONFIG))
       config:

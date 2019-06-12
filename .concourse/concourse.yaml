@@ -123,9 +123,9 @@ jobs:
         run:
           path: /bin/sh
           args:
-          - -ec
+          - -ecu
           - |
-            git config --global credential.helper 'store
+            git config --global credential.helper store
             echo "https://ConcourseWdf:${CONCOURSE_WDF_PASSWORD}@github.com" > ~/.git-credentials
             set -x
             cd istio-installer
@@ -138,13 +138,14 @@ jobs:
               git commit -a -m "Update kustomize templates."
               git remote add c0d1ngm0nk3y "https://github.com/c0d1ngm0nk3y/istio-installer.git"
               git push -u c0d1ngm0nk3y $BRANCH_NAME:$BRANCH_NAME
-              curl -X POST -H 'Content-type: application/json' \
+              set +x
+              HTTP_CODE=$(curl -X POST -H 'Content-type: application/json' \
                 -d "{  \"title\": \"Update kustomize templates\", \"body\": \"This PR is created automatically!\", \"head\": \"c0d1ngm0nk3y:$BRANCH_NAME\", \"base\": \"master\" } " \
                 -H "Authorization: token $GITHUB_ACCESS_TOKEN" \
                 -H 'Content-Type: application/json' \
                 -H 'Accept: application/vnd.github.v3+json' \
                 -w %{http_code} -o /dev/null -s \
-                https://api.github.com/repos/istio/installer/pulls
+                https://api.github.com/repos/istio/installer/pulls)
               if [ "$HTTP_CODE" -ne 201 ]; then
                 echo "No pull request created"
                 exit 1

@@ -1,24 +1,4 @@
 ---
-# Source: istio-discovery/templates/poddisruptionbudget.yaml
-
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: istio-pilot
-  namespace: istio-control
-  labels:
-    app: pilot
-    release: istio-control-istio-discovery
-    istio: pilot
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: pilot
-      release: istio-control-istio-discovery
-      istio: pilot
-
----
 # Source: istio-discovery/templates/configmap-envoy.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -207,6 +187,7 @@ data:
     
 
   values.yaml: |-
+    appNamespaces: []
     autoscaleEnabled: true
     autoscaleMax: 5
     autoscaleMin: 1
@@ -249,6 +230,10 @@ data:
     # Set accessLogFile to empty string to disable access log.
     accessLogFile: ""
     #
+    # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
+    reportBatchMaxEntries: 100
+    # reportBatchMaxTime is the max waiting time before the telemetry data of a request is sent to the mixer server
+    reportBatchMaxTime: 1s
     mixerReportServer: istio-telemetry.istio-telemetry.svc.cluster.local:15004
     mixerCheckServer: istio-policy.istio-policy.svc.cluster.local:15004
 
@@ -264,6 +249,10 @@ data:
     sdsUdsPath: 
     config_sources:
     - address: localhost:15019
+
+    localityLbSetting:
+      {}
+      
     #
     defaultConfig:
       #
@@ -404,7 +393,7 @@ metadata:
     release: istio-control-istio-discovery
     istio: pilot
   annotations:
-    checksum/config-volume:  f5608eb625ac0b08c5335fb4a92c5eaf337e72916f468045707cfc7523c27ce7
+    checksum/config-volume:  66042fc2a4d4f113f7bed5a83827690803d1daa9e6e57994f62b2a754fa33766
 spec:
   strategy:
     rollingUpdate:
@@ -417,7 +406,6 @@ spec:
     metadata:
       labels:
         app: pilot
-        release: istio-control-istio-discovery
         istio: pilot
       annotations:
         sidecar.istio.io/inject: "false"
@@ -638,4 +626,24 @@ spec:
       name: cpu
       targetAverageUtilization: 80
 ---
+
+---
+# Source: istio-discovery/templates/poddisruptionbudget.yaml
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: istio-pilot
+  namespace: istio-control
+  labels:
+    app: pilot
+    release: istio-control-istio-discovery
+    istio: pilot
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: pilot
+      release: istio-control-istio-discovery
+      istio: pilot
 

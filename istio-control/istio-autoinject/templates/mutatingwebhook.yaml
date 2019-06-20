@@ -36,7 +36,7 @@ webhooks:
         values:
         - disabled
       - key: istio-env
-        operator: DoesNotExist
+        operator: Exists
 {{- else }}
       matchLabels:
         istio-env: {{ .Release.Namespace }}

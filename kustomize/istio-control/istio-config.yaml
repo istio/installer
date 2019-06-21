@@ -1,24 +1,4 @@
 ---
-# Source: istio-config/templates/poddisruptionbudget.yaml
-
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: istio-galley
-  namespace: istio-control
-  labels:
-    app: galley
-    release: istio-control-istio-config
-    istio: galley
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: galley
-      release: istio-control-istio-config
-      istio: galley
-
----
 # Source: istio-config/templates/configmap-envoy.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -246,6 +226,11 @@ data:
             - quotas
             - reportnothings
             - tracespans
+            - adapters
+            - handlers
+            - instances
+            - templates
+            - zipkins
         failurePolicy: Fail
         sideEffects: None
 
@@ -523,6 +508,26 @@ spec:
                 operator: In
                 values:
                 - s390x      
+
+---
+# Source: istio-config/templates/poddisruptionbudget.yaml
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: istio-galley
+  namespace: istio-control
+  labels:
+    app: galley
+    release: istio-control-istio-config
+    istio: galley
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: galley
+      release: istio-control-istio-config
+      istio: galley
 
 ---
 # Source: istio-config/templates/validatingwebhookconfiguration.yaml.tpl

@@ -5,14 +5,14 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio-sidecar-injector
-  namespace: istio-system
+  namespace: istio-control
   labels:
-    release: istio-system-istio-autoinject
+    release: istio-control-istio-autoinject
     app: sidecar-injector
     istio: sidecar-injector
 data:
   values: |-
-    {"gateways":{"istio-egressgateway":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}}},"istio-ingressgateway":{"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}}}},"global":{"arch":{"amd64":2,"ppc64le":2,"s390x":2},"configNamespace":"istio-system","configValidation":true,"controlPlaneSecurityEnabled":true,"defaultNodeSelector":{},"defaultPodDisruptionBudget":{"enabled":false},"defaultResources":{"requests":{"cpu":"10m"}},"disablePolicyChecks":false,"enableHelmTest":false,"enableTracing":true,"hub":"istionightly","imagePullPolicy":"Always","imagePullSecrets":null,"istioNamespace":"istio-system","k8sIngress":{"enableHttps":false,"enabled":false,"gatewayName":"ingressgateway"},"localityLbSetting":{},"logging":{"level":"default:info"},"meshExpansion":{"enabled":false,"useILB":false},"meshNetworks":{},"mtls":{"enabled":false},"multiCluster":{"enabled":false},"oneNamespace":false,"outboundTrafficPolicy":{"mode":"ALLOW_ANY"},"policyCheckFailOpen":false,"policyNamespace":"istio-policy","priorityClassName":"","proxy":{"accessLogEncoding":"TEXT","accessLogFile":"/dev/stdout","accessLogFormat":"","autoInject":"enabled","clusterDomain":"cluster.local","componentLogLevel":"misc:error","concurrency":2,"dnsRefreshRate":"300s","enableCoreDump":false,"envoyMetricsService":{"enabled":false,"host":null,"port":null},"envoyStatsd":{"enabled":false,"host":null,"port":null},"excludeIPRanges":"","excludeInboundPorts":"","excludeOutboundPorts":"","image":"proxyv2","includeIPRanges":"*","includeInboundPorts":"*","kubevirtInterfaces":"","logLevel":"warning","privileged":false,"readinessFailureThreshold":30,"readinessInitialDelaySeconds":1,"readinessPeriodSeconds":2,"resources":{"limits":{"cpu":"2000m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}},"statusPort":15020,"tracer":"zipkin"},"proxy_init":{"image":"proxy_init"},"sds":{"enabled":false,"udsPath":"","useNormalJwt":false,"useTrustworthyJwt":false},"sidecarInjectorWebhook":{"enabled":true,"rewriteAppHTTPProbe":false},"tag":"nightly-master","telemetryNamespace":"istio-system","tracer":{"datadog":{"address":"$(HOST_IP):8126"},"lightstep":{"accessToken":"","address":"","cacertPath":"","secure":true},"zipkin":{"address":""}},"trustDomain":"","useMCP":true},"grafana":{"enabled":true},"istio_cni":{"enabled":false},"kiali":{"createDemoSecret":true,"enabled":true},"mixer":{"adapters":{"stdio":{"enabled":true}},"policy":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"10m","memory":"100Mi"}}},"telemetry":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"50m","memory":"100Mi"}}}},"pilot":{"resources":{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"10m","memory":"100Mi"}},"traceSampling":100},"sidecarInjectorWebhook":{"alwaysInjectSelector":[],"enableNamespacesByDefault":false,"image":"sidecar_injector","neverInjectSelector":[],"nodeSelector":{},"podAntiAffinityLabelSelector":[],"podAntiAffinityTermLabelSelector":[],"replicaCount":1,"rewriteAppHTTPProbe":false,"selfSigned":false,"tolerations":[]},"tracing":{"enabled":true}}
+    {"gateways":{"istio-egressgateway":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}}},"istio-ingressgateway":{"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}}}},"global":{"arch":{"amd64":2,"ppc64le":2,"s390x":2},"configNamespace":"istio-control","configValidation":true,"controlPlaneSecurityEnabled":true,"defaultNodeSelector":{},"defaultPodDisruptionBudget":{"enabled":false},"defaultResources":{"requests":{"cpu":"10m"}},"disablePolicyChecks":false,"enableHelmTest":false,"enableTracing":true,"hub":"istionightly","imagePullPolicy":"Always","imagePullSecrets":null,"istioNamespace":"istio-control","k8sIngress":{"enableHttps":false,"enabled":false,"gatewayName":"ingressgateway"},"localityLbSetting":{},"logging":{"level":"default:info"},"meshExpansion":{"enabled":false,"useILB":false},"meshNetworks":{},"mtls":{"enabled":false},"multiCluster":{"enabled":false},"oneNamespace":false,"outboundTrafficPolicy":{"mode":"ALLOW_ANY"},"policyCheckFailOpen":false,"policyNamespace":"istio-policy","priorityClassName":"","prometheusNamespace":"istio-telemetry","proxy":{"accessLogEncoding":"TEXT","accessLogFile":"/dev/stdout","accessLogFormat":"","autoInject":"enabled","clusterDomain":"cluster.local","componentLogLevel":"misc:error","concurrency":2,"dnsRefreshRate":"300s","enableCoreDump":false,"envoyMetricsService":{"enabled":false,"host":null,"port":null},"envoyStatsd":{"enabled":false,"host":null,"port":null},"excludeIPRanges":"","excludeInboundPorts":"","excludeOutboundPorts":"","image":"proxyv2","includeIPRanges":"*","includeInboundPorts":"*","kubevirtInterfaces":"","logLevel":"warning","privileged":false,"readinessFailureThreshold":30,"readinessInitialDelaySeconds":1,"readinessPeriodSeconds":2,"resources":{"limits":{"cpu":"2000m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}},"statusPort":15020,"tracer":"zipkin"},"proxy_init":{"image":"proxy_init"},"sds":{"enabled":false,"udsPath":"","useNormalJwt":false,"useTrustworthyJwt":false},"sidecarInjectorWebhook":{"enabled":true,"rewriteAppHTTPProbe":false},"tag":"nightly-master","telemetryNamespace":"istio-telemetry","tracer":{"datadog":{"address":"$(HOST_IP):8126"},"lightstep":{"accessToken":"","address":"","cacertPath":"","secure":true},"zipkin":{"address":""}},"trustDomain":"","useMCP":true},"grafana":{"enabled":true},"istio_cni":{"enabled":false},"kiali":{"createDemoSecret":true,"enabled":true},"mixer":{"adapters":{"stdio":{"enabled":true}},"policy":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"10m","memory":"100Mi"}}},"telemetry":{"enabled":true,"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"50m","memory":"100Mi"}}}},"pilot":{"resources":{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"10m","memory":"100Mi"}},"traceSampling":100},"sidecarInjectorWebhook":{"alwaysInjectSelector":[],"enableNamespacesByDefault":false,"image":"sidecar_injector","neverInjectSelector":[],"nodeSelector":{},"podAntiAffinityLabelSelector":[],"podAntiAffinityTermLabelSelector":[],"replicaCount":1,"rewriteAppHTTPProbe":false,"selfSigned":false,"tolerations":[]},"tracing":{"enabled":true}}
 
   config: |-
     policy: enabled
@@ -377,10 +377,10 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: istio-sidecar-injector-service-account
-  namespace: istio-system
+  namespace: istio-control
   labels:
     app: sidecar-injector
-    release: istio-system-istio-autoinject
+    release: istio-control-istio-autoinject
     istio: sidecar-injector
 
 ---
@@ -388,17 +388,19 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: istio-sidecar-injector-istio-system
+  name: istio-sidecar-injector-istio-control
   labels:
     app: sidecar-injector
-    release: istio-system-istio-autoinject
+    release: istio-control-istio-autoinject
     istio: sidecar-injector
 rules:
 - apiGroups: [""]
   resources: ["configmaps"]
+  resourceNames: ["istio-sidecar-injector"]
   verbs: ["get", "list", "watch"]
 - apiGroups: ["admissionregistration.k8s.io"]
   resources: ["mutatingwebhookconfigurations"]
+  resourceNames: ["istio-sidecar-injector-istio-control"]
   verbs: ["get", "list", "watch", "patch"]
 
 ---
@@ -406,19 +408,19 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: istio-sidecar-injector-admin-role-binding-istio-system
+  name: istio-sidecar-injector-admin-role-binding-istio-control
   labels:
     app: sidecar-injector
-    release: istio-system-istio-autoinject
+    release: istio-control-istio-autoinject
     istio: sidecar-injector
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: istio-sidecar-injector-istio-system
+  name: istio-sidecar-injector-istio-control
 subjects:
   - kind: ServiceAccount
     name: istio-sidecar-injector-service-account
-    namespace: istio-system
+    namespace: istio-control
 
 ---
 # Source: istio-autoinject/templates/service.yaml
@@ -426,10 +428,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: istio-sidecar-injector
-  namespace: istio-system
+  namespace: istio-control
   labels:
     app: sidecar-injector
-    release: istio-system-istio-autoinject
+    release: istio-control-istio-autoinject
     istio: sidecar-injector
 spec:
   ports:
@@ -443,10 +445,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: istio-sidecar-injector
-  namespace: istio-system
+  namespace: istio-control
   labels:
     app: sidecar-injector
-    release: istio-system-istio-autoinject
+    release: istio-control-istio-autoinject
     istio: sidecar-injector
 spec:
   replicas: 1
@@ -460,8 +462,7 @@ spec:
   template:
     metadata:
       labels:
-        app: sidecar-injector
-        release: istio-system-istio-autoinject
+        app: sidecarInjectorWebhook
         istio: sidecar-injector
       annotations:
         sidecar.istio.io/inject: "false"
@@ -480,7 +481,7 @@ spec:
             - --meshConfig=/etc/istio/config/mesh
             - --healthCheckInterval=2s
             - --healthCheckFile=/health
-            - --webhookConfigName=istio-sidecar-injector-istio-system
+            - --webhookConfigName=istio-sidecar-injector-istio-control
             - --log_output_level=debug
           volumeMounts:
           - name: config-volume
@@ -569,16 +570,16 @@ spec:
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: istio-sidecar-injector-istio-system
+  name: istio-sidecar-injector-istio-control
   labels:
     app: sidecar-injector
-    release: istio-system-istio-autoinject
+    release: istio-control-istio-autoinject
 webhooks:
   - name: sidecar-injector.istio.io
     clientConfig:
       service:
         name: istio-sidecar-injector
-        namespace: istio-system
+        namespace: istio-control
         path: "/inject"
       caBundle: ""
     rules:
@@ -589,7 +590,7 @@ webhooks:
     failurePolicy: Fail
     namespaceSelector:
       matchLabels:
-        istio-env: istio-system
+        istio-env: istio-control
 ---
 
 ---
@@ -601,12 +602,12 @@ webhooks:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: istio-system
+  namespace: istio-control
   name: galley-envoy-config
   labels:
     app: galley
     istio: galley
-    release: istio-system-istio-config
+    release: istio-control-istio-config
 data:
   envoy.yaml.tmpl: |-
     admin:
@@ -695,9 +696,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio-mesh-galley
-  namespace: istio-system
+  namespace: istio-control
   labels:
-    release: istio-system-istio-config
+    release: istio-control-istio-config
 data:
 
 
@@ -711,26 +712,26 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio-galley-configuration
-  namespace: istio-system
+  namespace: istio-control
   labels:
-    release: istio-system-istio-config
+    release: istio-control-istio-config
 data:
   validatingwebhookconfiguration.yaml: |-    
     apiVersion: admissionregistration.k8s.io/v1beta1
     kind: ValidatingWebhookConfiguration
     metadata:
-      name: istio-galley-istio-system
-      namespace: istio-system
+      name: istio-galley-istio-control
+      namespace: istio-control
       labels:
         app: galley
-        release: istio-system-istio-config
+        release: istio-control-istio-config
         istio: galley
     webhooks:
       - name: pilot.validation.istio.io
         clientConfig:
           service:
             name: istio-galley
-            namespace: istio-system
+            namespace: istio-control
             path: "/admitpilot"
           caBundle: ""
         rules:
@@ -784,7 +785,7 @@ data:
         clientConfig:
           service:
             name: istio-galley
-            namespace: istio-system
+            namespace: istio-control
             path: "/admitmixer"
           caBundle: ""
         rules:
@@ -824,6 +825,11 @@ data:
             - quotas
             - reportnothings
             - tracespans
+            - adapters
+            - handlers
+            - instances
+            - templates
+            - zipkins
         failurePolicy: Fail
         sideEffects: None
 
@@ -834,19 +840,19 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: istio-galley-service-account
-  namespace: istio-system
+  namespace: istio-control
   labels:
     app: galley
-    release: istio-system-istio-config
+    release: istio-control-istio-config
 
 ---
 # Source: istio-config/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: istio-galley-istio-system
+  name: istio-galley-istio-control
   labels:
-    release: istio-system-istio-config
+    release: istio-control-istio-config
 rules:
 - apiGroups: ["admissionregistration.k8s.io"]
   resources: ["validatingwebhookconfigurations"]
@@ -884,17 +890,17 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: istio-galley-admin-role-binding-istio-system
+  name: istio-galley-admin-role-binding-istio-control
   labels:
-    release: istio-system-istio-config
+    release: istio-control-istio-config
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: istio-galley-istio-system
+  name: istio-galley-istio-control
 subjects:
   - kind: ServiceAccount
     name: istio-galley-service-account
-    namespace: istio-system
+    namespace: istio-control
 
 ---
 # Source: istio-config/templates/service.yaml
@@ -902,11 +908,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: istio-galley
-  namespace: istio-system
+  namespace: istio-control
   labels:
     app: galley
     istio: galley
-    release: istio-system-istio-config
+    release: istio-control-istio-config
 spec:
   ports:
   - port: 443
@@ -926,11 +932,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: istio-galley
-  namespace: istio-system
+  namespace: istio-control
   labels:
     app: galley
     istio: galley
-    release: istio-system-istio-config
+    release: istio-control-istio-config
 spec:
   replicas: 1
   selector:
@@ -970,7 +976,7 @@ spec:
           - --insecure=true
           - --enable-validation=true
           - --enable-server=true
-          - --deployment-namespace=istio-system
+          - --deployment-namespace=istio-control
           - --validation-webhook-config-file
           - /etc/config/validatingwebhookconfiguration.yaml
           - --monitoringPort=15014
@@ -1115,10 +1121,10 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: istio-system
+  namespace: istio-control
   name: pilot-envoy-config
   labels:
-    release: istio-system-istio-discovery
+    release: istio-control-istio-discovery
 data:
   envoy.yaml.tmpl: |-
     admin:
@@ -1173,11 +1179,11 @@ data:
               trusted_ca:
                 filename: /etc/certs/root-cert.pem
               verify_subject_alt_name:
-              - spiffe://cluster.local/ns/istio-system/sa/istio-galley-service-account
+              - spiffe://cluster.local/ns/istio-control/sa/istio-galley-service-account
 
         hosts:
           - socket_address:
-              address: istio-galley.istio-system
+              address: istio-galley.istio-control
               port_value: 15019
 
 
@@ -1288,9 +1294,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio
-  namespace: istio-system
+  namespace: istio-control
   labels:
-    release: istio-system-istio-discovery
+    release: istio-control-istio-discovery
 data:
 
   meshNetworks: |-
@@ -1299,6 +1305,7 @@ data:
     
 
   values.yaml: |-
+    appNamespaces: []
     autoscaleEnabled: true
     autoscaleMax: 5
     autoscaleMin: 1
@@ -1344,7 +1351,11 @@ data:
     # Set accessLogFile to empty string to disable access log.
     accessLogFile: "/dev/stdout"
     #
-    mixerReportServer: istio-telemetry.istio-system.svc.cluster.local:15004
+    # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
+    reportBatchMaxEntries: 100
+    # reportBatchMaxTime is the max waiting time before the telemetry data of a request is sent to the mixer server
+    reportBatchMaxTime: 1s
+    mixerReportServer: istio-telemetry.istio-telemetry.svc.cluster.local:15004
     mixerCheckServer: istio-policy.istio-policy.svc.cluster.local:15004
 
     disablePolicyChecks: true
@@ -1359,6 +1370,10 @@ data:
     sdsUdsPath: 
     config_sources:
     - address: localhost:15019
+
+    localityLbSetting:
+      {}
+      
     #
     defaultConfig:
       #
@@ -1390,13 +1405,13 @@ data:
       tracing:
         zipkin:
           # Address of the Zipkin collector
-          address: zipkin.istio-system:9411
+          address: zipkin.istio-telemetry:9411
       #
       # Mutual TLS authentication between sidecars and istio control plane.
       controlPlaneAuthPolicy: MUTUAL_TLS
       #
       # Address where istio Pilot service is running
-      discoveryAddress: istio-pilot.istio-system:15011
+      discoveryAddress: istio-pilot.istio-control:15011
 
 ---
 # Source: istio-discovery/templates/serviceaccount.yaml
@@ -1404,20 +1419,20 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: istio-pilot-service-account
-  namespace: istio-system
+  namespace: istio-control
   labels:
     app: pilot
-    release: istio-system-istio-discovery
+    release: istio-control-istio-discovery
 
 ---
 # Source: istio-discovery/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: istio-pilot-istio-system
+  name: istio-pilot-istio-control
   labels:
     app: pilot
-    release: istio-system-istio-discovery
+    release: istio-control-istio-discovery
 rules:
 - apiGroups: ["config.istio.io"]
   resources: ["*"]
@@ -1449,18 +1464,18 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: istio-pilot-istio-system
+  name: istio-pilot-istio-control
   labels:
     app: pilot
-    release: istio-system-istio-discovery
+    release: istio-control-istio-discovery
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: istio-pilot-istio-system
+  name: istio-pilot-istio-control
 subjects:
   - kind: ServiceAccount
     name: istio-pilot-service-account
-    namespace: istio-system
+    namespace: istio-control
 
 ---
 # Source: istio-discovery/templates/service.yaml
@@ -1468,10 +1483,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: istio-pilot
-  namespace: istio-system
+  namespace: istio-control
   labels:
     app: pilot
-    release: istio-system-istio-discovery
+    release: istio-control-istio-discovery
     istio: pilot
 spec:
   ports:
@@ -1492,14 +1507,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: istio-pilot
-  namespace: istio-system
+  namespace: istio-control
   # TODO: default template doesn't have this, which one is right ?
   labels:
     app: pilot
-    release: istio-system-istio-discovery
+    release: istio-control-istio-discovery
     istio: pilot
   annotations:
-    checksum/config-volume:  d4845f40e0687bcba6638c90bf5447278a00a8c08125ec828a5e259c3ac34ec2
+    checksum/config-volume:  9ad9f105b6c937daec62214114f17bad74ea41a27e49d25038c9a71784e1e031
 spec:
   strategy:
     rollingUpdate:
@@ -1512,7 +1527,6 @@ spec:
     metadata:
       labels:
         app: pilot
-        release: istio-system-istio-discovery
         istio: pilot
       annotations:
         sidecar.istio.io/inject: "false"
@@ -1672,9 +1686,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: "api-server"
-  namespace: istio-system
+  namespace: istio-control
   labels:
-    release: istio-system-istio-discovery
+    release: istio-control-istio-discovery
 spec:
   host: "kubernetes.default.svc.cluster.local"
   trafficPolicy:
@@ -1689,9 +1703,9 @@ apiVersion: "authentication.istio.io/v1alpha1"
 kind: "MeshPolicy"
 metadata:
   name: "default"
-  namespace: istio-system
+  namespace: istio-control
   labels:
-    release: istio-system-istio-discovery
+    release: istio-control-istio-discovery
 spec:
   peers:
   - mtls:
@@ -1701,9 +1715,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: "default"
-  namespace: istio-system
+  namespace: istio-control
   labels:
-    release: istio-system-istio-discovery
+    release: istio-control-istio-discovery
 spec:
   host: "*.local"
   trafficPolicy:
@@ -1719,10 +1733,10 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: istio-pilot
-  namespace: istio-system
+  namespace: istio-control
   labels:
     app: pilot
-    release: istio-system-istio-discovery
+    release: istio-control-istio-discovery
 spec:
   maxReplicas: 5
   minReplicas: 1
@@ -1748,11 +1762,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: istio-egressgateway
-  namespace: istio-system
+  namespace: istio-egress
   annotations:
   labels:
     app: istio-egressgateway
-    release: istio-system-istio-egress
+    release: istio-egress-istio-egress
 spec:
   type: ClusterIP
   selector:
@@ -1777,11 +1791,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: istio-egressgateway
-  namespace: istio-system
+  namespace: istio-egress
   labels:
     app: istio-egressgateway
     istio: egressgateway
-    release: istio-system-istio-egress
+    release: istio-egress-istio-egress
 spec:
   selector:
     matchLabels:
@@ -1790,7 +1804,6 @@ spec:
   template:
     metadata:
       labels:
-        release: istio-system-istio-egress
         app: istio-egressgateway
         istio: egressgateway
       annotations:
@@ -1824,7 +1837,7 @@ spec:
           - --serviceCluster
           - istio-egressgateway
           - --zipkinAddress
-          - zipkin.istio-system:9411
+          - zipkin.istio-telemetry:9411
           - --proxyAdminPort
           - "15000"
           - --statusPort
@@ -1832,7 +1845,7 @@ spec:
           - --controlPlaneAuthPolicy
           - MUTUAL_TLS
           - --discoveryAddress
-          - istio-pilot.istio-system:15011
+          - istio-pilot.istio-control:15011
           readinessProbe:
             failureThreshold: 30
             httpGet:
@@ -1952,10 +1965,10 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: istio-multicluster-egressgateway
-  namespace: istio-system
+  namespace: istio-egress
   labels:
     app: istio-egressgateway
-    release: istio-system-istio-egress
+    release: istio-egress-istio-egress
 spec:
   selector:
     istio: egressgateway
@@ -1972,10 +1985,10 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: istio-multicluster-egressgateway
-  namespace: istio-system 
+  namespace: istio-egress 
   labels:
     app: istio-egressgateway
-    release: istio-system-istio-egress
+    release: istio-egress-istio-egress
 spec:
   gateways:
   - istio-multicluster-egressgateway
@@ -1997,10 +2010,10 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   name: istio-multicluster-egressgateway
-  namespace: istio-system
+  namespace: istio-egress
   labels:
     app: istio-egressgateway
-    release: istio-system-istio-egress
+    release: istio-egress-istio-egress
 spec:
    workloadLabels:
      istio: egressgateway
@@ -2017,10 +2030,10 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: istio-multicluster-destinationrule
-  namespace: istio-system
+  namespace: istio-egress
   labels:
     app: istio-egressgateway
-    release: istio-system-istio-egress
+    release: istio-egress-istio-egress
 spec:
   host: "*.global"
   trafficPolicy:
@@ -2035,10 +2048,10 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: egressgateway
-  namespace: istio-system
+  namespace: istio-egress
   labels:
     app: istio-egressgateway
-    release: istio-system-istio-egress
+    release: istio-egress-istio-egress
 spec:
   maxReplicas: 5
   minReplicas: 1
@@ -2068,10 +2081,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio-grafana-configuration-dashboards-galley-dashboard
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: grafana
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
     istio: grafana
 data:
   galley-dashboard.json: '{
@@ -2372,14 +2385,14 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=~\"galley\", pod_name=~\"istio-galley-.*\"}[1m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",container_name=~\"galley\", pod_name=~\"istio-galley-.*\"}[1m]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Total (k8s)",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=~\"galley\", pod_name=~\"istio-galley-.*\"}[1m])) by (container_name)",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",container_name=~\"galley\", pod_name=~\"istio-galley-.*\"}[1m])) by (container_name)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{ container_name }} (k8s)",
@@ -2563,7 +2576,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "go_goroutines{job=\"galley\"}",
+          "expr": "go_goroutines{job=\"istio-galley\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "goroutines_total",
@@ -2577,7 +2590,7 @@ data:
           "refId": "B"
         },
         {
-          "expr": "go_goroutines{job=\"galley\"}/galley_mcp_source_clients_total",
+          "expr": "go_goroutines{job=\"istio-galley\"}/galley_mcp_source_clients_total",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "avg_goroutines_per_client",
@@ -3899,10 +3912,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio-grafana-configuration-dashboards-istio-mesh-dashboard
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: grafana
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
     istio: grafana
 data:
   istio-mesh-dashboard.json: '{
@@ -4864,10 +4877,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio-grafana-configuration-dashboards-istio-performance-dashboard
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: grafana
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
     istio: grafana
 data:
   istio-performance-dashboard.json: '{
@@ -4970,7 +4983,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(irate(container_cpu_usage_seconds_total{pod_name=~\"istio-telemetry-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"ingressgateway\"}[1m])) >bool 10)",
+          "expr": "(sum(irate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",pod_name=~\"istio-telemetry-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
@@ -4978,22 +4991,22 @@ data:
           "refId": "A"
         },
         {
-          "expr": "(sum(irate(container_cpu_usage_seconds_total{pod_name=~\"ingressgateway-.*\",container_name=\"istio-proxy\"}[1m])) / (round(sum(irate(istio_requests_total{source_workload=\"ingressgateway\", reporter=\"source\"}[1m])), 0.001)/1000))",
+          "expr": "(sum(irate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",pod_name=~\"istio-ingressgateway-.*\",container_name=\"istio-proxy\"}[1m])) / (round(sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\", reporter=\"source\"}[1m])), 0.001)/1000))",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
-          "legendFormat": "ingressgateway",
+          "legendFormat": "istio-ingressgateway",
           "refId": "B"
         },
         {
-          "expr": "(sum(irate(container_cpu_usage_seconds_total{namespace!=\"istio-control\",container_name=\"istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"ingressgateway\"}[1m])) >bool 10)",
+          "expr": "(sum(irate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",namespace!=\"istio-control\",container_name=\"istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-proxy",
           "refId": "C"
         },
         {
-          "expr": "(sum(irate(container_cpu_usage_seconds_total{pod_name=~\"istio-policy-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"ingressgateway\"}[1m])) >bool 10)",
+          "expr": "(sum(irate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",pod_name=~\"istio-policy-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))/ (round(sum(irate(istio_requests_total[1m])), 0.001)/1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-policy",
@@ -5077,28 +5090,28 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{pod_name=~\"istio-telemetry-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",pod_name=~\"istio-telemetry-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-telemetry",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{pod_name=~\"ingressgateway-.*\",container_name=\"istio-proxy\"}[1m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",pod_name=~\"istio-ingressgateway-.*\",container_name=\"istio-proxy\"}[1m]))",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "ingressgateway",
+          "legendFormat": "istio-ingressgateway",
           "refId": "B"
         },
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace!=\"istio-control\",container_name=\"istio-proxy\"}[1m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",namespace!=\"istio-control\",container_name=\"istio-proxy\"}[1m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-proxy",
           "refId": "C"
         },
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{pod_name=~\"istio-policy-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",pod_name=~\"istio-policy-.*\",container_name=~\"mixer|istio-proxy\"}[1m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-policy",
@@ -5202,10 +5215,10 @@ data:
           "refId": "A"
         },
         {
-          "expr": "sum(container_memory_usage_bytes{pod_name=~\"ingressgateway-.*\"}) / count(container_memory_usage_bytes{pod_name=~\"ingressgateway-.*\",container_name!=\"POD\"})",
+          "expr": "sum(container_memory_usage_bytes{pod_name=~\"istio-ingressgateway-.*\"}) / count(container_memory_usage_bytes{pod_name=~\"istio-ingressgateway-.*\",container_name!=\"POD\"})",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "per ingressgateway",
+          "legendFormat": "per istio-ingressgateway",
           "refId": "B"
         },
         {
@@ -5216,7 +5229,7 @@ data:
           "refId": "C"
         },
         {
-          "expr": "(sum(container_memory_usage_bytes{pod_name=~\"istio-policy-.*\"}) / (sum(irate(istio_requests_total[1m])) / 1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-ingressgateway\"}[1m])) >bool 10)",
+          "expr": "(sum(container_memory_usage_bytes{pod_name=~\"istio-policy-.*\"}) / (sum(irate(istio_requests_total[1m])) / 1000))/ (sum(irate(istio_requests_total{source_workload=\"istio-istio-ingressgateway\"}[1m])) >bool 10)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-policy / 1k rps",
@@ -5307,10 +5320,10 @@ data:
           "refId": "A"
         },
         {
-          "expr": "sum(irate(istio_response_bytes_sum{source_workload=\"ingressgateway\", reporter=\"source\"}[1m]))",
+          "expr": "sum(irate(istio_response_bytes_sum{source_workload=\"istio-ingressgateway\", reporter=\"source\"}[1m]))",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "ingressgateway",
+          "legendFormat": "istio-ingressgateway",
           "refId": "B"
         },
         {
@@ -5603,7 +5616,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=\"istio-proxy\"}[1m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",container_name=\"istio-proxy\"}[1m]))",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -5944,7 +5957,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"}[1m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"}[1m]))",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -5953,7 +5966,7 @@ data:
           "step": 2
         },
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"}[1m])) by (container_name)",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"}[1m])) by (container_name)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -6146,7 +6159,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "go_goroutines{job=\"pilot\"}",
+          "expr": "go_goroutines{job=\"istio-pilot\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Number of Goroutines",
@@ -6245,7 +6258,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "process_virtual_memory_bytes{job=\"pilot\"}",
+          "expr": "process_virtual_memory_bytes{job=~\"istio-telemetry|istio-policy\"}",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 2,
@@ -6254,7 +6267,7 @@ data:
           "step": 2
         },
         {
-          "expr": "process_resident_memory_bytes{job=\"pilot\"}",
+          "expr": "process_resident_memory_bytes{job=~\"istio-telemetry|istio-policy\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Resident Memory",
@@ -6262,7 +6275,7 @@ data:
           "step": 2
         },
         {
-          "expr": "go_memstats_heap_sys_bytes{job=\"pilot\"}",
+          "expr": "go_memstats_heap_sys_bytes{job=~\"istio-telemetry|istio-policy\"}",
           "format": "time_series",
           "hide": true,
           "intervalFactor": 2,
@@ -6270,7 +6283,7 @@ data:
           "refId": "A"
         },
         {
-          "expr": "go_memstats_heap_alloc_bytes{job=\"pilot\"}",
+          "expr": "go_memstats_heap_alloc_bytes{job=~\"istio-telemetry|istio-policy\"}",
           "format": "time_series",
           "hide": true,
           "intervalFactor": 2,
@@ -6278,7 +6291,7 @@ data:
           "refId": "D"
         },
         {
-          "expr": "go_memstats_alloc_bytes{job=\"pilot\"}",
+          "expr": "go_memstats_alloc_bytes{job=~\"istio-telemetry|istio-policy\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Alloc",
@@ -6286,7 +6299,7 @@ data:
           "step": 2
         },
         {
-          "expr": "go_memstats_heap_inuse_bytes{job=\"pilot\"}",
+          "expr": "go_memstats_heap_inuse_bytes{job=~\"istio-telemetry|istio-policy\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -6295,7 +6308,7 @@ data:
           "step": 2
         },
         {
-          "expr": "go_memstats_stack_inuse_bytes{job=\"mixer\"}",
+          "expr": "go_memstats_stack_inuse_bytes{job=~\"istio-telemetry|istio-policy\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Stack in-use",
@@ -6399,7 +6412,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*\"}[1m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*\"}[1m]))",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -6408,7 +6421,7 @@ data:
           "step": 2
         },
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*\"}[1m])) by (container_name)",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*\"}[1m])) by (container_name)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -6417,11 +6430,11 @@ data:
           "step": 2
         },
         {
-          "expr": "irate(process_cpu_seconds_total{job=\"mixer\"}[1m])",
+          "expr": "irate(process_cpu_seconds_total{job=~\"istio-telemetry|istio-policy\"}[1m])",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
-          "legendFormat": "pilot (self-reported)",
+          "legendFormat": "mixer (self-reported)",
           "refId": "C",
           "step": 2
         }
@@ -6504,13 +6517,13 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "process_open_fds{job=\"mixer\"}",
+          "expr": "process_open_fds{job=~\"istio-telemetry|istio-policy\"}",
           "format": "time_series",
           "hide": true,
           "instant": false,
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "Open FDs (pilot)",
+          "legendFormat": "Open FDs (mixer)",
           "refId": "A"
         },
         {
@@ -6698,10 +6711,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio-grafana-configuration-dashboards-istio-service-dashboard
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: grafana
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
     istio: grafana
 data:
   istio-service-dashboard.json: '{
@@ -9311,10 +9324,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio-grafana-configuration-dashboards-istio-workload-dashboard
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: grafana
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
     istio: grafana
 data:
   istio-workload-dashboard.json: '{
@@ -11626,10 +11639,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio-grafana-configuration-dashboards-mixer-dashboard
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: grafana
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
     istio: grafana
 data:
   mixer-dashboard.json: '{
@@ -11990,7 +12003,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "label_replace(sum(rate(container_cpu_usage_seconds_total{container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*|istio-policy-.*\"}[1m])) by (pod_name), \"service\", \"$1\" , \"pod_name\", \"(istio-telemetry|istio-policy)-.*\")",
+          "expr": "label_replace(sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*|istio-policy-.*\"}[1m])) by (pod_name), \"service\", \"$1\" , \"pod_name\", \"(istio-telemetry|istio-policy)-.*\")",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -11998,7 +12011,7 @@ data:
           "refId": "A"
         },
         {
-          "expr": "label_replace(sum(rate(container_cpu_usage_seconds_total{container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*|istio-policy-.*\"}[1m])) by (container_name, pod_name), \"service\", \"$1\" , \"pod_name\", \"(istio-telemetry|istio-policy)-.*\")",
+          "expr": "label_replace(sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",container_name=~\"mixer|istio-proxy\", pod_name=~\"istio-telemetry-.*|istio-policy-.*\"}[1m])) by (container_name, pod_name), \"service\", \"$1\" , \"pod_name\", \"(istio-telemetry|istio-policy)-.*\")",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -13233,7 +13246,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "label_replace(irate(mixer_runtime_dispatches_total{adapter=\"$adapter\"}[1m]),\"handler\", \"$1 ($3)\", \"handler\", \"(.*)\\\\.(.*)\\\\.(.*)\")",
+          "expr": "label_replace(irate(mixer_runtime_dispatches_total{adapter=~\"$adapter\"}[1m]),\"handler\", \"$1 ($3)\", \"handler\", \"(.*)\\\\.(.*)\\\\.(.*)\")",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{ handler }} (error: {{  error }})",
@@ -13317,21 +13330,21 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "label_replace(histogram_quantile(0.5, sum(rate(mixer_runtime_dispatch_duration_seconds_bucket{adapter=\"$adapter\"}[1m])) by (handler, error, le)),  \"handler_short\", \"$1 ($3)\", \"handler\", \"(.*)\\\\.(.*)\\\\.(.*)\")",
+          "expr": "label_replace(histogram_quantile(0.5, sum(rate(mixer_runtime_dispatch_duration_seconds_bucket{adapter=~\"$adapter\"}[1m])) by (handler, error, le)),  \"handler_short\", \"$1 ($3)\", \"handler\", \"(.*)\\\\.(.*)\\\\.(.*)\")",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "p50 - {{ handler_short }} (error: {{ error }})",
           "refId": "A"
         },
         {
-          "expr": "label_replace(histogram_quantile(0.9, sum(irate(mixer_runtime_dispatch_duration_seconds_bucket{adapter=\"$adapter\"}[1m])) by (handler, error, le)),  \"handler_short\", \"$1 ($3)\", \"handler\", \"(.*)\\\\.(.*)\\\\.(.*)\")",
+          "expr": "label_replace(histogram_quantile(0.9, sum(irate(mixer_runtime_dispatch_duration_seconds_bucket{adapter=~\"$adapter\"}[1m])) by (handler, error, le)),  \"handler_short\", \"$1 ($3)\", \"handler\", \"(.*)\\\\.(.*)\\\\.(.*)\")",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "p90 - {{ handler_short }} (error: {{ error }})",
           "refId": "D"
         },
         {
-          "expr": "label_replace(histogram_quantile(0.99, sum(irate(mixer_runtime_dispatch_duration_seconds_bucket{adapter=\"$adapter\"}[1m])) by (handler, error, le)),  \"handler_short\", \"$1 ($3)\", \"handler\", \"(.*)\\\\.(.*)\\\\.(.*)\")",
+          "expr": "label_replace(histogram_quantile(0.99, sum(irate(mixer_runtime_dispatch_duration_seconds_bucket{adapter=~\"$adapter\"}[1m])) by (handler, error, le)),  \"handler_short\", \"$1 ($3)\", \"handler\", \"(.*)\\\\.(.*)\\\\.(.*)\")",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "p99 - {{ handler_short }} (error: {{ error }})",
@@ -13446,10 +13459,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio-grafana-configuration-dashboards-pilot-dashboard
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: grafana
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
     istio: grafana
 data:
   pilot-dashboard.json: '{
@@ -13774,7 +13787,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"}[1m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"}[1m]))",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -13783,7 +13796,7 @@ data:
           "step": 2
         },
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"}[1m])) by (container_name)",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubernetes-cadvisor\",container_name=~\"discovery|istio-proxy\", pod_name=~\"istio-pilot-.*\"}[1m])) by (container_name)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -13976,7 +13989,7 @@ data:
       "steppedLine": false,
       "targets": [
         {
-          "expr": "go_goroutines{job=\"pilot\"}",
+          "expr": "go_goroutines{job=\"istio-pilot\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Number of Goroutines",
@@ -15250,10 +15263,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio-grafana
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: grafana
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
     istio: grafana
 data:
   datasources.yaml: |-
@@ -15285,11 +15298,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: grafana
-  namespace: istio-system
+  namespace: istio-telemetry
   annotations:
   labels:
     app: grafana
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   type: ClusterIP
   ports:
@@ -15306,10 +15319,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grafana
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: grafana
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   replicas: 1
   selector:
@@ -15319,7 +15332,9 @@ spec:
     metadata:
       labels:
         app: grafana
-        release: istio-system-istio-telemetry
+        chart: grafana
+        heritage: Tiller
+        release: istio-system
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
@@ -15455,9 +15470,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: grafana
-  namespace: istio-system
+  namespace: istio-telemetry
 spec:
-  host: grafana.istio-system
+  host: grafana.istio-telemetry
   trafficPolicy:
     tls:
       mode: DISABLE
@@ -15468,18 +15483,15 @@ apiVersion: authentication.istio.io/v1alpha1
 kind: Policy
 metadata:
   name: grafana-ports-mtls-disabled
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: grafana
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   targets:
   - name: grafana
     ports:
     - number: 3000
-
----
-# Source: grafana/templates/ingress.yaml
 
 ---
 # Source: grafana/templates/pvc.yaml
@@ -15495,10 +15507,10 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: istio-ingressgateway-service-account
-  namespace: istio-system
+  namespace: istio-ingress
   labels:
     app: istio-ingressgateway
-    release: istio-system-istio-ingress
+    release: istio-ingress-istio-ingress
 ---
 # Source: istio-ingress/templates/service.yaml
 
@@ -15506,11 +15518,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: istio-ingressgateway
-  namespace: istio-system
+  namespace: istio-ingress
   annotations:
   labels:
     app: istio-ingressgateway
-    release: istio-system-istio-ingress
+    release: istio-ingress-istio-ingress
 spec:
   type: LoadBalancer
   selector:
@@ -15528,6 +15540,22 @@ spec:
       name: https
       port: 443
     -
+      name: kiali
+      port: 15029
+      targetPort: 15029
+    -
+      name: prometheus
+      port: 15030
+      targetPort: 15030
+    -
+      name: grafana
+      port: 15031
+      targetPort: 15031
+    -
+      name: tracing
+      port: 15032
+      targetPort: 15032
+    -
       name: tls
       port: 15443
       targetPort: 15443
@@ -15542,11 +15570,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: istio-ingressgateway
-  namespace: istio-system
+  namespace: istio-ingress
   labels:
     app: istio-ingressgateway
     istio: ingressgateway
-    release: istio-system-istio-ingress
+    release: istio-ingress-istio-ingress
 spec:
   selector:
     matchLabels:
@@ -15560,6 +15588,7 @@ spec:
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
+      serviceAccountName: istio-ingressgateway-service-account
       containers:
         - name: istio-proxy
           image: "istionightly/proxyv2:nightly-master"
@@ -15568,6 +15597,10 @@ spec:
             - containerPort: 15020
             - containerPort: 80
             - containerPort: 443
+            - containerPort: 15029
+            - containerPort: 15030
+            - containerPort: 15031
+            - containerPort: 15032
             - containerPort: 15443
             - containerPort: 15011
             - containerPort: 8060
@@ -15592,7 +15625,7 @@ spec:
           - --serviceCluster
           - istio-ingressgateway
           - --zipkinAddress
-          - zipkin.istio-system:9411
+          - zipkin.istio-telemetry:9411
           - --proxyAdminPort
           - "15000"
           - --statusPort
@@ -15600,7 +15633,7 @@ spec:
           - --controlPlaneAuthPolicy
           - MUTUAL_TLS
           - --discoveryAddress
-          - istio-pilot.istio-system:15011
+          - istio-pilot.istio-control:15011
           readinessProbe:
             failureThreshold: 30
             httpGet:
@@ -15670,7 +15703,7 @@ spec:
       volumes:
       - name: istio-certs
         secret:
-          secretName: istio.default
+          secretName: istio.istio-ingressgateway-service-account
           optional: true
       - name: ingressgateway-certs
         secret:
@@ -15717,14 +15750,14 @@ spec:
 ---
 # Source: istio-ingress/templates/gateway.yaml
 
-# Main Gatewaay. Apps must bind to NAMESPACE/ingressgateway
+# Main Gateway. Apps must bind to NAMESPACE/ingressgateway
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: ingressgateway
-  namespace: istio-system
+  namespace: istio-ingress
   labels:
-    release: istio-system-istio-ingress
+    release: istio-ingress-istio-ingress
 spec:
   selector:
     istio: ingressgateway
@@ -15745,10 +15778,10 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: ingressgateway
-  namespace: istio-system
+  namespace: istio-ingress
   labels:
     app: istio-ingressgateway
-    release: istio-system-istio-ingress
+    release: istio-ingress-istio-ingress
 spec:
   maxReplicas: 5
   minReplicas: 1
@@ -15769,13 +15802,29 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Sidecar
 metadata:
   name: default
-  namespace: istio-system
+  namespace: istio-ingress
   labels:
-    release: istio-system-istio-ingress
+    release: istio-ingress-istio-ingress
 spec:
   egress:
     - hosts:
         - "*/*"
+
+---
+# Source: istio-ingress/templates/addongateway.yaml
+# Template for telemetry addon gateways
+
+
+
+
+
+
+
+---
+# Source: istio-ingress/templates/certificate.yaml
+
+
+
 
 ---
 # Source: istio-ingress/templates/hosts.yaml
@@ -15814,10 +15863,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: prometheus
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 data:
   prometheus.yml: |-
     global:
@@ -15831,7 +15880,7 @@ data:
       - role: endpoints
         namespaces:
           names:
-          - istio-system
+          - istio-telemetry
       relabel_configs:
       - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
         action: keep
@@ -15879,7 +15928,7 @@ data:
       - role: endpoints
         namespaces:
           names:
-          - istio-system
+          - istio-telemetry
 
       relabel_configs:
       - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
@@ -15891,7 +15940,7 @@ data:
       - role: endpoints
         namespaces:
           names:
-          - istio-system
+          - istio-control
 
       relabel_configs:
       - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
@@ -15903,7 +15952,7 @@ data:
       - role: endpoints
         namespaces:
           names:
-          - istio-system
+          - istio-control
 
       relabel_configs:
       - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
@@ -15915,7 +15964,7 @@ data:
       - role: endpoints
         namespaces:
           names:
-          - istio-system
+          - istio-telemetry
 
       relabel_configs:
       - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
@@ -16093,20 +16142,20 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: prometheus
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: prometheus
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 
 ---
 # Source: prometheus/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: prometheus-istio-system
+  name: prometheus-istio-telemetry
   labels:
     app: prometheus
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 rules:
 - apiGroups: [""]
   resources:
@@ -16128,18 +16177,18 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: prometheus-istio-system
+  name: prometheus-istio-telemetry
   labels:
     app: prometheus
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: prometheus-istio-system
+  name: prometheus-istio-telemetry
 subjects:
 - kind: ServiceAccount
   name: prometheus
-  namespace: istio-system
+  namespace: istio-telemetry
 
 ---
 # Source: prometheus/templates/service.yaml
@@ -16147,12 +16196,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: prometheus
-  namespace: istio-system
+  namespace: istio-telemetry
   annotations:
     prometheus.io/scrape: 'true'
   labels:
     app: prometheus
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   selector:
     app: prometheus
@@ -16168,10 +16217,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prometheus
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: prometheus
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   replicas: 1
   selector:
@@ -16181,7 +16230,7 @@ spec:
     metadata:
       labels:
         app: prometheus
-        release: istio-system-istio-telemetry
+        release: istio-telemetry-istio-telemetry
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
@@ -16261,9 +16310,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: prometheys
-  namespace: istio-system
+  namespace: istio-telemetry
 spec:
-  host: prometheus.istio-system
+  host: prometheus.istio-telemetry
   trafficPolicy:
     tls:
       mode: DISABLE
@@ -16272,9 +16321,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: prometheus-full
-  namespace: istio-system
+  namespace: istio-telemetry
 spec:
-  host: prometheus.istio-system.svc.cluster.local
+  host: prometheus.istio-telemetry.svc.cluster.local
   trafficPolicy:
     tls:
       mode: DISABLE
@@ -16291,10 +16340,10 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: istio-system
+  namespace: istio-telemetry
   name: telemetry-envoy-config
   labels:
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 data:
   # Explicitly defined - moved from istio/istio/pilot/docker.
   envoy.yaml.tmpl: |-
@@ -16370,11 +16419,11 @@ data:
               trusted_ca:
                 filename: /etc/certs/root-cert.pem
               verify_subject_alt_name:
-              - spiffe://cluster.local/ns/istio-system/sa/istio-galley-service-account
+              - spiffe://cluster.local/ns/istio-control/sa/istio-galley-service-account
 
         hosts:
           - socket_address:
-              address: istio-galley.istio-system
+              address: istio-galley.istio-control
               port_value: 15019
 
 
@@ -16418,9 +16467,9 @@ data:
               generate_request_id: true
               http_filters:
               - config:
-                  default_destination_service: istio-telemetry.istio-system.svc.cluster.local
+                  default_destination_service: istio-telemetry.istio-telemetry.svc.cluster.local
                   service_configs:
-                    istio-telemetry.istio-system.svc.cluster.local:
+                    istio-telemetry.istio-telemetry.svc.cluster.local:
                       disable_check_calls: true
     {{- if .DisableReportCalls }}
                       disable_report_calls: true
@@ -16428,17 +16477,17 @@ data:
                       mixer_attributes:
                         attributes:
                           destination.service.host:
-                            string_value: istio-telemetry.istio-system.svc.cluster.local
+                            string_value: istio-telemetry.istio-telemetry.svc.cluster.local
                           destination.service.uid:
-                            string_value: istio://istio-system/services/istio-telemetry
+                            string_value: istio://istio-telemetry/services/istio-telemetry
                           destination.service.name:
                             string_value: istio-telemetry
                           destination.service.namespace:
-                            string_value: istio-system
+                            string_value: istio-telemetry
                           destination.uid:
-                            string_value: kubernetes://{{ .PodName }}.istio-system
+                            string_value: kubernetes://{{ .PodName }}.istio-telemetry
                           destination.namespace:
-                            string_value: istio-system
+                            string_value: istio-telemetry
                           destination.ip:
                             bytes_value: {{ .PodIP }}
                           destination.port:
@@ -16446,7 +16495,7 @@ data:
                           context.reporter.kind:
                             string_value: inbound
                           context.reporter.uid:
-                            string_value: kubernetes://{{ .PodName }}.istio-system
+                            string_value: kubernetes://{{ .PodName }}.istio-telemetry
                   transport:
                     check_cluster: mixer_check_server
                     report_cluster: inbound_9092
@@ -16457,7 +16506,7 @@ data:
                 virtual_hosts:
                 - domains:
                   - '*'
-                  name: istio-telemetry.istio-system.svc.cluster.local
+                  name: istio-telemetry.istio-telemetry.svc.cluster.local
                   routes:
                   - decorator:
                       operation: Report
@@ -16496,9 +16545,9 @@ data:
               generate_request_id: true
               http_filters:
               - config:
-                  default_destination_service: istio-telemetry.istio-system.svc.cluster.local
+                  default_destination_service: istio-telemetry.istio-telemetry.svc.cluster.local
                   service_configs:
-                    istio-telemetry.istio-system.svc.cluster.local:
+                    istio-telemetry.istio-telemetry.svc.cluster.local:
                       disable_check_calls: true
     {{- if .DisableReportCalls }}
                       disable_report_calls: true
@@ -16506,17 +16555,17 @@ data:
                       mixer_attributes:
                         attributes:
                           destination.service.host:
-                            string_value: istio-telemetry.istio-system.svc.cluster.local
+                            string_value: istio-telemetry.istio-telemetry.svc.cluster.local
                           destination.service.uid:
-                            string_value: istio://istio-system/services/istio-telemetry
+                            string_value: istio://istio-telemetry/services/istio-telemetry
                           destination.service.name:
                             string_value: istio-telemetry
                           destination.service.namespace:
-                            string_value: istio-system
+                            string_value: istio-telemetry
                           destination.uid:
-                            string_value: kubernetes://{{ .PodName }}.istio-system
+                            string_value: kubernetes://{{ .PodName }}.istio-telemetry
                           destination.namespace:
-                            string_value: istio-system
+                            string_value: istio-telemetry
                           destination.ip:
                             bytes_value: {{ .PodIP }}
                           destination.port:
@@ -16524,7 +16573,7 @@ data:
                           context.reporter.kind:
                             string_value: inbound
                           context.reporter.uid:
-                            string_value: kubernetes://{{ .PodName }}.istio-system
+                            string_value: kubernetes://{{ .PodName }}.istio-telemetry
                   transport:
                     check_cluster: mixer_check_server
                     report_cluster: inbound_9092
@@ -16535,7 +16584,7 @@ data:
                 virtual_hosts:
                 - domains:
                   - '*'
-                  name: istio-telemetry.istio-system.svc.cluster.local
+                  name: istio-telemetry.istio-telemetry.svc.cluster.local
                   routes:
                   - decorator:
                       operation: Report
@@ -16591,20 +16640,20 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: istio-mixer-service-account
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 
 ---
 # Source: mixer-telemetry/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: istio-mixer-istio-system
+  name: istio-mixer-istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 rules:
 - apiGroups: ["config.istio.io"] # istio CRD watcher
   resources: ["*"]
@@ -16623,18 +16672,18 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: istio-mixer-admin-role-binding-istio-system
+  name: istio-mixer-admin-role-binding-istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: istio-mixer-istio-system
+  name: istio-mixer-istio-telemetry
 subjects:
   - kind: ServiceAccount
     name: istio-mixer-service-account
-    namespace: istio-system
+    namespace: istio-telemetry
 
 ---
 # Source: mixer-telemetry/templates/service.yaml
@@ -16642,11 +16691,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: istio-telemetry
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
     istio: mixer
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   ports:
   - name: grpc-mixer
@@ -16666,11 +16715,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: istio-telemetry
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
     istio: mixer
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   replicas: 1
   strategy:
@@ -16752,10 +16801,10 @@ spec:
           - unix:///sock/mixer.socket
           - --log_output_level=default:info
           - --configStoreURL=mcp://localhost:15019
-          - --configDefaultNamespace=istio-system
+          - --configDefaultNamespace=istio-telemetry
           - --useAdapterCRDs=false
           - --useTemplateCRDs=false
-          - --trace_zipkin_url=http://zipkin.istio-system:9411/api/v1/spans
+          - --trace_zipkin_url=http://zipkin.istio-telemetry:9411/api/v1/spans
         env:
         - name: GODEBUG
           value: "gctrace=1"
@@ -16844,9 +16893,9 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: istio-telemetry
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
     app: istio-telemetry
 spec:
     maxReplicas: 5
@@ -16867,15 +16916,19 @@ spec:
 
 
 ---
+# Source: mixer-telemetry/templates/stackdriver.yaml
+
+
+---
 # Source: mixer-telemetry/templates/config.yaml
 apiVersion: "config.istio.io/v1alpha2"
 kind: attributemanifest
 metadata:
   name: istioproxy
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   attributes:
     origin.ip:
@@ -17011,10 +17064,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: attributemanifest
 metadata:
   name: kubernetes
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   attributes:
     source.ip:
@@ -17074,10 +17127,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: handler
 metadata:
   name: stdio
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledAdapter: stdio
   params:
@@ -17087,10 +17140,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
   name: accesslog
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledTemplate: logentry
   params:
@@ -17144,10 +17197,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
   name: tcpaccesslog
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledTemplate: logentry
   params:
@@ -17186,10 +17239,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
   name: stdio
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   match: context.protocol == "http" || context.protocol == "grpc"
   actions:
@@ -17201,10 +17254,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
   name: stdiotcp
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   match: context.protocol == "tcp"
   actions:
@@ -17216,10 +17269,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
   name: requestcount
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledTemplate: metric
   params:
@@ -17251,10 +17304,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
   name: requestduration
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledTemplate: metric
   params:
@@ -17286,10 +17339,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
   name: requestsize
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledTemplate: metric
   params:
@@ -17321,10 +17374,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
   name: responsesize
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledTemplate: metric
   params:
@@ -17356,10 +17409,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
   name: tcpbytesent
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledTemplate: metric
   params:
@@ -17387,10 +17440,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
   name: tcpbytereceived
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledTemplate: metric
   params:
@@ -17418,10 +17471,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
   name: tcpconnectionsopened
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledTemplate: metric
   params:
@@ -17449,10 +17502,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
   name: tcpconnectionsclosed
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledTemplate: metric
   params:
@@ -17480,10 +17533,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: handler
 metadata:
   name: prometheus
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledAdapter: prometheus
   params:
@@ -17491,7 +17544,7 @@ spec:
       metricsExpiryDuration: "10m"
     metrics:
     - name: requests_total
-      instance_name: requestcount.instance.istio-system
+      instance_name: requestcount.instance.istio-telemetry
       kind: COUNTER
       label_names:
       - reporter
@@ -17515,7 +17568,7 @@ spec:
       - permissive_response_policyid
       - connection_security_policy
     - name: request_duration_seconds
-      instance_name: requestduration.instance.istio-system
+      instance_name: requestduration.instance.istio-telemetry
       kind: DISTRIBUTION
       label_names:
       - reporter
@@ -17542,7 +17595,7 @@ spec:
         explicit_buckets:
           bounds: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]
     - name: request_bytes
-      instance_name: requestsize.instance.istio-system
+      instance_name: requestsize.instance.istio-telemetry
       kind: DISTRIBUTION
       label_names:
       - reporter
@@ -17571,7 +17624,7 @@ spec:
           scale: 1
           growthFactor: 10
     - name: response_bytes
-      instance_name: responsesize.instance.istio-system
+      instance_name: responsesize.instance.istio-telemetry
       kind: DISTRIBUTION
       label_names:
       - reporter
@@ -17600,7 +17653,7 @@ spec:
           scale: 1
           growthFactor: 10
     - name: tcp_sent_bytes_total
-      instance_name: tcpbytesent.instance.istio-system
+      instance_name: tcpbytesent.instance.istio-telemetry
       kind: COUNTER
       label_names:
       - reporter
@@ -17620,7 +17673,7 @@ spec:
       - connection_security_policy
       - response_flags
     - name: tcp_received_bytes_total
-      instance_name: tcpbytereceived.instance.istio-system
+      instance_name: tcpbytereceived.instance.istio-telemetry
       kind: COUNTER
       label_names:
       - reporter
@@ -17640,7 +17693,7 @@ spec:
       - connection_security_policy
       - response_flags
     - name: tcp_connections_opened_total
-      instance_name: tcpconnectionsopened.instance.istio-system
+      instance_name: tcpconnectionsopened.instance.istio-telemetry
       kind: COUNTER
       label_names:
       - reporter
@@ -17660,7 +17713,7 @@ spec:
       - connection_security_policy
       - response_flags
     - name: tcp_connections_closed_total
-      instance_name: tcpconnectionsclosed.instance.istio-system
+      instance_name: tcpconnectionsclosed.instance.istio-telemetry
       kind: COUNTER
       label_names:
       - reporter
@@ -17684,10 +17737,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
   name: promhttp
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   match: (context.protocol == "http" || context.protocol == "grpc") && (match((request.useragent | "-"), "kube-probe*") == false) && (match((request.useragent | "-"), "Prometheus*") == false)
   actions:
@@ -17702,10 +17755,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
   name: promtcp
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   match: context.protocol == "tcp"
   actions:
@@ -17718,10 +17771,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
   name: promtcpconnectionopen
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   match: context.protocol == "tcp" && ((connection.event | "na") == "open")
   actions:
@@ -17733,10 +17786,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
   name: promtcpconnectionclosed
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   match: context.protocol == "tcp" && ((connection.event | "na") == "close")
   actions:
@@ -17748,10 +17801,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: handler
 metadata:
   name: kubernetesenv
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledAdapter: kubernetesenv
   params:
@@ -17767,10 +17820,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
   name: kubeattrgenrulerule
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   actions:
   - handler: kubernetesenv
@@ -17781,10 +17834,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
   name: tcpkubeattrgenrulerule
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   match: context.protocol == "tcp"
   actions:
@@ -17796,10 +17849,10 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: instance
 metadata:
   name: attributes
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
   compiledTemplate: kubernetes
   params:
@@ -17837,12 +17890,12 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: istio-telemetry
-  namespace: istio-system
+  namespace: istio-telemetry
   labels:
     app: istio-telemetry
-    release: istio-system-istio-telemetry
+    release: istio-telemetry-istio-telemetry
 spec:
-  host: istio-telemetry.istio-system.svc.cluster.local
+  host: istio-telemetry.istio-telemetry.svc.cluster.local
   trafficPolicy:
     portLevelSettings:
     - port:

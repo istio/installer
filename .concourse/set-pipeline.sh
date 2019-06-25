@@ -13,4 +13,3 @@ if [ -n "$1" ] ; then
 fi
 
 fly -t $TARGET set-pipeline -c concourse.yaml -p $PIPELINE
-fly -t $TARGET set-pipeline -c validate-pr.yaml -p validate-pr

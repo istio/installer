@@ -29,4 +29,4 @@ setup_and_export_git_sha
 
 cd "${ROOT}"
 
-make lint
+make run-lint

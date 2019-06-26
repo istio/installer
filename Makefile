@@ -159,10 +159,6 @@ kind-run:
 		${KIND_CLUSTER}-control-plane \
 		bash -c "cd ${GOPATH}/src/istio.io/installer; make ${TARGET}"
 
-# Runs helm lint on the various charts
-lint:
-	bin/linters.sh
-
 # Runs the test in docker. Will exec into KIND and run "make $TEST_TARGET" (default: run-all-tests)
 docker-run-test:
 	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf -e ONE_NAMESPACE=$(ONE_NAMESPACE) \

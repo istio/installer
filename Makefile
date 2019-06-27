@@ -309,4 +309,5 @@ include test/install.mk
 include test/tests.mk
 include test/noauth.mk
 include test/demo.mk
+include test/sds.mk
 include Makefile.common.mk

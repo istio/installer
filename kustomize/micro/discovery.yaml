@@ -265,9 +265,22 @@ data:
     ingressService: "istio-ingressgateway"
     ingressControllerMode: "OFF"
     ingressClass: "istio"
+    # Set expected values when SDS is disabled
     # Unix Domain Socket through which envoy communicates with NodeAgent SDS to get
     # key/cert for mTLS. Use secret-mount files instead of SDS if set to empty.
-    sdsUdsPath: 
+    sdsUdsPath: ""
+    # This flag is used by secret discovery service(SDS).
+    # If set to true(prerequisite: https://kubernetes.io/docs/concepts/storage/volumes/#projected), Istio will inject volumes mount
+    # for k8s service account JWT, so that K8s API server mounts k8s service account JWT to envoy container, which
+    # will be used to generate key/cert eventually. This isn't supported for non-k8s case.
+    enableSdsTokenMount: false
+    # This flag is used by secret discovery service(SDS).
+    # If set to true, envoy will fetch normal k8s service account JWT from '/var/run/secrets/kubernetes.io/serviceaccount/token'
+    # (https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/#accessing-the-api-from-a-pod)
+    # and pass to sds server, which will be used to request key/cert eventually.
+    # this flag is ignored if enableSdsTokenMount is set.
+    # This isn't supported for non-k8s case.
+    sdsUseK8sSaJwt: false
 
     outboundTrafficPolicy:
       mode: ALLOW_ANY
@@ -415,7 +428,7 @@ metadata:
     release: istio-micro-istio-discovery
     istio: pilot
   annotations:
-    checksum/config-volume:  dc8df904a9925f4267d882d8e08bac9b52d7e0a15653e566eed896600d529696
+    checksum/config-volume:  e6c24ba0552bf5a9f346d8672db4c5406dbce233ee238029e2506dc3ad73ab04
 spec:
   strategy:
     rollingUpdate:
@@ -437,7 +450,7 @@ spec:
       serviceAccountName: istio-pilot-service-account
       containers:
         - name: discovery
-          image: "gcr.io/istio-release/pilot:master-latest-daily"
+          image: "gcr.io/peripli/pilot:rhea"
           imagePullPolicy: Always
           args:
           - "discovery"

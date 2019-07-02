@@ -475,7 +475,7 @@ spec:
                 - s390x      
       containers:
       - name: mixer
-        image: "gcr.io/istio-release/mixer:master-latest-daily"
+        image: "gcr.io/peripli/mixer:rhea"
         imagePullPolicy: Always
         ports:
         - containerPort: 15014
@@ -520,7 +520,7 @@ spec:
           periodSeconds: 5
 
       - name: istio-proxy
-        image: "gcr.io/istio-release/proxyv2:master-latest-daily"
+        image: "gcr.io/peripli/proxyv2:rhea"
         imagePullPolicy: Always
         ports:
         - containerPort: 9091

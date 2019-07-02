@@ -1,4 +1,23 @@
 ---
+# Source: citadel/templates/poddisruptionbudget.yaml
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: istio-citadel11
+  namespace: istio-system
+  labels:
+    app: citadel
+    istio: citadel
+    release: istio-system-istio-system-security
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: citadel
+      istio: citadel
+
+---
 # Source: citadel/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -21,14 +40,17 @@ metadata:
     release: istio-system-istio-system-security
 rules:
 - apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["create", "get", "update"]
+- apiGroups: [""]
   resources: ["secrets"]
   verbs: ["create", "get", "watch", "list", "update", "delete"]
 - apiGroups: [""]
-  resources: ["serviceaccounts"]
+  resources: ["serviceaccounts", "services"]
   verbs: ["get", "watch", "list"]
-- apiGroups: [""]
-  resources: ["services"]
-  verbs: ["get", "watch", "list"]
+- apiGroups: ["authentication.k8s.io"]
+  resources: ["tokenreviews"]
+  verbs: ["create"]
 
 ---
 # Source: citadel/templates/clusterrolebinding.yaml
@@ -84,7 +106,7 @@ metadata:
     release: istio-system-istio-system-security
 
 spec:
-  replicas: 1
+  replicas: 
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -100,7 +122,7 @@ spec:
       serviceAccountName: istio-citadel11-service-account
       containers:
         - name: citadel
-          image: "gcr.io/istio-release/citadel:master-latest-daily"
+          image: "gcr.io/peripli/citadel:rhea"
           imagePullPolicy: Always
           args:
             - --append-dns-names=true

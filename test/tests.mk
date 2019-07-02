@@ -95,6 +95,7 @@ INT_FLAGS ?= \
 	--istio.test.kube.policyNamespace ${ISTIO_POLICY_NS} \
 	--istio.test.kube.ingressNamespace ${ISTIO_INGRESS_NS} \
 	--istio.test.kube.egressNamespace ${ISTIO_EGRESS_NS} \
+	--istio.test.kube.enableNamespacesByDefault ${ENABLE_NAMESPACES_BY_DEFAULT} \
 	--istio.test.kube.minikube \
 	--istio.test.ci -timeout 30m
 

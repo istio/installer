@@ -34,6 +34,47 @@ resources:
         access_token: ((GITHUB_ACCESS_TOKEN))
 
 jobs:
+  - name: check-kustomize-templates
+    plan:
+    - get: istio-installer-pr
+      trigger: true
+    - put: istio-installer-pr
+      params: &pr-status-put
+        path: istio-installer-pr
+        base_context: concourse/
+        context: kustomize-templates
+        status: pending
+    - task: check-kustomize-templates
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: gcr.io/istio-testing/istio-builder
+        params:
+          GITHUB_ACCESS_TOKEN: ((GITHUB_ACCESS_TOKEN))
+          CONCOURSE_WDF_PASSWORD: ((CONCOURSE_WDF_PASSWORD))
+        inputs:
+          - name: istio-installer-pr
+        run:
+          path: /bin/sh
+          args:
+          - -ecu
+          - |
+            set -x
+            cd istio-installer-pr
+            make run-build
+            git diff --exit-code
+      on_failure:
+        put: istio-installer-pr
+        params:
+          <<: *pr-status-put
+          status: failure
+    - put: istio-installer-pr
+      params:
+        <<: *pr-status-put
+        status: success
+
   - name: install-and-test
     serial_groups: [ cluster ]
     plan:
@@ -114,7 +155,8 @@ jobs:
       trigger: false
     - put: istio-installer-pr
       params:
-        path: istio-installer-pr
+        <<: *pr-status-put
+        context: installer-test
         status: pending
     - task: validate
       params:
@@ -143,9 +185,11 @@ jobs:
       on_failure:
         put: istio-installer-pr
         params:
-          path: istio-installer-pr
+          <<: *pr-status-put
+          context: installer-test
           status: failure
     - put: istio-installer-pr
       params:
-        path: istio-installer-pr
+        <<: *pr-status-put
+        context: installer-test
         status: success

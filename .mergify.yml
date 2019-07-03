@@ -3,7 +3,8 @@ pull_request_rules:
     conditions:
       - "status-success=ci/circleci: build"
       - "status-success=ci/circleci: install-demo"
-      - "status-success=ci/circleci: install-minikube"
+      # Todo(https://github.com/istio/istio/issues/15222) make this required
+      # - "status-success=ci/circleci: install-minikube"
       - "status-success=ci/circleci: integration-old-kind"
       - "status-success=ci/circleci: integration-presubmit-isolated-namespaces-kind"
       - "status-success=ci/circleci: integration-presubmit-one-namespace-kind"

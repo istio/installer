@@ -299,8 +299,7 @@ jobs:
       - run:
           command: make sync
       - run:
-          # todo: set ENABLE_NAMESPACES_BY_DEFAULT=false once integration tests can support it
-          command: make kind-run TARGET="install-base"
+          command: make kind-run TARGET="install-base ENABLE_NAMESPACES_BY_DEFAULT=false"
       - run:
           command: make docker-run-test TEST_TARGET="run-minimal-test"
       - run:

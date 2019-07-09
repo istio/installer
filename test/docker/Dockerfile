@@ -40,7 +40,7 @@ RUN cd /go/src/istio.io/istio && make istioctl
 
 ############################################
 # Main image
-FROM kindest/node:v1.15.0@sha256:b4d092fd2b507843dd096fe6c85d06a27a0cbd740a0b32a880fe61aba24bb478
+FROM kindest/node:v1.15.0
 
 # Environment variables used in the build.
 ENV     GOROOT=/usr/local/go

@@ -1,15 +1,15 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: istio-nodeagent-{{ .Release.Namespace }}
+  name: istio-sdsagentnt-{{ .Release.Namespace }}
   labels:
-    app: istio-nodeagent
+    app: istio-sdsagent
     release: {{ .Release.Name }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: istio-nodeagent-{{ .Release.Namespace }}
+  name: istio-sdsagent-{{ .Release.Namespace }}
 subjects:
   - kind: ServiceAccount
-    name: istio-nodeagent-service-account
+    name: istio-sdsagent
     namespace: {{ .Release.Namespace }}

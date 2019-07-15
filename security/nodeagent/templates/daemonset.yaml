@@ -1,47 +1,52 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: istio-nodeagent
+  name: istio-sdsagent
   namespace: {{ .Release.Namespace }}
   labels:
-    app: istio-nodeagent
-    istio: nodeagent
+    app: istio-sdsagent
+    istio: sdsagent
     release: {{ .Release.Name }}
 spec:
   selector:
     matchLabels:
-      istio: nodeagent
+      istio: sdsagent
   template:
     metadata:
       labels:
-        app: istio-nodeagent
-        istio: nodeagent
+        app: istio-sdsagent
+        istio: sdsagent
         release: {{ .Release.Name }}
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
-      serviceAccountName: istio-nodeagent-service-account
+      serviceAccountName: istio-sdsagent
 {{- if .Values.global.priorityClassName }}
       priorityClassName: "{{ .Values.global.priorityClassName }}"
 {{- end }}
       containers:
-        - name: nodeagent
-{{- if contains "/" .Values.nodeagent.image }}
-          image: "{{ .Values.nodeagent.image }}"
+        - name: sdsagent
+{{- if contains "/" .Values.sdsagent.image }}
+          image: "{{ .Values.sdsagent.image }}"
 {{- else }}
-          image: "{{ .Values.global.hub }}/{{ .Values.nodeagent.image }}:{{ .Values.global.tag }}"
+          image: "{{ .Values.global.hub }}/{{ .Values.sdsagent.image }}:{{ .Values.global.tag }}"
 {{- end }}
           imagePullPolicy: {{ .Values.global.imagePullPolicy | default "Always" }}
           args:
           {{- if .Values.global.logAsJson }}
             - --log_as_json
           {{- end }}
+            - --log_output_level=all:debug
           volumeMounts:
             - mountPath: /var/run/sds
               name: sdsudspath
           env:
-          {{- if .Values.nodeagent.env }}
-          {{- range $key, $val := .Values.nodeagent.env }}
+            - name: CA_PROVIDER
+              value: {{ .Values.sdsagent.caProvider }}
+            - name: CA_ADDR
+              value: {{ .Values.sdsagent.caAddr }}
+          {{- if .Values.sdsagent.env }}
+          {{- range $key, $val := .Values.sdsagent.env }}
             - name: {{ $key }}
               value: "{{ $val }}"
           {{- end }}
@@ -59,9 +64,9 @@ spec:
       affinity:
       {{- include "nodeaffinity" . | indent 6 }}
       {{- include "podAntiAffinity" . | indent 6 }}
-{{- if .Values.nodeagent.tolerations }}
+{{- if .Values.sdsagent.tolerations }}
       tolerations:
-{{ toYaml .Values.nodeagent.tolerations | indent 6 }}
+{{ toYaml .Values.sdsagent.tolerations | indent 6 }}
 {{- end }}
   updateStrategy:
     type: RollingUpdate

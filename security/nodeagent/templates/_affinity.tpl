@@ -19,7 +19,7 @@
           - {{ $key }}
           {{- end }}
         {{- end }}
-        {{- $nodeSelector := default .Values.global.defaultNodeSelector .Values.nodeagent.nodeSelector -}}
+        {{- $nodeSelector := default .Values.global.defaultNodeSelector .Values.sdsagent.nodeSelector -}}
         {{- range $key, $val := $nodeSelector }}
         - key: {{ $key }}
           operator: In
@@ -43,13 +43,13 @@
 {{- end }}
 
 {{- define "podAntiAffinity" }}
-{{- if or .Values.nodeagent.podAntiAffinityLabelSelector .Values.nodeagent.podAntiAffinityTermLabelSelector}}
+{{- if or .Values.sdsagent.podAntiAffinityLabelSelector .Values.sdsagent.podAntiAffinityTermLabelSelector}}
   podAntiAffinity:
-    {{- if .Values.nodeagent.podAntiAffinityLabelSelector }}
+    {{- if .Values.sdsagent.podAntiAffinityLabelSelector }}
     requiredDuringSchedulingIgnoredDuringExecution:
     {{- include "podAntiAffinityRequiredDuringScheduling" . }}
     {{- end }}
-    {{- if .Values.nodeagent.podAntiAffinityTermLabelSelector }}
+    {{- if .Values.sdsagent.podAntiAffinityTermLabelSelector }}
     preferredDuringSchedulingIgnoredDuringExecution:
     {{- include "podAntiAffinityPreferredDuringScheduling" . }}
     {{- end }}
@@ -57,7 +57,7 @@
 {{- end }}
 
 {{- define "podAntiAffinityRequiredDuringScheduling" }}
-    {{- range $index, $item := .Values.nodeagent.podAntiAffinityLabelSelector }}
+    {{- range $index, $item := .Values.sdsagent.podAntiAffinityLabelSelector }}
     - labelSelector:
         matchExpressions:
         - key: {{ $item.key }}
@@ -74,7 +74,7 @@
 {{- end }}
 
 {{- define "podAntiAffinityPreferredDuringScheduling" }}
-    {{- range $index, $item := .Values.nodeagent.podAntiAffinityTermLabelSelector }}
+    {{- range $index, $item := .Values.sdsagent.podAntiAffinityTermLabelSelector }}
     - podAffinityTerm:
         labelSelector:
           matchExpressions:

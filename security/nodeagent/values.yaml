@@ -1,16 +1,22 @@
 #
 # nodeagent configuration
 #
-nodeagent:
-  enabled: false
-  image: node-agent-k8s
-  env:
-    # name of authentication provider.
-    CA_PROVIDER: ""
-    # CA endpoint.
-    CA_ADDR: ""  
-    # names of authentication provider's plugins.
-    Plugins: ""
+sdsagent:
+
+  # This can be used to specify a different certificate provider
+  #
+  # This replaces the env variable in 1.2 alpha - env variables are not meant to be exposed to users for supported
+  # configs.
+  caProvider: "Citadel"
+
+  # Address of the certificate provider server.
+  # By default the node agent is installed in same namesapce with citadel, so namespace not needed.
+  #
+  # Important: the citadel cert has hardcoded "citadel" and "citadel.NS.svc.cluster.local" - any provider will need
+  # valid and matching certificates
+  #
+  # TODO: route via Gateaway address, with proper certificate
+  caAddr: "istio-citadel:8060"
 
   nodeSelector: {}
   tolerations: []
@@ -35,3 +41,5 @@ nodeagent:
   # “security” and value “S1”.
   podAntiAffinityLabelSelector: []
   podAntiAffinityTermLabelSelector: []
+
+  image: node-agent-k8s

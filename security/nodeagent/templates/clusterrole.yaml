@@ -1,9 +1,9 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: istio-nodeagent-{{ .Release.Namespace }}
+  name: istio-sdsagent-{{ .Release.Namespace }}
   labels:
-    app: istio-nodeagent
+    app: istio-sdsagent
     release: {{ .Release.Name }}
 rules:
 - apiGroups: [""]

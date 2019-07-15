@@ -353,9 +353,9 @@ global:
     # SDS enabled. IF set to true, mTLS certificates for the sidecars will be
     # distributed through the SecretDiscoveryService instead of using K8S secrets to mount the certificates.
     enabled: false
-    udsPath: ""
+    udsPath: "unix:/var/run/sds/uds_path"
     useTrustworthyJwt: false
-    useNormalJwt: false
+    useNormalJwt: true
 
   # Configure the mesh networks to be used by the Split Horizon EDS.
   #

@@ -121,7 +121,6 @@ IOP ?= bin/iop
 IOP_OPTS="-f test/kind/user-values.yaml"
 
 ifeq ($(MOUNT), 1)
-	KIND_CONFIG ?= --config ${GOPATH}/kind.yaml
 	KIND_CLUSTER ?= local
 else
 	# Customize this if you want to run tests in different kind clusters in parallel
@@ -130,8 +129,6 @@ else
 	# Remember that 'make test' will clean the previous cluster at startup - but leave it running after in case of errors,
 	# so failures can be debugged.
 	KIND_CLUSTER ?= test
-
-	KIND_CONFIG =
 endif
 
 KUBECONFIG ?= ~/.kube/config
@@ -179,16 +176,15 @@ prepare:
 ifeq ($(MOUNT), 1)
 	# Needs to run locally - will mount the local directory, also create kind credentials in $HOME/.kube
 	cat test/kind/kind.yaml | sed s,GOPATH,$(GOPATH), > ${GOPATH}/kind.yaml
-	kind create cluster --name ${KIND_CLUSTER} --wait 60s ${KIND_CONFIG} --image $(BUILD_IMAGE)
+	kind create cluster --name ${KIND_CLUSTER} --wait 60s --config ${GOPATH}/kind.yaml --image $(BUILD_IMAGE)
 else
 	docker run --privileged \
 		-v /var/run/docker.sock:/var/run/docker.sock  \
 		-e GOPATH=${GOPATH} \
 		-it --entrypoint /bin/bash --rm \
 		$(BUILD_IMAGE) -c \
-		"/usr/local/bin/kind create cluster --loglevel debug --name ${KIND_CLUSTER} --wait 60s ${KIND_CONFIG} --image $(BUILD_IMAGE)"
+		"/usr/local/bin/kind create cluster --loglevel debug --name ${KIND_CLUSTER} --wait 60s --image $(BUILD_IMAGE)"
 endif
-	#kind create cluster --loglevel debug --name ${KIND_CLUSTER} --wait 60s ${KIND_CONFIG} --image $(BUILD_IMAGE)
 
 ${TMPDIR}:
 	mkdir -p ${TMPDIR}

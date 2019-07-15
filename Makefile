@@ -66,6 +66,7 @@ TEST_FLAGS ?=  HUB=${HUB} TAG=${TAG}
 
 HELM_VER ?= v2.13.1
 
+
 # Will be used by tests. In CI 'machine' or some other cases needs to be built locally, we can't
 # customize base image
 export ISTIOCTL_BIN ?= /usr/local/bin/istioctl
@@ -112,6 +113,10 @@ SKIP_KIND_SETUP ?= 0
 
 # 60s seems to short for telemetry/prom
 WAIT_TIMEOUT ?= 240s
+
+# Tool to apply templates, kustomize and install.
+# Operator CLI should be compatible.
+IOP ?= bin/iop
 
 IOP_OPTS="-f test/kind/user-values.yaml"
 
@@ -170,15 +175,19 @@ docker-run-test:
 # and additional tools to install istio.
 prepare:
 	mkdir -p ${TMPDIR}
-	cat test/kind/kind.yaml | sed s,GOPATH,$(GOPATH), > ${GOPATH}/kind.yaml
 	# Kind version and node image need to be in sync - that's not ideal, working on a fix.
+ifeq ($(MOUNT), 1)
+	# Needs to run locally - will mount the local directory, also create kind credentials in $HOME/.kube
+	cat test/kind/kind.yaml | sed s,GOPATH,$(GOPATH), > ${GOPATH}/kind.yaml
+	kind create cluster --name ${KIND_CLUSTER} --wait 60s ${KIND_CONFIG} --image $(BUILD_IMAGE)
+else
 	docker run --privileged \
 		-v /var/run/docker.sock:/var/run/docker.sock  \
 		-e GOPATH=${GOPATH} \
 		-it --entrypoint /bin/bash --rm \
 		$(BUILD_IMAGE) -c \
 		"/usr/local/bin/kind create cluster --loglevel debug --name ${KIND_CLUSTER} --wait 60s ${KIND_CONFIG} --image $(BUILD_IMAGE)"
-
+endif
 	#kind create cluster --loglevel debug --name ${KIND_CLUSTER} --wait 60s ${KIND_CONFIG} --image $(BUILD_IMAGE)
 
 ${TMPDIR}:
@@ -309,5 +318,5 @@ include test/install.mk
 include test/tests.mk
 include test/noauth.mk
 include test/demo.mk
-include test/sds.mk
+include test/sds/sds.mk
 include Makefile.common.mk

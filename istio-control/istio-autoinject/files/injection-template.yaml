@@ -6,7 +6,6 @@ template: |
   {{- if not .Values.istio_cni.enabled }}
   - name: istio-init
   {{- if contains "/" .Values.global.proxy_init.image }}
-    # TODO: use proxy image, to speed up stratup
     image: "{{ .Values.global.proxy_init.image }}"
   {{- else }}
     image: "{{ .Values.global.hub }}/{{ .Values.global.proxy_init.image }}:{{ .Values.global.tag }}"
@@ -77,10 +76,10 @@ template: |
   {{- end }}
   containers:
   - name: istio-proxy
-  {{- if contains "/" .Values.global.proxy.image }}
+  {{- if contains "/" (annotation .ObjectMeta `sidecar.istio.io/proxyImage` .Values.global.proxy.image) }}
     image: "{{ annotation .ObjectMeta `sidecar.istio.io/proxyImage` .Values.global.proxy.image }}"
   {{- else }}
-    image: "{{ annotation .ObjectMeta `sidecar.istio.io/proxyImage` .Values.global.hub }}/{{ .Values.global.proxy.image }}:{{ .Values.global.tag }}"
+    image: "{{ .Values.global.hub }}/{{ .Values.global.proxy.image }}:{{ .Values.global.tag }}"
   {{- end }}
     ports:
     - containerPort: 15090
@@ -163,6 +162,10 @@ template: |
   {{- if .Values.global.logAsJson }}
     - --log_as_json
   {{- end }}
+  {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapTemplate`) }}
+    - --templateFile=/var/lib/istio/bootstrap/envoy.yaml.tmpl
+    - --controlPlaneBootstrap=false
+  {{- end }}
     env:
     - name: POD_NAME
       valueFrom:
@@ -235,13 +238,10 @@ template: |
       capabilities:
         add:
         - NET_ADMIN
-      runAsGroup: 1337
       {{ else -}}
-      {{ if and .Values.global.sds.enabled .Values.global.sds.useTrustworthyJwt }}
-      runAsGroup: 1337
-      {{- end }}
       runAsUser: 1337
       {{- end }}
+      runAsGroup: 1337
     resources:
       {{ if or (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPU`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemory`) -}}
       requests:
@@ -257,12 +257,17 @@ template: |
   {{- end }}
     {{  end -}}
     volumeMounts:
+    {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapTemplate`) }}
+    - mountPath: /var/lib/istio/bootstrap
+      name: custom-bootstrap-template
+    {{- end }}
     {{ if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapOverride`) }}
     - mountPath: /etc/istio/custom-bootstrap
       name: custom-bootstrap-volume
     {{- end }}
     - mountPath: /etc/istio/proxy
       name: istio-envoy
+
     {{- if .Values.global.sds.enabled }}
     - mountPath: /var/run/sds
       name: sds-uds-path
@@ -271,16 +276,11 @@ template: |
     - mountPath: /var/run/secrets/tokens
       name: istio-token
     {{- end }}
-    {{- if .Values.global.sds.customTokenDirectory }}
-    - mountPath: "{{ .Values.global.sds.customTokenDirectory -}}"
-      name: custom-sds-token
-      readOnly: true
     {{- end }}
-    {{- else }}
+
     - mountPath: /etc/certs/
       name: istio-certs
       readOnly: true
-    {{- end }}
     {{- if and (eq .Values.global.proxy.tracer "lightstep") .Values.global.tracer.lightstep.cacertPath }}
     - mountPath: {{ directory .ProxyConfig.GetTracing.GetLightstep.GetCacertPath }}
       name: lightstep-certs
@@ -298,6 +298,11 @@ template: |
     configMap:
       name: {{ annotation .ObjectMeta `sidecar.istio.io/bootstrapOverride` "" }}
   {{- end }}
+  {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapTemplate`) }}
+  - name: custom-bootstrap-template
+    configMap:
+      name: {{ annotation .ObjectMeta `sidecar.istio.io/bootstrapTemplate` "" }}
+  {{- end }}
   - emptyDir:
       medium: Memory
     name: istio-envoy
@@ -305,11 +310,6 @@ template: |
   - name: sds-uds-path
     hostPath:
       path: /var/run/sds
-  {{- if .Values.global.sds.customTokenDirectory }}
-  - name: custom-sds-token
-    secret:
-      secretName: sdstokensecret
-  {{- end }}
   {{- if .Values.global.sds.useTrustworthyJwt }}
   - name: istio-token
     projected:
@@ -319,7 +319,7 @@ template: |
           expirationSeconds: 43200
           audience: {{ .Values.global.trustDomain }}
   {{- end }}
-  {{- else }}
+  {{- end }}
   - name: istio-certs
     secret:
       optional: true
@@ -334,7 +334,6 @@ template: |
     {{ toYaml $value | indent 2 }}
     {{ end }}
     {{ end }}
-  {{- end }}
   {{- if and (eq .Values.global.proxy.tracer "lightstep") .Values.global.tracer.lightstep.cacertPath }}
   - name: lightstep-certs
     secret:

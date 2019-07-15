@@ -1,0 +1,394 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sds
+data:
+  # This is an example on how to use a custom bootstrap template in a pod. It was used to try various combinations
+  # on configuring SDS for control plane auth. Based on the template shipped in 1.2, but simplified to keep only
+  # essential
+
+  envoy.yaml.tmpl: |-
+    {
+      "node": {
+        "id": "{{ .nodeID }}",
+        "cluster": "{{ .cluster }}",
+        "locality": {
+        },
+        "metadata": {{ .meta_json_str }}
+      },
+      "admin": {
+        "access_log_path": "/dev/null",
+        "address": {
+          "socket_address": {
+            "address": "{{ .localhost }}",
+            "port_value": {{ .config.ProxyAdminPort }}
+          }
+        }
+      },
+      "dynamic_resources": {
+        "lds_config": {
+          "ads": {}
+        },
+        "cds_config": {
+          "ads": {}
+        },
+        "ads_config": {
+          "api_type": "GRPC",
+          "grpc_services": [
+            {
+              "envoy_grpc": {
+                "cluster_name": "xds-grpc"
+              }
+            }
+          ]
+        }
+      },
+      "static_resources": {
+        "clusters": [
+          {
+            "name": "prometheus_stats",
+            "type": "STATIC",
+            "connect_timeout": "0.250s",
+            "lb_policy": "ROUND_ROBIN",
+            "hosts": [
+              {
+                "socket_address": {
+                  "protocol": "TCP",
+                  "address": "{{ .localhost }}",
+                  "port_value": {{ .config.ProxyAdminPort }}
+                }
+              }
+            ]
+          },
+          {
+            "name": "xds-grpc",
+            "type": "STRICT_DNS",
+            "dns_refresh_rate": "{{ .dns_refresh_rate }}",
+            "dns_lookup_family": "{{ .dns_lookup_family }}",
+            "connect_timeout": "{{ .connect_timeout }}",
+            "lb_policy": "ROUND_ROBIN",
+            "tls_context": {
+              "common_tls_context": {
+                "alpn_protocols": [
+                  "h2"
+                ],
+                "tlsCertificateSdsSecretConfigs": [
+                    {
+                      "name": "default",
+                      "sdsConfig": {
+                        "apiConfigSource": {
+                          "apiType": "GRPC",
+                          "grpcServices": [
+                            {
+                              "googleGrpc": {
+                                "targetUri": "unix:/var/run/sds/uds_path",
+                                "channelCredentials": {
+                                  "localCredentials": {}
+                                },
+                                "callCredentials": [
+                                  {
+                                    "fromPlugin": {
+                                      "name": "envoy.grpc_credentials.file_based_metadata",
+                                      "typedConfig": {
+                                        "@type": "type.googleapis.com/envoy.config.grpc_credential.v2alpha.FileBasedMetadataConfig",
+                                        "secretData": {
+                                          "filename": "/var/run/secrets/kubernetes.io/serviceaccount/token"
+                                        },
+                                        "headerKey": "istio_sds_credentials_header-bin"
+                                      }
+                                    }
+                                  }
+                                ],
+                                "statPrefix": "sdsstat",
+                                "credentialsFactoryName": "envoy.grpc_credentials.file_based_metadata"
+                              }
+                            }
+                          ]
+                        },
+                        "initialFetchTimeout": "0s"
+                      }
+                    }
+                  ],
+                  "combinedValidationContext": {
+                    "defaultValidationContext": {
+                      "verifySubjectAltName": [
+                        "spiffe://cluster.local/ns/istio-sds/sa/istio-pilot-service-account",
+                        {{- range $a, $s := .pilot_SAN }}
+                        "{{$s}}"
+                        {{- end}}
+                      ]
+                    },
+                    "validationContextSdsSecretConfig": {
+                      "name": "ROOTCA",
+                      "sdsConfig": {
+                        "apiConfigSource": {
+                          "apiType": "GRPC",
+                          "grpcServices": [
+                            {
+                              "googleGrpc": {
+                                "targetUri": "unix:/var/run/sds/uds_path",
+                                "channelCredentials": {
+                                  "localCredentials": {}
+                                },
+                                "callCredentials": [
+                                  {
+                                    "fromPlugin": {
+                                      "name": "envoy.grpc_credentials.file_based_metadata",
+                                      "typedConfig": {
+                                        "@type": "type.googleapis.com/envoy.config.grpc_credential.v2alpha.FileBasedMetadataConfig",
+                                        "secretData": {
+                                          "filename": "/var/run/secrets/kubernetes.io/serviceaccount/token"
+                                        },
+                                        "headerKey": "istio_sds_credentials_header-bin"
+                                      }
+                                    }
+                                  }
+                                ],
+                                "statPrefix": "sdsstat",
+                                "credentialsFactoryName": "envoy.grpc_credentials.file_based_metadata"
+                              }
+                            }
+                          ]
+                        },
+                        "initialFetchTimeout": "0s"
+                      }
+                    }
+                  }
+              }
+            },
+            "hosts": [
+              {
+                "socket_address": {{ .pilot_grpc_address }}
+              }
+            ],
+            "circuit_breakers": {
+              "thresholds": [
+                {
+                  "priority": "DEFAULT",
+                  "max_connections": 100000,
+                  "max_pending_requests": 100000,
+                  "max_requests": 100000
+                },
+                {
+                  "priority": "HIGH",
+                  "max_connections": 100000,
+                  "max_pending_requests": 100000,
+                  "max_requests": 100000
+                }
+              ]
+            },
+            "upstream_connection_options": {
+              "tcp_keepalive": {
+                "keepalive_time": 300
+              }
+            },
+            "http2_protocol_options": { }
+          }
+          {{ if .zipkin }}
+          ,
+          {
+            "name": "zipkin",
+            "type": "STRICT_DNS",
+            "dns_refresh_rate": "{{ .dns_refresh_rate }}",
+            "dns_lookup_family": "{{ .dns_lookup_family }}",
+            "connect_timeout": "1s",
+            "lb_policy": "ROUND_ROBIN",
+            "hosts": [
+              {
+                "socket_address": {{ .zipkin }}
+              }
+            ]
+          }
+          {{ else if .lightstep }}
+          ,
+          {
+            "name": "lightstep",
+            "http2_protocol_options": {},
+            {{ if .lightstepSecure }}
+            "tls_context": {
+              "common_tls_context": {
+                "alpn_protocols": [
+                  "h2"
+                ],
+                "validation_context": {
+                  "trusted_ca": {
+                    "filename": "{{ .lightstepCacertPath }}"
+                  }
+                }
+              }
+            },
+            {{ end }}
+            "type": "STRICT_DNS",
+            "dns_refresh_rate": "{{ .dns_refresh_rate }}",
+            "dns_lookup_family": "{{ .dns_lookup_family }}",
+            "connect_timeout": "1s",
+            "lb_policy": "ROUND_ROBIN",
+            "hosts": [
+              {
+                "socket_address": {{ .lightstep }}
+              }
+            ]
+          }
+          {{ else if .datadog }}
+          ,
+          {
+            "name": "datadog_agent",
+            "connect_timeout": "1s",
+            "type": "STRICT_DNS",
+            "dns_refresh_rate": "{{ .dns_refresh_rate }}",
+            "dns_lookup_family": "{{ .dns_lookup_family }}",
+            "lb_policy": "ROUND_ROBIN",
+            "hosts": [
+              {
+                "socket_address": {{ .datadog }}
+              }
+            ]
+          }
+          {{ end }}
+          {{ if .envoy_metrics_service }}
+          ,
+          {
+            "name": "envoy_metrics_service",
+            "type": "STRICT_DNS",
+            "dns_refresh_rate": "{{ .dns_refresh_rate }}",
+            "dns_lookup_family": "{{ .dns_lookup_family }}",
+            "connect_timeout": "1s",
+            "lb_policy": "ROUND_ROBIN",
+            "http2_protocol_options": {},
+            "hosts": [
+              {
+                "socket_address": {{ .envoy_metrics_service }}
+              }
+            ]
+          }
+          {{ end }}
+          {{ if .envoy_accesslog_service }}
+          ,
+          {
+            "name": "envoy_accesslog_service",
+            "type": "STRICT_DNS",
+            "dns_refresh_rate": "{{ .dns_refresh_rate }}",
+            "dns_lookup_family": "{{ .dns_lookup_family }}",
+            "connect_timeout": "1s",
+            "lb_policy": "ROUND_ROBIN",
+            "http2_protocol_options": {},
+            "hosts": [
+              {
+                "socket_address": {{ .envoy_accesslog_service }}
+              }
+            ]
+          }
+          {{ end }}
+        ],
+        "listeners":[
+          {
+            "address": {
+              "socket_address": {
+                "protocol": "TCP",
+                "address": "{{ .wildcard }}",
+                "port_value": 15090
+              }
+            },
+            "filter_chains": [
+              {
+                "filters": [
+                  {
+                    "name": "envoy.http_connection_manager",
+                    "config": {
+                      "codec_type": "AUTO",
+                      "stat_prefix": "stats",
+                      "route_config": {
+                        "virtual_hosts": [
+                          {
+                            "name": "backend",
+                            "domains": [
+                              "*"
+                            ],
+                            "routes": [
+                              {
+                                "match": {
+                                  "prefix": "/stats/prometheus"
+                                },
+                                "route": {
+                                  "cluster": "prometheus_stats"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "http_filters": {
+                        "name": "envoy.router"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+      {{ if .zipkin }}
+      ,
+      "tracing": {
+        "http": {
+          "name": "envoy.zipkin",
+          "config": {
+            "collector_cluster": "zipkin",
+            "collector_endpoint": "/api/v1/spans",
+            "trace_id_128bit": "true",
+            "shared_span_context": "false"
+          }
+        }
+      }
+      {{ else if .lightstep }}
+      ,
+      "tracing": {
+        "http": {
+          "name": "envoy.lightstep",
+          "config": {
+            "collector_cluster": "lightstep",
+            "access_token_file": "{{ .lightstepToken}}"
+          }
+        }
+      }
+      {{ else if .datadog }}
+      ,
+      "tracing": {
+        "http": {
+          "name": "envoy.tracers.datadog",
+          "config": {
+            "collector_cluster": "datadog_agent",
+            "service_name": "{{ .cluster }}"
+          }
+        }
+      }
+      {{ end }}
+      {{ if or .envoy_metrics_service .statsd }}
+      ,
+      "stats_sinks": [
+        {{ if .envoy_metrics_service }}
+        {
+          "name": "envoy.metrics_service",
+          "config": {
+            "grpc_service": {
+              "envoy_grpc": {
+                "cluster_name": "envoy_metrics_service"
+              }
+            }
+          }
+        },
+        {{ end }}
+        {{ if .statsd }}
+        {
+          "name": "envoy.statsd",
+          "config": {
+            "address": {
+              "socket_address": {{ .statsd }}
+            }
+          }
+        },
+        {{ end }}
+      ]
+      {{ end }}
+    }

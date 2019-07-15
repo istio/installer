@@ -1,0 +1,57 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortio
+spec:
+  ports:
+  - port: 8080
+    name: http-echo
+  - port: 8079
+    name: grpc-ping
+  selector:
+    app: fortio
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: fortio
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/logLevel: "TRACE"
+        sidecar.istio.io/debug: "true"
+        sidecar.istio.io/componentLogLevel: "config:trace,http2:trace,init:trace,grpc:trace,upstream:trace"
+        # Test it with the 1.2.0 image, want to check if SDS can be upgraded with the rel.
+        sidecar.istio.io/proxyImage: istio/proxyv2:1.2.0
+
+        policy.istio.io/check: disable
+
+        # SDS for control plane in progress
+#        sidecar.istio.io/discoveryAddress: "istio-pilot.istio-sds:15010"
+        sidecar.istio.io/controlPlaneAuthPolicy: "NONE"
+        sidecar.istio.io/discoveryAddress: "istio-pilot.istio-sds:15011"
+
+        # NOT SETTING THIS: will cause 'waiting for certificates'.
+        # TODO: fix proxy startup to not wait if sds is set
+        #sidecar.istio.io/controlPlaneAuthPolicy: "MUTUAL_TLS"
+
+        # To iterate faster and debug - use custom template
+        #
+        sidecar.istio.io/bootstrapTemplate: "sds"
+      labels:
+        app: fortio
+        version: v1
+    spec:
+      containers:
+      - name: fortio
+        image: costinm/fortio:latest
+        ports:
+         - containerPort: 8080
+         - containerPort: 8079
+        args:
+          - server
+

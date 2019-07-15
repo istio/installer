@@ -1,0 +1,13 @@
+# Optional component that installs the Citadel SDS agent in a cluster.
+# Installing will have no impact on existing workloads.bases:
+# User should also:
+# - install istio-sds for a control plane that enables SDS,
+# - test few or all apps
+# - update istio-control/istio-system with the SDS settings
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - sds-agent.yaml
+

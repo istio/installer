@@ -1,4 +1,23 @@
 ---
+# Source: citadel/templates/poddisruptionbudget.yaml
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: istio-citadel11
+  namespace: istio-system
+  labels:
+    app: citadel
+    istio: citadel
+    release: istio-system-istio-system-security
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: citadel
+      istio: citadel
+
+---
 # Source: citadel/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -21,14 +40,17 @@ metadata:
     release: istio-system-istio-system-security
 rules:
 - apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["create", "get", "update"]
+- apiGroups: [""]
   resources: ["secrets"]
   verbs: ["create", "get", "watch", "list", "update", "delete"]
 - apiGroups: [""]
-  resources: ["serviceaccounts"]
+  resources: ["serviceaccounts", "services"]
   verbs: ["get", "watch", "list"]
-- apiGroups: [""]
-  resources: ["services"]
-  verbs: ["get", "watch", "list"]
+- apiGroups: ["authentication.k8s.io"]
+  resources: ["tokenreviews"]
+  verbs: ["create"]
 
 ---
 # Source: citadel/templates/clusterrolebinding.yaml
@@ -52,7 +74,8 @@ subjects:
 apiVersion: v1
 kind: Service
 metadata:
-  name: istio-citadel11
+  # Must match the certificate, this is used in the node agent in same namespace.
+  name: istio-citadel
   namespace: istio-system
   labels:
     app: citadel
@@ -73,7 +96,7 @@ spec:
 ---
 # Source: citadel/templates/deployment.yaml
 # istio CA watching all namespaces
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: istio-citadel11
@@ -84,7 +107,10 @@ metadata:
     release: istio-system-istio-system-security
 
 spec:
-  replicas: 1
+  selector:
+    matchLabels:
+      istio: citadel
+  replicas: 
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -105,8 +131,6 @@ spec:
           args:
             - --append-dns-names=true
             - --grpc-port=8060
-          # global.tag may contain something like "release-1.1-latest-daily". Assume >1.2 if we cannot extract semver version.
-            - --grpc-host-identities=citadel
             - --citadel-storage-namespace=istio-system
             - --custom-dns-names=$(CITADEL_DNS)
             - --self-signed-ca=true

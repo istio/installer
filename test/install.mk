@@ -29,6 +29,8 @@ run-build-multi:
 	bin/iop ${ISTIO_TELEMETRY_NS} istio-telemetry ${BASE}/istio-telemetry/prometheus -t > kustomize/istio-telemetry/istio-prometheus.yaml
 	bin/iop ${ISTIO_TELEMETRY_NS} istio-telemetry ${BASE}/istio-telemetry/grafana -t > kustomize/istio-telemetry/istio-grafana.yaml
 
+	bin/iop ${ISTIO_SYSTEM_NS} istio-sdsagent ${BASE}/security/nodeagent -t > kustomize/sds-agent/sds-agent.yaml
+
 	#bin/iop ${ISTIO_POLICY_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/multi/istio-policy.yaml
 	#bin/iop ${ISTIO_POLICY_NS} istio-cni ${BASE}/istio-cni -t > ${OUT}/release/multi/istio-cni.yaml
 	# TODO: generate single config (merge all yaml)
@@ -66,6 +68,8 @@ run-build-demo: dep
 	#bin/iop ${ISTIO_POLICY_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/demo/istio-policy.yaml
 	cat ${OUT}/release/demo/*.yaml > test/demo/k8s.yaml
 
+install-grafana:
+	bin/iop ${ISTIO_TELEMETRY_NS} istio-telemetry ${BASE}/istio-telemetry/grafana
 
 run-lint:
 	helm lint istio-control/istio-discovery -f global.yaml
@@ -170,3 +174,19 @@ install-prometheus-operator-config:
 	kubectl label ns ${ISTIO_CONTROL_NS} istio-injection=disabled --overwrite
 	# NOTE: we don't use iop to install, as it defaults to `--prune`, which is incompatible with the prom operator (it prunes the stateful set)
 	bin/iop ${ISTIO_CONTROL_NS} istio-prometheus-operator ${BASE}/istio-telemetry/prometheus-operator/ -t ${PROM_OPTS} | kubectl apply -n ${ISTIO_CONTROL_NS} -f -
+
+# Install prometheus in istio-telemetry, using prom operator
+# The previous targets are intended for installing with an existing operator.
+install-prometheus:
+	kubectl create ns ${ISTIO_TELEMETRY_NS} || true
+	kubectl label ns ${ISTIO_TELEMETRY_NS} istio-injection=disabled --overwrite
+
+	curl -s https://raw.githubusercontent.com/coreos/prometheus-operator/master/bundle.yaml | sed "s/namespace: default/namespace: ${ISTIO_TELEMETRY_NS}/g" | kubectl apply -f -
+	kubectl -n ${ISTIO_TELEMETRY_NS} wait --for=condition=available --timeout=${WAIT_TIMEOUT} deploy/prometheus-operator
+
+	# kubectl wait is problematic, as the CRDs may not exist before the command is issued.
+	until timeout ${WAIT_TIMEOUT} kubectl get crds/prometheuses.monitoring.coreos.com; do echo "Waiting for CRDs to be created..."; done
+
+	bin/iop ${ISTIO_TELEMETRY_NS} istio-prometheus-operator ${BASE}/istio-telemetry/prometheus-operator/ --set prometheus.createPrometheusResource=true
+	# NOTE: we don't use iop to install, as it defaults to `--prune`, which is incompatible with the prom operator (it prunes the stateful set)
+	#bin/iop ${ISTIO_TELEMETRY_NS} istio-prometheus-operator ${BASE}/istio-telemetry/prometheus-operator/ -t --set prometheus.createPrometheusResource=true | kubectl apply -n ${ISTIO_TELEMETRY_NS} -f -

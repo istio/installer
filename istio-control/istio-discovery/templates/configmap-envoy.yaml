@@ -32,10 +32,6 @@ data:
             max_requests: 100000
             max_retries: 3
 
-    # TODO: telemetry using EDS
-    # TODO: other pilots using EDS, load balancing
-    # TODO: galley using EDS
-
       - name: out.galley.15019
         http2_protocol_options: {}
         connect_timeout: 1.000s
@@ -113,19 +109,46 @@ data:
           tls_context:
             require_client_certificate: true
             common_tls_context:
+              alpn_protocols:
+              - h2
+
               validation_context:
                 trusted_ca:
                   filename: /etc/certs/root-cert.pem
 
-              alpn_protocols:
-              - h2
+  {{- if .Values.global.sds.enabled }}
+              # Since pilot is a critical component, it should use its own certs, not get them from SDS.
+              tls_certificate_sds_secret_configs:
+                - name: default
+                  sds_config:
+                    initialFetchTimeout: 0s
+                    api_config_source:
+                      api_type: GRPC
+                      grpc_services:
+                        google_grpc:
+                          target_uri: unix:/var/run/sds/uds_path
+                          credentials_factory_name: envoy.grpc_credentials.file_based_metadata
+                          stat_prefix: sdsstat
+                          channel_credentials:
+                            local_credentials: {}
+                          call_credentials:
+                            - from_plugin:
+                                name: envoy.grpc_credentials.file_based_metadata
+                                typed_config:
+                                  "@type": type.googleapis.com/envoy.config.grpc_credential.v2alpha.FileBasedMetadataConfig
+                                  secret_data:
+                                    filename: /var/run/secrets/kubernetes.io/serviceaccount/token
+                                  header_key: istio_sds_credentials_header-bin
 
+
+              # default_validation_context not used - pilot accepts requests from all workloads
+{{ else }}
               tls_certificates:
               - certificate_chain:
                   filename: /etc/certs/cert-chain.pem
                 private_key:
                   filename: /etc/certs/key.pem
-
+{{- end }}
 
       # Manual 'whitebox' mode
       - name: "local.15019"

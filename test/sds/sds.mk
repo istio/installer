@@ -17,6 +17,8 @@ run-sds-tests: install-crds install-base install-sds-cp install-sds-app
 
 # Test for installation of the test-mode SDS and test app.
 install-sds-cp: run-build-multi
+	bin/iop istio-system istio-citadel ${BASE}/security/citadel  ${IOP_OPTS}  ${INSTALL_OPTS} \
+	  --set global.sds.enabled=true
 	# SDS agent runs in istio-system, next to citadel. Both are security-critical.
 	kubectl apply -k kustomize/sds-agent
 	# Equivalent with:
@@ -24,6 +26,7 @@ install-sds-cp: run-build-multi
 
 	kubectl create ns istio-sds || true
 	kubectl label ns istio-sds istio-injection=disabled --overwrite
+
 	bin/iop istio-sds istio-discovery ${BASE}/istio-control/istio-discovery  ${IOP_OPTS}  ${INSTALL_OPTS} \
 	  --set pilot.useMCP=false \
 	  --set global.sds.enabled=true
@@ -56,6 +59,10 @@ sds-unit:
 	   --set global.trustDomain=example.com \
 	    > ${TMPDIR}/pilot-sds-jwt-trustdomain.yaml
 
+	# Verify manual inject works
+	istioctl kube-inject -f test/sds/fortio.yaml -n fortio-sds --meshConfigFile test/simple/mesh.yaml \
+	  --valuesFile test/simple/values.yaml \
+      --injectConfigFile istio-control/istio-autoinject/files/injection-template.yaml >  ${TMPDIR}/fortio-injected.yaml
 
 # SDS tests use telemetry lite.
 # To visualize: use env.sh and 'kindFwd' helper to forward prom/grafana

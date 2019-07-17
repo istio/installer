@@ -1,5 +1,5 @@
-
-
+# Installs Fortio server/client, using explicit SDS opt-in
+# If the node agent exists, SDS will be used. Otherwise will fallback to mounted certs.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
@@ -9,3 +9,10 @@ resources:
   - envoy-sds-template.yaml
   - fortio.yaml
   - fortio-cli.yaml
+
+# Doesn't work, for reference: kustomize adds a hash, which only works if the sidecar is known to kustomize
+# We auto-inject it, so not good. Would work with manual injection.
+#configMapGenerator:
+#  - name: sds
+#    files:
+#    - envoy-sds-template.yaml

@@ -6,15 +6,97 @@ data:
   # This is an example on how to use a custom bootstrap template in a pod. It was used to try various combinations
   # on configuring SDS for control plane auth. Based on the template shipped in 1.2, but simplified to keep only
   # essential
+  custom_bootstrap.json: |-
+    {
+      "node": {
+          "cluster": "testOverride"
+      },
+      "admin": {
+            "access_log_path": "/dev/null",
+            "address": {
+              "socket_address": {
+                "address": "0.0.0.0",
+                "port_value": 15000
+              }
+            }
+      },
+    }
 
-  envoy.yaml.tmpl: |-
+  envoy_bootstrap.json: |-
     {
       "node": {
         "id": "{{ .nodeID }}",
         "cluster": "{{ .cluster }}",
         "locality": {
+          {{ if .region }}
+          "region": "{{ .region }}",
+          {{ end }}
+          {{ if .zone }}
+          "zone": "{{ .zone }}",
+          {{ end }}
+          {{ if .sub_zone }}
+          "sub_zone": "{{ .sub_zone }}",
+          {{ end }}
         },
         "metadata": {{ .meta_json_str }}
+      },
+      "stats_config": {
+        "use_all_default_tags": false,
+        "stats_tags": [
+          {
+            "tag_name": "cluster_name",
+            "regex": "^cluster\\.((.+?(\\..+?\\.svc\\.cluster\\.local)?)\\.)"
+          },
+          {
+            "tag_name": "tcp_prefix",
+            "regex": "^tcp\\.((.*?)\\.)\\w+?$"
+          },
+          {
+            "tag_name": "response_code",
+            "regex": "_rq(_(\\d{3}))$"
+          },
+          {
+            "tag_name": "response_code_class",
+            "regex": "_rq(_(\\dxx))$"
+          },
+          {
+            "tag_name": "http_conn_manager_listener_prefix",
+            "regex": "^listener(?=\\.).*?\\.http\\.(((?:[_.[:digit:]]*|[_\\[\\]aAbBcCdDeEfF[:digit:]]*))\\.)"
+          },
+          {
+            "tag_name": "http_conn_manager_prefix",
+            "regex": "^http\\.(((?:[_.[:digit:]]*|[_\\[\\]aAbBcCdDeEfF[:digit:]]*))\\.)"
+          },
+          {
+            "tag_name": "listener_address",
+            "regex": "^listener\\.(((?:[_.[:digit:]]*|[_\\[\\]aAbBcCdDeEfF[:digit:]]*))\\.)"
+          },
+          {
+            "tag_name": "mongo_prefix",
+            "regex": "^mongo\\.(.+?)\\.(collection|cmd|cx_|op_|delays_|decoding_)(.*?)$"
+          }
+        ],
+        "stats_matcher": {
+          "inclusion_list": {
+            "patterns": [
+              {{- range $a, $s := .inclusionPrefix }}
+              {
+              "prefix": "{{$s}}"
+              },
+              {{- end }}
+              {{- range $a, $s := .inclusionSuffix }}
+              {
+              "suffix": "{{$s}}"
+              },
+              {{- end }}
+              {{- range $a, $s := .inclusionRegexps }}
+              {
+              "regex": "{{js $s}}"
+              },
+              {{- end }}
+            ]
+          }
+        }
       },
       "admin": {
         "access_log_path": "/dev/null",
@@ -67,11 +149,24 @@ data:
             "dns_lookup_family": "{{ .dns_lookup_family }}",
             "connect_timeout": "{{ .connect_timeout }}",
             "lb_policy": "ROUND_ROBIN",
+            {{ if eq .config.ControlPlaneAuthPolicy 1 }}
             "tls_context": {
               "common_tls_context": {
                 "alpn_protocols": [
                   "h2"
                 ],
+                {{ if 0 }}
+                "tls_certificates": [
+                  {
+                    "certificate_chain": {
+                      "filename": "/etc/certs/cert-chain.pem"
+                    },
+                    "private_key": {
+                      "filename": "/etc/certs/key.pem"
+                    }
+                  }
+                ],
+                {{ else }}
                 "tlsCertificateSdsSecretConfigs": [
                     {
                       "name": "default",
@@ -108,54 +203,21 @@ data:
                         "initialFetchTimeout": "0s"
                       }
                     }
-                  ],
-                  "combinedValidationContext": {
-                    "defaultValidationContext": {
-                      "verifySubjectAltName": [
-                        "spiffe://cluster.local/ns/istio-sds/sa/istio-pilot-service-account",
-                        {{- range $a, $s := .pilot_SAN }}
-                        "{{$s}}"
-                        {{- end}}
-                      ]
-                    },
-                    "validationContextSdsSecretConfig": {
-                      "name": "ROOTCA",
-                      "sdsConfig": {
-                        "apiConfigSource": {
-                          "apiType": "GRPC",
-                          "grpcServices": [
-                            {
-                              "googleGrpc": {
-                                "targetUri": "unix:/var/run/sds/uds_path",
-                                "channelCredentials": {
-                                  "localCredentials": {}
-                                },
-                                "callCredentials": [
-                                  {
-                                    "fromPlugin": {
-                                      "name": "envoy.grpc_credentials.file_based_metadata",
-                                      "typedConfig": {
-                                        "@type": "type.googleapis.com/envoy.config.grpc_credential.v2alpha.FileBasedMetadataConfig",
-                                        "secretData": {
-                                          "filename": "/var/run/secrets/kubernetes.io/serviceaccount/token"
-                                        },
-                                        "headerKey": "istio_sds_credentials_header-bin"
-                                      }
-                                    }
-                                  }
-                                ],
-                                "statPrefix": "sdsstat",
-                                "credentialsFactoryName": "envoy.grpc_credentials.file_based_metadata"
-                              }
-                            }
-                          ]
-                        },
-                        "initialFetchTimeout": "0s"
-                      }
-                    }
-                  }
+                ],
+                {{ end }}
+                "validation_context": {
+                  "trusted_ca": {
+                    "filename": "/etc/certs/root-cert.pem"
+                  },
+                  "verify_subject_alt_name": [
+                    {{- range $a, $s := .pilot_SAN }}
+                    "{{$s}}"
+                    {{- end}}
+                  ]
+                }
               }
             },
+            {{ end }}
             "hosts": [
               {
                 "socket_address": {{ .pilot_grpc_address }}

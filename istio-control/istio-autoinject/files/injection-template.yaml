@@ -162,9 +162,9 @@ template: |
   {{- if .Values.global.logAsJson }}
     - --log_as_json
   {{- end }}
-  {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapTemplate`) }}
-    - --templateFile=/var/lib/istio/bootstrap/envoy.yaml.tmpl
     - --controlPlaneBootstrap=false
+  {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapOverride`) }}
+    - --templateFile=/etc/istio/custom-bootstrap/envoy_bootstrap.json
   {{- end }}
     env:
     - name: POD_NAME
@@ -179,12 +179,10 @@ template: |
       valueFrom:
         fieldRef:
           fieldPath: status.podIP
-  {{ if eq .Values.global.proxy.tracer "datadog" }}
     - name: HOST_IP
       valueFrom:
         fieldRef:
           fieldPath: status.hostIP
-  {{ end }}
     - name: ISTIO_META_POD_NAME
       valueFrom:
         fieldRef:
@@ -212,10 +210,6 @@ template: |
     {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapOverride`) }}
     - name: ISTIO_BOOTSTRAP_OVERRIDE
       value: "/etc/istio/custom-bootstrap/custom_bootstrap.json"
-    {{- end }}
-    {{- if .Values.global.sds.customTokenDirectory }}
-    - name: ISTIO_META_SDS_TOKEN_PATH
-      value: "{{ .Values.global.sds.customTokenDirectory -}}/sdstoken"
     {{- end }}
     imagePullPolicy: "{{ valueOrDefault .Values.global.imagePullPolicy `Always` }}"
     {{ if ne (annotation .ObjectMeta `status.sidecar.istio.io/port` .Values.global.proxy.statusPort) `0` }}
@@ -257,17 +251,12 @@ template: |
   {{- end }}
     {{  end -}}
     volumeMounts:
-    {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapTemplate`) }}
-    - mountPath: /var/lib/istio/bootstrap
-      name: custom-bootstrap-template
-    {{- end }}
     {{ if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapOverride`) }}
     - mountPath: /etc/istio/custom-bootstrap
       name: custom-bootstrap-volume
     {{- end }}
     - mountPath: /etc/istio/proxy
       name: istio-envoy
-
     {{- if .Values.global.sds.enabled }}
     - mountPath: /var/run/sds
       name: sds-uds-path
@@ -297,11 +286,6 @@ template: |
   - name: custom-bootstrap-volume
     configMap:
       name: {{ annotation .ObjectMeta `sidecar.istio.io/bootstrapOverride` "" }}
-  {{- end }}
-  {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapTemplate`) }}
-  - name: custom-bootstrap-template
-    configMap:
-      name: {{ annotation .ObjectMeta `sidecar.istio.io/bootstrapTemplate` "" }}
   {{- end }}
   - emptyDir:
       medium: Memory

@@ -128,6 +128,7 @@ spec:
           volumeMounts:
           - name: config-volume
             mountPath: /etc/istio/config
+
 {{- if .Values.global.controlPlaneSecurityEnabled }}
         - name: istio-proxy
 {{- if contains "/" .Values.global.proxy.image }}
@@ -146,7 +147,7 @@ spec:
           - istio-pilot
           - --templateFile
           - /var/lib/envoy/envoy.yaml.tmpl
-        {{- if .Values.global.controlPlaneSecurityEnabled}}
+        {{- if .Values.global.controlPlaneSecurityEnabled }}
           - --controlPlaneAuthPolicy
           - MUTUAL_TLS
         {{- else }}
@@ -182,22 +183,26 @@ spec:
 {{ toYaml .Values.global.defaultResources | indent 12 }}
 {{- end }}
           volumeMounts:
+          {{- if .Values.global.sds.enabled }}
+          - mountPath: /var/run/sds
+            name: sds-uds-path
+            readOnly: true
+            {{- if .Values.global.sds.useTrustworthyJwt }}
+          - mountPath: /var/run/secrets/tokens
+            name: istio-token
+            {{- end }}
+          {{- end }}
           - name: istio-certs
             mountPath: /etc/certs
             readOnly: true
+          # Config map with the pilot envoy config
           - name: pilot-envoy-config
             mountPath: /var/lib/envoy
-          {{- if .Values.global.sds.enabled }}
-          - name: sds-uds-path
-            mountPath: /var/run/sds
-            readOnly: true
-          {{- if .Values.global.sds.useTrustworthyJwt }}
-          - name: istio-token
-            mountPath: /var/run/secrets/tokens
-          {{- end }}
-          {{- end }}
 {{- end }}
+
       volumes:
+      {{- if .Values.global.controlPlaneSecurityEnabled}}
+
       {{- if .Values.global.sds.enabled }}
       - hostPath:
           path: /var/run/sds
@@ -212,18 +217,25 @@ spec:
               path: istio-token
       {{- end }}
       {{- end }}
-      - name: config-volume
-        configMap:
-          name: istio
-      - name: pilot-envoy-config
-        configMap:
-          name: pilot-envoy-config
-  {{- if .Values.global.controlPlaneSecurityEnabled}}
+
       - name: istio-certs
         secret:
           secretName: istio.istio-pilot-service-account
           optional: true
-  {{- end }}
+
+      # Custom envoy config, for sidecar
+      - name: pilot-envoy-config
+        configMap:
+          name: pilot-envoy-config
+
+      {{- end }} # Setting for control-plane-security enabled: certs or sds, custom envoy config
+
+      # Mesh config
+      - name: config-volume
+        configMap:
+          name: istio
+
+
       affinity:
       {{- include "nodeaffinity" . | indent 6 }}
       {{- include "podAntiAffinity" . | indent 6 }}

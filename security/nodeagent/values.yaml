@@ -43,3 +43,6 @@ sdsagent:
   podAntiAffinityTermLabelSelector: []
 
   image: node-agent-k8s
+
+  # Specify the log level for sdsagent component.
+  #logLevel: all:debug

@@ -36,7 +36,9 @@ spec:
           {{- if .Values.global.logAsJson }}
             - --log_as_json
           {{- end }}
-            - --log_output_level=all:debug
+          {{- if .Values.logLevel }}
+            - --log_output_level={{- if .Values.logLevel }}
+          {{- end }}
           volumeMounts:
             - mountPath: /var/run/sds
               name: sdsudspath

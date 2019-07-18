@@ -37,7 +37,7 @@ spec:
             - --log_as_json
           {{- end }}
           {{- if .Values.logLevel }}
-            - --log_output_level={{- if .Values.logLevel }}
+            - --log_output_level={{ .Values.logLevel }}
           {{- end }}
           volumeMounts:
             - mountPath: /var/run/sds

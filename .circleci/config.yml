@@ -301,7 +301,7 @@ jobs:
       - run:
           command: make kind-run TARGET="install-base ENABLE_NAMESPACES_BY_DEFAULT=false"
       - run:
-          command: make docker-run-test TEST_TARGET="run-minimal-test"
+          command: make docker-run-test TEST_TARGET="run-minimal-test ENABLE_NAMESPACES_BY_DEFAULT=false"
       - run:
           when: always
           command: make kind-logs

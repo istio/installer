@@ -1,0 +1,127 @@
+---
+# Source: nodeagent/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: istio-sdsagent
+  namespace: istio-system
+  labels:
+    app: istio-sdsagent
+    release: istio-system-istio-sdsagent
+
+---
+# Source: nodeagent/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: istio-sdsagent-istio-system
+  labels:
+    app: istio-sdsagent
+    release: istio-system-istio-sdsagent
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get"]
+
+---
+# Source: nodeagent/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: istio-sdsagentnt-istio-system
+  labels:
+    app: istio-sdsagent
+    release: istio-system-istio-sdsagent
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: istio-sdsagent-istio-system
+subjects:
+  - kind: ServiceAccount
+    name: istio-sdsagent
+    namespace: istio-system
+
+---
+# Source: nodeagent/templates/daemonset.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: istio-sdsagent
+  namespace: istio-system
+  labels:
+    app: istio-sdsagent
+    istio: sdsagent
+    release: istio-system-istio-sdsagent
+spec:
+  selector:
+    matchLabels:
+      istio: sdsagent
+  template:
+    metadata:
+      labels:
+        app: istio-sdsagent
+        istio: sdsagent
+        release: istio-system-istio-sdsagent
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: istio-sdsagent
+      containers:
+        - name: sdsagent
+          image: "gcr.io/istio-release/node-agent-k8s:master-latest-daily"
+          imagePullPolicy: Always
+          args:
+          volumeMounts:
+            - mountPath: /var/run/sds
+              name: sdsudspath
+          env:
+            - name: CA_PROVIDER
+              value: Citadel
+            - name: CA_ADDR
+              value: istio-citadel:8060
+            - name: "Trust_Domain"
+              value: ""
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+      volumes:
+        - name: sdsudspath
+          hostPath:
+            path: /var/run/sds
+      affinity:      
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+                - ppc64le
+                - s390x
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 2
+            preference:
+              matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+          - weight: 2
+            preference:
+              matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                - ppc64le
+          - weight: 2
+            preference:
+              matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                - s390x      
+  updateStrategy:
+    type: RollingUpdate
+

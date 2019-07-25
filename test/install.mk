@@ -66,6 +66,7 @@ run-build-demo: dep
 	bin/iop ${ISTIO_SYSTEM_NS} istio-telemetry ${BASE}/istio-telemetry/grafana -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-grafana.yaml
 	# bin/iop ${ISTIO_SYSTEM_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/demo/istio-policy.yaml
 	cat ${OUT}/release/demo/*.yaml > test/demo/k8s.yaml
+	cat ${OUT}/release/demo/*.yaml > kustomize/demo/k8s.yaml
 
 
 run-lint:

@@ -1,17 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: istio-sidecar-injector
+  name: istio-sidecar-injector-{{ .Values.version }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: sidecar-injector
     release: {{ .Release.Name }}
     istio: sidecar-injector
+    version: {{ .Values.version }}
 spec:
   replicas: {{ .Values.sidecarInjectorWebhook.replicaCount }}
   selector:
     matchLabels:
       istio: sidecar-injector
+      version: {{ .Values.version }}
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -20,6 +22,7 @@ spec:
     metadata:
       labels:
         app: sidecarInjectorWebhook
+        version: {{ .Values.version }}
         istio: sidecar-injector
 {{- if eq .Release.Namespace "istio-system"}}
         heritage: Tiller
@@ -92,7 +95,7 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: istio
+          name: istio-{{ .Values.version }}
       - name: certs
         secret:
 {{- if .Values.sidecarInjectorWebhook.selfSigned }}
@@ -102,7 +105,7 @@ spec:
 {{- end }}
       - name: inject-config
         configMap:
-          name: istio-sidecar-injector
+          name: istio-sidecar-injector-{{ .Values.version }}
           items:
           - key: config
             path: config

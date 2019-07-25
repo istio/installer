@@ -234,11 +234,18 @@ function kfwd() {
     local PR=$4
 
     local N=$NS-$L
-    if [[ -f ${LOG_DIR:-/tmp}/fwd-$N.pid ]] ; then
-        kill -9 $(cat $LOG_DIR/fwd-$N.pid)
+    PID=${LOG_DIR:-/tmp}/fwd-$N.pid
+    if [[ -f ${PID} ]] ; then
+        kill -9 $(cat $PID)
     fi
     kubectl --namespace=$NS port-forward $(kubectl --namespace=$NS get -l $L pod -o=jsonpath='{.items[0].metadata.name}') $PL:$PR &
-    echo $! > $LOG_DIR/fwd-$N.pid
+    echo $! > $PID
+}
+
+# When running kind, forward ports for dashboard, prom, grafana, etc
+function kindFwd() {
+    kfwd istio-telemetry app=grafana 3000 3000
+    kfwd istio-telemetry app=prometheus 9090 9090
 }
 
 function logs-gateway() {
@@ -449,3 +456,19 @@ function iop() {
     ${BASE}/bin/iop $*
 }
 
+# Set env for local development, mounting the local dir.
+# This uses a KIND cluster named 'local'. A repeated "make test" is ~50 sec
+function devLocalEnv() {
+    export KIND_CLUSTER=local
+    export MOUNT=1
+    export SKIP_KIND_SETUP=1
+    export SKIP_CLEANUP=1
+    export KUBECONFIG=$HOME/.kube/kind-config-local
+}
+
+
+function kindDashboard() {
+    kubectl apply -f test/dashboard/dashboard-permissions.yaml
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+    kubectl -n kube-system describe secrets admin-token-45rv4
+}

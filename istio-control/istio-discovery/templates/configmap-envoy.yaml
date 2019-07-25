@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: {{ .Release.Namespace }}
-  name: pilot-envoy-config
+  name: pilot-envoy-config-{{ .Values.version }}
   labels:
     release: {{ .Release.Name }}
 data:
@@ -63,7 +63,7 @@ data:
 
         hosts:
           - socket_address:
-              address: istio-galley.{{ .Values.global.configNamespace }}
+              address: istio-galley-{{ .Values.version }}.{{ .Values.global.configNamespace }}
               port_value: 15019
 
 

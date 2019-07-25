@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: istio-sidecar-injector
+  name: istio-sidecar-injector-{{ .Values.version }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: sidecar-injector
@@ -12,3 +12,4 @@ spec:
   - port: 443
   selector:
     istio: sidecar-injector
+    version: {{ .Values.version }}

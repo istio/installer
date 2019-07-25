@@ -4,7 +4,7 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: istio-galley
+  name: istio-galley-default
   namespace: istio-control
   labels:
     app: galley
@@ -17,6 +17,7 @@ spec:
       app: galley
       release: istio-control-istio-config
       istio: galley
+      version: default
 
 ---
 # Source: istio-config/templates/configmap-envoy.yaml
@@ -24,7 +25,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: istio-control
-  name: galley-envoy-config
+  name: galley-envoy-config-default
   labels:
     app: galley
     istio: galley
@@ -116,7 +117,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: istio-mesh-galley
+  name: istio-mesh-galley-default
   namespace: istio-control
   labels:
     release: istio-control-istio-config
@@ -125,23 +126,23 @@ data:
 
   mesh: |-
     {}
-
+    
 
 ---
 # Source: istio-config/templates/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: istio-galley-configuration
+  name: istio-galley-configuration-default
   namespace: istio-control
   labels:
     release: istio-control-istio-config
 data:
-  validatingwebhookconfiguration.yaml: |-
+  validatingwebhookconfiguration.yaml: |-    
     apiVersion: admissionregistration.k8s.io/v1beta1
     kind: ValidatingWebhookConfiguration
     metadata:
-      name: istio-galley-istio-control
+      name: istio-galley-istio-control-default
       namespace: istio-control
       labels:
         app: galley
@@ -257,6 +258,7 @@ data:
 
 ---
 # Source: istio-config/templates/serviceaccount.yaml
+
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -266,8 +268,10 @@ metadata:
     app: galley
     release: istio-control-istio-config
 
+
 ---
 # Source: istio-config/templates/clusterrole.yaml
+
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -308,6 +312,7 @@ rules:
 
 ---
 # Source: istio-config/templates/clusterrolebinding.yaml
+
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -323,12 +328,13 @@ subjects:
     name: istio-galley-service-account
     namespace: istio-control
 
+
 ---
 # Source: istio-config/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: istio-galley
+  name: istio-galley-default
   namespace: istio-control
   labels:
     app: galley
@@ -346,17 +352,19 @@ spec:
     name: grpc-tls-mcp
   selector:
     istio: galley
+    version: default
 
 ---
 # Source: istio-config/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: istio-galley
+  name: istio-galley-default
   namespace: istio-control
   labels:
     app: galley
     istio: galley
+    version: default
     release: istio-control-istio-config
 spec:
   replicas: 1
@@ -364,6 +372,7 @@ spec:
     matchLabels:
       app: galley
       istio: galley
+      version: default
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -372,6 +381,7 @@ spec:
     metadata:
       labels:
         app: galley
+        version: default
         istio: galley
       annotations:
         sidecar.istio.io/inject: "false"
@@ -433,7 +443,7 @@ spec:
           resources:
             requests:
               cpu: 100m
-
+            
         - name: istio-proxy
           image: "gcr.io/istio-release/proxyv2:master-latest-daily"
           imagePullPolicy: Always
@@ -470,7 +480,7 @@ spec:
             requests:
               cpu: 100m
               memory: 128Mi
-
+            
 
           volumeMounts:
           - name: istio-certs
@@ -485,17 +495,17 @@ spec:
           secretName: istio.istio-galley-service-account
       - name: envoy-config
         configMap:
-          name: galley-envoy-config
+          name: galley-envoy-config-default
       - name: config
         configMap:
-          name: istio-galley-configuration
+          name: istio-galley-configuration-default
       # Different config map from pilot, to allow independent config and rollout.
       # Both are derived from values.yaml.
       - name: mesh-config
         configMap:
-          name: istio-mesh-galley
+          name: istio-mesh-galley-default
 
-      affinity:
+      affinity:      
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
@@ -527,7 +537,7 @@ spec:
               - key: beta.kubernetes.io/arch
                 operator: In
                 values:
-                - s390x
+                - s390x      
 
 ---
 # Source: istio-config/templates/validatingwebhookconfiguration.yaml.tpl

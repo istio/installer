@@ -14,19 +14,13 @@
 
 global:
   # Used to locate istio-pilot.
-  # Default is to install pilot in a dedicated namespace, istio-pilot11. You can use multiple namespaces, but
-  # for each 'profile' you need to match the control plane namespace and the value of istioNamespace
-  # It is assumed that istio-system is running either 1.0 or an upgraded version of 1.1, but only security components are
-  # used (citadel generating the secrets).
-  istioNamespace: istio-control
-  configNamespace: istio-control
-
-  # Telemetry namespace, including tracing.
-  telemetryNamespace: istio-telemetry
-
-  prometheusNamespace: istio-telemetry
-
-  policyNamespace: istio-policy
+  # Default is to install pilot in istio-system, for backward compatibility.
+  # You can use also multiple namespaces.
+  istioNamespace: istio-system
+  configNamespace: istio-system
+  telemetryNamespace: istio-system
+  prometheusNamespace: istio-system
+  policyNamespace: istio-system
 
 
   ## End new settings
@@ -409,3 +403,14 @@ global:
   # This field is set to false by default, so 'helm template ...'
   # will ignore the helm test yaml files when generating the template
   enableHelmTest: false
+
+# Internal setting - used when generating helm templates for kustomize.
+# clusterResources controls the inclusion of cluster-wide resources when generating the charts/installing.
+# For backward compat, it is set to 'true', resulting in the old-style installation.
+# When set to 'false', all cluster-wide resources will be omitted, and are expected to be installed
+# at the same time with the CRDs.
+clusterResources: true
+
+# Version is set as 'version' label and part of the resource names when installing.
+# It is used to support multiple version in same namespace, similar with normal app traffic shift.
+version: default

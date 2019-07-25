@@ -142,7 +142,7 @@ spec:
           - --serviceCluster
           - istio-ingressgateway
           - --zipkinAddress
-          - zipkin.istio-telemetry:9411
+          - zipkin.istio-system:9411
           - --proxyAdminPort
           - "15000"
           - --statusPort

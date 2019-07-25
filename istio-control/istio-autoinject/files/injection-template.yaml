@@ -13,10 +13,6 @@ template: |
   {{- end }}
     command:
     - "/usr/local/bin/istio-iptables.sh"
-    - "-p"
-    - "{{ .MeshConfig.ProxyListenPort }}"
-    - "-u"
-    - 1337
     - "-m"
     - "{{ annotation .ObjectMeta `sidecar.istio.io/interceptionMode` .ProxyConfig.InterceptionMode }}"
     - "-i"
@@ -35,6 +31,15 @@ template: |
     - "-k"
     - "{{ index .ObjectMeta.Annotations `traffic.sidecar.istio.io/kubevirtInterfaces` }}"
     {{ end -}}
+    env:
+       - name: ENVOY_PORT
+         value: {{ .MeshConfig.ProxyListenPort }}
+       - name: PROXY_UID
+         value: 1337
+      {{- if contains "*" (annotation .ObjectMeta `traffic.sidecar.istio.io/includeInboundPorts` "") }}
+       - name: INBOUND_CAPTURE_PORT
+         value: 15006
+      {{ end }}
     imagePullPolicy: "{{ valueOrDefault .Values.global.imagePullPolicy `Always` }}"
     resources:
       requests:
@@ -192,6 +197,8 @@ template: |
           fieldPath: metadata.namespace
     - name: ISTIO_META_INTERCEPTION_MODE
       value: "{{ or (index .ObjectMeta.Annotations `sidecar.istio.io/interceptionMode`) .ProxyConfig.InterceptionMode.String }}"
+    - name: ISTIO_META_INCLUDE_INBOUND_PORTS
+      value: "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeInboundPorts` (applicationPorts .Spec.Containers) }}"
     {{- if .Values.global.network }}
     - name: ISTIO_META_NETWORK
       value: "{{ .Values.global.network }}"
@@ -225,11 +232,12 @@ template: |
       failureThreshold: {{ annotation .ObjectMeta `readiness.status.sidecar.istio.io/failureThreshold` .Values.global.proxy.readinessFailureThreshold }}
     {{ end -}}
     securityContext:
-      {{- if .Values.global.proxy.privileged }}
+      {{- if (annotation .ObjectMeta `status.sidecar.istio.io/privileged` .Values.global.proxy.privileged) }}
       privileged: true
-      {{- end }}
+      {{ else }}
       {{- if ne .Values.global.proxy.enableCoreDump true }}
       readOnlyRootFilesystem: true
+      {{- end }}
       {{- end }}
       {{ if eq (annotation .ObjectMeta `sidecar.istio.io/interceptionMode` .ProxyConfig.InterceptionMode) `TPROXY` -}}
       capabilities:

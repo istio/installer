@@ -7,3 +7,10 @@ resources:
   - files/crd-12.yaml
   - files/crd-certmanager-10.yaml
   - files/crd-certmanager-11.yaml
+  - files/namespaces.yaml
+  - files/clusterrole-12.yaml
+  - files/clusterrolebinding-12.yaml
+  - files/serviceaccounts-12.yaml
+
+commonLabels:
+  release: istio-cluster

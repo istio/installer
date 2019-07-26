@@ -13,8 +13,9 @@ ENABLE_NAMESPACES_BY_DEFAULT ?= true
 # used directly with kubectl apply -f https://....
 # TODO: Add a local test - to check various things are in the right place (jsonpath or equivalent)
 # TODO: run a local etcd/apiserver and verify apiserver accepts the files
-run-build:  dep run-build-demo run-build-multi run-build-micro
+run-build:  dep run-build-demo run-build-multi run-build-micro run-build-canary
 
+# Build the multi-namespace config
 run-build-multi:
 
 	bin/iop ${ISTIO_SYSTEM_NS} istio-system-security ${BASE}/security/citadel -t --set kustomize=true > kustomize/citadel/citadel.yaml
@@ -28,6 +29,8 @@ run-build-multi:
 	bin/iop ${ISTIO_TELEMETRY_NS} istio-telemetry ${BASE}/istio-telemetry/mixer-telemetry -t > kustomize/istio-telemetry/mixer-telemetry.yaml
 	bin/iop ${ISTIO_TELEMETRY_NS} istio-telemetry ${BASE}/istio-telemetry/prometheus -t > kustomize/istio-telemetry/istio-prometheus.yaml
 	bin/iop ${ISTIO_TELEMETRY_NS} istio-telemetry ${BASE}/istio-telemetry/grafana -t > kustomize/istio-telemetry/istio-grafana.yaml
+
+	bin/iop istio-system cluster ${BASE}/crds -t > kustomize/cluster/gen-crds-namespace.yaml
 
 	#bin/iop ${ISTIO_POLICY_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/multi/istio-policy.yaml
 	#bin/iop ${ISTIO_POLICY_NS} istio-cni ${BASE}/istio-cni -t > ${OUT}/release/multi/istio-cni.yaml
@@ -46,6 +49,17 @@ run-build-micro:
       --set global.controlPlaneSecurityEnabled=false \
       > kustomize/micro/istio-ingress.yaml
 
+run-build-canary:
+	${IOP} ${ISTIO_SYSTEM_NS} pilot-canary istio-control/istio-discovery -t \
+    		--set clusterResources=false \
+    		--set version=canary > kustomize/istio-canary/gen-discovery.yaml
+	${IOP} ${ISTIO_SYSTEM_NS} galley-canary istio-control/istio-config -t \
+    		--set clusterResources=false \
+    		--set version=canary \
+    		--set global.configValidation=false > kustomize/istio-canary/gen-config.yaml
+	${IOP} ${ISTIO_SYSTEM_NS} galley-canary istio-control/istio-autoinject -t \
+    		--set clusterResources=false \
+    		--set version=canary  > kustomize/istio-canary/gen-autoinject.yaml
 
 
 DEMO_OPTS="-f test/demo/values.yaml"

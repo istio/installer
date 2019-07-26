@@ -1,17 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: istio-pilot
+  name: istio-pilot-{{ .Values.version }}
   namespace: {{ .Release.Namespace }}
   # TODO: default template doesn't have this, which one is right ?
   labels:
     app: pilot
+    version: {{ .Values.version }}
     release: {{ .Release.Name }}
 {{- range $key, $val := .Values.pilot.deploymentLabels }}
     {{ $key }}: "{{ $val }}"
 {{- end }}
     istio: pilot
   annotations:
+    checksum/config-volume-envoy:  {{ include (print $.Template.BasePath "/configmap-envoy.yaml") . | sha256sum }}
     checksum/config-volume:  {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 spec:
 {{- if not .Values.pilot.autoscaleEnabled }}
@@ -32,6 +34,7 @@ spec:
     metadata:
       labels:
         app: pilot
+        version: {{ .Values.version }}
         istio: pilot
 {{- if eq .Release.Namespace "istio-system"}}
         heritage: Tiller
@@ -214,8 +217,8 @@ spec:
       {{- end }}
       - name: config-volume
         configMap:
-          name: istio
-      - name: pilot-envoy-config
+          name: istio-{{ .Values.version }}
+      - name: pilot-envoy-config-{{ .Values.version }}
         configMap:
           name: pilot-envoy-config
   {{- if .Values.global.controlPlaneSecurityEnabled}}

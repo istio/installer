@@ -1,0 +1,39 @@
+## Fortio clients generating traffic on different components.
+# Generally use the ingress gateway - to capture non-istio service as well.
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: cli-fortio
+  namespace: fortio
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cli-fortio
+        version: v1
+      annotations:
+        #sidecar.istio.io/debug:
+        #sidecar.istio.io/discoveryAddress: "istio-pilot.{{ .Values.pilotns }}:15010"
+    spec:
+      containers:
+      - name: echosrv
+        image: istio/fortio:latest
+        imagePullPolicy: Always
+        args:
+          - load
+          - -t
+          - "0"
+          - -c
+          - "30"
+          - -qps
+          - "2"
+          - http://fortio:8080/echo?size=5000
+        resources:
+          requests:
+            cpu: 200m
+            memory: "1G"
+          limits:
+            cpu: 800m
+            memory: "1G"

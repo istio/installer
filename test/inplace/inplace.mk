@@ -1,21 +1,7 @@
 
-run-v2-template:
-	${IOP} istio-system pilot13 istio-control/istio-discovery -t \
-		--set clusterResources=false \
-		--set version=v13canary
+# Installs Istio 1.2 using default install yaml, install canary, verify canary starts.
+test-inplace:
+	kubectl apply -k kustomize/istio-1.2/default --prune -l release=istio
+	kubectl apply -k kustomize/istio-canary --prune -l release=istio-canary
+	kubectl wait deployments istio-pilot-canary istio-galley-canary istio-sidecar-injector-canary -n ${ISTIO_SYSTEM_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
-run-install-v13canary:
-    # Initial try without validation
-	${IOP} istio-system galley13 istio-control/istio-config \
-		--set clusterResources=false \
-		--set version=v13canary \
-		--set global.configValidation=false \
-
-	${IOP} istio-system pilot13 istio-control/istio-discovery \
-		--set clusterResources=false \
-		--set version=v13canary
-
-run-install-v12-nopilot:
-	helm template --name=istio --namespace=istio-system \
-	  --set global.hub=istio --set global.tag=1.2.1 \
-	  ../istio/install/kubernetes/helm/istio | kubectl apply --prune -l release=istio -f -

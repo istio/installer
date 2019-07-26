@@ -53,7 +53,7 @@ spec:
             - --meshConfig=/etc/istio/config/mesh
             - --healthCheckInterval=2s
             - --healthCheckFile=/health
-            - --webhookConfigName=istio-sidecar-injector-{{ .Release.Namespace }}
+            - --webhookConfigName=istio-sidecar-injector-{{ .Release.Namespace }}-{{ .Values.version }}
             - --log_output_level=debug
           {{- if .Values.global.logAsJson }}
             - --log_as_json

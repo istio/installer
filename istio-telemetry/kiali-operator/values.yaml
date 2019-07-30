@@ -43,20 +43,20 @@ kiali:
     #   hosts:
     #     - kiali.local
 
-dashboard:
-  auth:
-    strategy: login # Can be anonymous, login, or openshift
-  secretName: kiali # You must create a secret with this name - one is not provided out-of-box.
-  viewOnlyMode: false # Bind the service account to a role with only read access
-  grafanaURL:  # If you have Grafana installed and it is accessible to client browsers, then set this to its external URL. Kiali will redirect users to this URL when Grafana metrics are to be shown.
-  jaegerURL:  # If you have Jaeger installed and it is accessible to client browsers, then set this property to its external URL. Kiali will redirect users to this URL when Jaeger tracing is to be shown.
+  dashboard:
+    auth:
+      strategy: login # Can be anonymous, login, or openshift
+    secretName: kiali # You must create a secret with this name - one is not provided out-of-box.
+    viewOnlyMode: false # Bind the service account to a role with only read access
+    grafanaURL:  # If you have Grafana installed and it is accessible to client browsers, then set this to its external URL. Kiali will redirect users to this URL when Grafana metrics are to be shown.
+    jaegerURL:  # If you have Jaeger installed and it is accessible to client browsers, then set this property to its external URL. Kiali will redirect users to this URL when Jaeger tracing is to be shown.
 
-prometheusAddr: http://prometheus:9090
+  prometheusAddr: http://prometheus:9090
 
-# When true, a secret will be created with a default username and password. Useful for demos.
-createDemoSecret: false
+  # When true, a secret will be created with a default username and password. Useful for demos.
+  createDemoSecret: false
 
-security:
-  enabled: true
-  cert_file: /kiali-cert/cert-chain.pem
-  private_key_file: /kiali-cert/key.pem
+  security:
+    enabled: true
+    cert_file: /kiali-cert/cert-chain.pem
+    private_key_file: /kiali-cert/key.pem

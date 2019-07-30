@@ -78,7 +78,7 @@ spec:
   #    ---
   #    strategy: ""
   auth:
-    strategy: {{ .Values.dashboard.auth.strategy }}
+    strategy: {{ .Values.kiali.dashboard.auth.strategy }}
   ##########
   #  ---
   #  deployment:
@@ -170,7 +170,7 @@ spec:
     namespace: {{ .Release.Namespace }}
     ingress_enabled: {{ .Values.kiali.ingress.enabled }}
     verbose_mode: 3
-    view_only_mode: {{ .Values.dashboard.viewOnlyMode }}
+    view_only_mode: {{ .Values.kiali.dashboard.viewOnlyMode }}
     affinity:
     {{- include "nodeaffinity" . | indent 3 }}
     {{- include "podAntiAffinity" . | indent 3 }}
@@ -178,8 +178,8 @@ spec:
     tolerations:
     {{ toYaml .Values.kiali.tolerations | indent 3 }}
     {{- end }}
-    {{- if .Values.createDemoSecret }}
-    secret_name: {{ .Values.dashboard.secretName }}
+    {{- if .Values.kiali.createDemoSecret }}
+    secret_name: {{ .Values.kiali.dashboard.secretName }}
     {{- end }}
   ##########
   #  ---
@@ -296,11 +296,11 @@ spec:
   #      port: 16686
   #      url: ""
   tracing:
-    url: {{ .Values.dashboard.jaegerURL }}
+    url: {{ .Values.kiali.dashboard.jaegerURL }}
   grafana:
-    url: {{ .Values.dashboard.grafanaURL }}
+    url: {{ .Values.kiali.dashboard.grafanaURL }}
   prometheus:
-    url: {{ .Values.prometheusAddr }}
+    url: {{ .Values.kiali.prometheusAddr }}
   ##########
   #  ---
   #  identity:
@@ -317,10 +317,10 @@ spec:
   # When set to an empty string, https will be disabled.
   #    ---
   #    #private_key_file:
-  {{- if .Values.security.enabled }}
+  {{- if .Values.kiali.security.enabled }}
   identity:
-    cert_file: {{ .Values.security.cert_file }}
-    private_key_file: {{ .Values.security.private_key_file }}
+    cert_file: {{ .Values.kiali.security.cert_file }}
+    private_key_file: {{ .Values.kiali.security.private_key_file }}
   {{- end}}
   ##########
   #  ---
@@ -409,11 +409,11 @@ spec:
     web_root: {{ .Values.kiali.contextPath }}
     {{- end }}
 ---
-{{- if .Values.createDemoSecret }}
+{{- if .Values.kiali.createDemoSecret }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Values.dashboard.secretName }}
+  name: {{ .Values.kiali.dashboard.secretName }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: kiali

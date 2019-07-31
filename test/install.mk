@@ -48,14 +48,14 @@ run-build-micro:
       > kustomize/micro/istio-ingress.yaml
 
 run-build-canary:
-	${IOP} ${ISTIO_SYSTEM_NS} pilot-canary istio-control/istio-discovery -t \
+	bin/iop ${ISTIO_SYSTEM_NS} pilot-canary istio-control/istio-discovery -t \
     		--set clusterResources=false \
     		--set version=canary > kustomize/istio-canary/gen-discovery.yaml
-	${IOP} ${ISTIO_SYSTEM_NS} galley-canary istio-control/istio-config -t \
+	bin/iop ${ISTIO_SYSTEM_NS} galley-canary istio-control/istio-config -t \
     		--set clusterResources=false \
     		--set version=canary \
     		--set global.configValidation=false > kustomize/istio-canary/gen-config.yaml
-	${IOP} ${ISTIO_SYSTEM_NS} galley-canary istio-control/istio-autoinject -t \
+	bin/iop ${ISTIO_SYSTEM_NS} galley-canary istio-control/istio-autoinject -t \
     		--set clusterResources=false \
     		--set version=canary  > kustomize/istio-canary/gen-autoinject.yaml
 

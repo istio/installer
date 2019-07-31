@@ -1,12 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: istio-pilot-{{ .Values.version }}
+  name: istio-pilot{{ .Values.version }}
   namespace: {{ .Release.Namespace }}
   # TODO: default template doesn't have this, which one is right ?
   labels:
     app: pilot
+    {{- if ne .Values.version ""}}
     version: {{ .Values.version }}
+    {{- end }}
     release: {{ .Release.Name }}
 {{- range $key, $val := .Values.pilot.deploymentLabels }}
     {{ $key }}: "{{ $val }}"
@@ -34,7 +36,9 @@ spec:
     metadata:
       labels:
         app: pilot
+        {{- if ne .Values.version ""}}
         version: {{ .Values.version }}
+        {{- end }}
         istio: pilot
 {{- if eq .Release.Namespace "istio-system"}}
         heritage: Tiller
@@ -217,10 +221,10 @@ spec:
       {{- end }}
       - name: config-volume
         configMap:
-          name: istio-{{ .Values.version }}
+          name: istio{{ .Values.version }}
       - name: pilot-envoy-config
         configMap:
-          name: pilot-envoy-config-{{ .Values.version }}
+          name: pilot-envoy-config{{ .Values.version }}
   {{- if .Values.global.controlPlaneSecurityEnabled}}
       - name: istio-certs
         secret:

@@ -2,7 +2,7 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: istio-sidecar-injector-{{ .Values.version }}
+  name: istio-sidecar-injector
   namespace: {{ .Release.Namespace }}
   labels:
     app: sidecar-injector
@@ -15,5 +15,4 @@ spec:
       app: sidecar-injector
       release: {{ .Release.Name }}
       istio: sidecar-injector
-      version: {{ .Values.version }}
 {{- end }}

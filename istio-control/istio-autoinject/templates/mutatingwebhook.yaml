@@ -1,9 +1,8 @@
-{{ if not .Values.skipWebhook }}
 {{- $ca := genCA "istio-sidecar-injector-ca-{{ .Release.Namespace }}" 3650 }}
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: istio-sidecar-injector-{{ .Release.Namespace }}-{{ .Values.version }}
+  name: istio-sidecar-injector-{{ .Release.Namespace }}
   labels:
     app: sidecar-injector
     release: {{ .Release.Name }}
@@ -11,7 +10,7 @@ webhooks:
   - name: sidecar-injector.istio.io
     clientConfig:
       service:
-        name: istio-sidecar-injector-{{ .Values.version }}
+        name: istio-sidecar-injector
         namespace: {{ .Release.Namespace }}
         path: "/inject"
 {{- if .Values.sidecarInjectorWebhook.selfSigned }}
@@ -40,7 +39,7 @@ webhooks:
         operator: DoesNotExist
 {{- else }}
       matchLabels:
-        istio-env: {{ .Release.Namespace }}-{{ .Values.version }}
+        istio-env: {{ .Release.Namespace }}
 {{- end }}
 ---
 {{- if .Values.sidecarInjectorWebhook.selfSigned }}
@@ -62,5 +61,4 @@ data:
   root-cert.pem: {{ $ca.Cert | b64enc }}
   cert-chain.pem: {{ $cert.Cert | b64enc }}
   key.pem: {{ $cert.Key | b64enc }}
-{{- end }}
 {{- end }}

@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: {{ .Release.Namespace }}
-  name: galley-envoy-config-{{ .Values.version }}
+  name: galley-envoy-config
   labels:
     app: galley
     istio: galley

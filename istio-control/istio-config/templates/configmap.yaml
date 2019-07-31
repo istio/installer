@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: istio-galley-configuration-{{ .Values.version }}
+  name: istio-galley-configuration
   namespace: {{ .Release.Namespace }}
   labels:
     release: {{ .Release.Name }}

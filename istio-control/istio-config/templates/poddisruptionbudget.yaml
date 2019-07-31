@@ -2,7 +2,7 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: istio-galley-{{ .Values.version }}
+  name: istio-galley
   namespace: {{ .Release.Namespace }}
   labels:
     app: galley
@@ -15,6 +15,6 @@ spec:
       app: galley
       release: {{ .Release.Name }}
       istio: galley
-      version: {{ .Values.version }}
 ---
+
 {{- end }}

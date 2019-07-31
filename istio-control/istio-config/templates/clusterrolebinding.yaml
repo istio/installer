@@ -1,4 +1,3 @@
-{{ if .Values.clusterResources }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -14,4 +13,3 @@ subjects:
     name: istio-galley-service-account
     namespace: {{ .Release.Namespace }}
 ---
-{{ end }}

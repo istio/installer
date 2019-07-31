@@ -1,12 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: istio-galley-{{ .Values.version }}
+  name: istio-galley
   namespace: {{ .Release.Namespace }}
   labels:
     app: galley
     istio: galley
-    version: {{ .Values.version }}
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.galley.replicaCount }}
@@ -14,7 +13,6 @@ spec:
     matchLabels:
       app: galley
       istio: galley
-      version: {{ .Values.version }}
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -23,7 +21,6 @@ spec:
     metadata:
       labels:
         app: galley
-        version: {{ .Values.version }}
         istio: galley
 {{- if eq .Release.Namespace "istio-system"}}
         heritage: Tiller
@@ -63,7 +60,6 @@ spec:
           - --enable-validation=true
   {{- else }}
           - --enable-validation=false
-          - --enable-reconcileWebhookConfiguration=false
   {{- end }}
           - --enable-server=true
           - --deployment-namespace={{ .Release.Namespace }}
@@ -173,16 +169,16 @@ spec:
           secretName: istio.istio-galley-service-account
       - name: envoy-config
         configMap:
-          name: galley-envoy-config-{{ .Values.version }}
+          name: galley-envoy-config
   {{- end }}
       - name: config
         configMap:
-          name: istio-galley-configuration-{{ .Values.version }}
+          name: istio-galley-configuration
       # Different config map from pilot, to allow independent config and rollout.
       # Both are derived from values.yaml.
       - name: mesh-config
         configMap:
-          name: istio-mesh-galley-{{ .Values.version }}
+          name: istio-mesh-galley
 
       affinity:
       {{- include "nodeaffinity" . | indent 6 }}

@@ -21,16 +21,16 @@ test-noauth:
 	$(MAKE) KIND_CLUSTER=${KIND_CLUSTER}-noauth kind-run TARGET="run-test-noauth-full"
 	$(MAKE) KIND_CLUSTER=${KIND_CLUSTER}-noauth kind-run TARGET="run-test-knative"
 
-# Run a test without authentication, minimal possible install. The cluster should have no certs (so we can
-# confirm that all the 'off' is respected).
-# Will install 2 control planes, one with only discovery + ingress ( micro ), one with galley, discovery, telemetry
+# Run a test without the smallest install possible. The cluster should have no certs (so we can
+# confirm that all the 'off' is respected). The test will also work in clusters with citadel installed.
+# Use use fixed namespaces in kind because values.yaml we use for manual injection must match.
 run-test-noauth-micro: install-crds
-	bin/iop ${ISTIO_CONTROL_NS}-micro istio-discovery ${BASE}/istio-control/istio-discovery ${IOP_OPTS} \
+	bin/iop istio-system-micro istio-discovery ${BASE}/istio-control/istio-discovery ${IOP_OPTS} \
 		--set global.controlPlaneSecurityEnabled=false --set pilot.useMCP=false --set pilot.plugins="health"
-	kubectl wait deployments istio-pilot -n ${ISTIO_CONTROL_NS}-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
-	bin/iop ${ISTIO_INGRESS_NS}-micro istio-ingress ${BASE}/gateways/istio-ingress --set global.istioNamespace=${ISTIO_CONTROL_NS}-micro \
+	kubectl wait deployments istio-pilot -n istio-system-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
+	bin/iop istio-system-micro istio-ingress ${BASE}/gateways/istio-ingress --set global.istioNamespace=${ISTIO_CONTROL_NS}-micro \
 	 	${IOP_OPTS} --set global.controlPlaneSecurityEnabled=false
-	kubectl wait deployments istio-ingressgateway -n ${ISTIO_INGRESS_NS}-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl wait deployments istio-ingressgateway -n istio-system-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 	# Verify that we can kube-inject using files ( there is no injector in this config )
 	kubectl create ns simple-micro || true

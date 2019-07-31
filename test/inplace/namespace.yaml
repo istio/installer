@@ -4,5 +4,5 @@ metadata:
   name: fortio-canary
 
   labels:
-    istio-env: istio-system-canary
-
+    #istio-env: istio-system-canary
+    istio-injected: "true"

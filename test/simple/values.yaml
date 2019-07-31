@@ -7,6 +7,8 @@ istio_cni:
 
 debug: INFO
 
+version: ""
+
 global:
   hub: gcr.io/istio-release
   tag: master-latest-daily
@@ -15,7 +17,7 @@ global:
 
   controlPlaneSecurityEnabled: false
 
-  istioNamespace: istio-control
+  istioNamespace: istio-control-micro
   trustDomain: ""
 
   #network: default
@@ -43,6 +45,7 @@ global:
     readinessFailureThreshold: 10
 
     # resources
+    componentLogLevel: "misc:error"
 
 
     tracer: "none"

@@ -41,6 +41,9 @@ run-test-noauth-micro: install-crds
 		--injectConfigFile istio-control/istio-autoinject/files/injection-template.yaml \
 	 | kubectl apply -n simple-micro -f -
 
+	 kubectl wait deployments echosrv-deployment-1 -n simple-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
+
+
 # Installs minimal istio (pilot + ingressgateway) to support knative serving.
 # Then installs a simple service and waits for the route to be ready.
 run-test-knative: install-crds

@@ -63,15 +63,16 @@ DEMO_OPTS="-f test/demo/values.yaml"
 run-build-demo: dep
 	mkdir -p ${OUT}/release/demo
 
-	bin/iop ${ISTIO_SYSTEM_NS} istio-citadel ${BASE}/security/citadel -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-citadel.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} istio-config ${BASE}/istio-control/istio-config -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-config.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} istio-discovery ${BASE}/istio-control/istio-discovery -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-discovery.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} istio-autoinject ${BASE}/istio-control/istio-autoinject -t ${DEMO_OPTS} --set sidecarInjectorWebhook.enableNamespacesByDefault=${ENABLE_NAMESPACES_BY_DEFAULT} > ${OUT}/release/demo/istio-autoinject.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} istio-ingress ${BASE}/gateways/istio-ingress -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-ingress.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} istio-egress ${BASE}/gateways/istio-egress -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-egress.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} istio-telemetry ${BASE}/istio-telemetry/mixer-telemetry -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-telemetry.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} istio-telemetry ${BASE}/istio-telemetry/prometheus -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-prometheus.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} istio-telemetry ${BASE}/istio-telemetry/grafana -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-grafana.yaml
+	rm ${OUT}/release/demo/*
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/security/citadel -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-citadel.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-control/istio-config -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-config.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-control/istio-discovery -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-discovery.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-control/istio-autoinject -t ${DEMO_OPTS} --set sidecarInjectorWebhook.enableNamespacesByDefault=${ENABLE_NAMESPACES_BY_DEFAULT} > ${OUT}/release/demo/istio-autoinject.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/gateways/istio-ingress -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-ingress.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/gateways/istio-egress -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-egress.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-telemetry/mixer-telemetry -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-telemetry.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-telemetry/prometheus -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-prometheus.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-telemetry/grafana -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-grafana.yaml
 	# bin/iop ${ISTIO_SYSTEM_NS} istio-policy ${BASE}/istio-policy -t > ${OUT}/release/demo/istio-policy.yaml
 	cat ${OUT}/release/demo/*.yaml > test/demo/k8s.yaml
 

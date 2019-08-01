@@ -27,8 +27,6 @@ mixer:
         cpu: 4800m
         memory: 4G
 
-    useMCP: true
-
   env:
     GODEBUG: gctrace=1
     # max procs should be ceil(cpu limit + 1)

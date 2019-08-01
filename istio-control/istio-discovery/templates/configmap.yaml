@@ -116,7 +116,7 @@ data:
     sdsUseK8sSaJwt: false
     {{- end }}
 
-    {{- if .Values.pilot.useMCP }}
+    {{- if .Values.global.useMCP }}
     config_sources:
     {{- if .Values.global.controlPlaneSecurityEnabled }}
     - address: localhost:15019

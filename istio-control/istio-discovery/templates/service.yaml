@@ -18,8 +18,10 @@ spec:
   - port: 15014
     name: http-monitoring
   selector:
-    istio: pilot
     {{- if ne .Values.version ""}}
+    app: pilot
     version: {{ .Values.version }}
+    {{ else }}
+    istio: pilot
     {{- end }}
 ---

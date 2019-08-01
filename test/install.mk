@@ -63,7 +63,7 @@ DEMO_OPTS="-f test/demo/values.yaml"
 run-build-demo: dep
 	mkdir -p ${OUT}/release/demo
 
-	rm ${OUT}/release/demo/*
+	rm ${OUT}/release/demo/* || true
 	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/security/citadel -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-citadel.yaml
 	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-control/istio-config -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-config.yaml
 	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-control/istio-discovery -t ${DEMO_OPTS} > ${OUT}/release/demo/istio-discovery.yaml

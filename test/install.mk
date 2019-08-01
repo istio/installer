@@ -108,7 +108,7 @@ install-base: install-crds
 	# Autoinject global enabled - we won't be able to install injector
 	kubectl label ns ${ISTIO_SYSTEM_NS} istio-injection=disabled --overwrite
 	bin/iop ${ISTIO_SYSTEM_NS} istio-system-security ${BASE}/security/citadel ${IOP_OPTS} ${INSTALL_OPTS}
-	kubectl wait deployments istio-citadel11 -n ${ISTIO_SYSTEM_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl wait deployments istio-citadel -n ${ISTIO_SYSTEM_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 	kubectl create ns ${ISTIO_CONTROL_NS} || true
 	kubectl label ns ${ISTIO_CONTROL_NS} istio-injection=disabled --overwrite
 	bin/iop ${ISTIO_CONTROL_NS} istio-config ${BASE}/istio-control/istio-config ${IOP_OPTS} ${INSTALL_OPTS}

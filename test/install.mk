@@ -48,16 +48,12 @@ run-build-micro:
       > kustomize/micro/istio-ingress.yaml
 
 run-build-canary:
+	# useMCP is false because Galley with old installer uses the DNS cert, which is hard to manage.
+	# In operator/new installer galley MCP side has a sidecar and uses normal spiffe: cert.
 	bin/iop ${ISTIO_SYSTEM_NS} pilot-canary istio-control/istio-discovery -t \
-    		--set clusterResources=false \
+    		--set pilot.useMCP=false \
+    	  	--set clusterResources=false \
     		--set version=canary > kustomize/istio-canary/gen-discovery.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} galley-canary istio-control/istio-config -t \
-    		--set clusterResources=false \
-    		--set version=canary \
-    		--set global.configValidation=false > kustomize/istio-canary/gen-config.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} galley-canary istio-control/istio-autoinject -t \
-    		--set clusterResources=false \
-    		--set version=canary  > kustomize/istio-canary/gen-autoinject.yaml
 
 
 DEMO_OPTS="-f test/demo/values.yaml"

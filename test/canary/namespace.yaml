@@ -1,8 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: fortio-canary
+  name: fortio-canary-inject
 
   labels:
-    #istio-env: istio-system-canary
     istio-injected: "true"

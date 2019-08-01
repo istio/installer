@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - sidecar.yaml
-  - fortio.yaml
   - fortio-cli.yaml
 
-namespace: fortio-canary
+namespace: fortio-canary-inject

@@ -6,3 +6,5 @@ spec:
   egress:
     - hosts:
         - "./*"
+        - fortio-canary
+        - fortio-canary-inject

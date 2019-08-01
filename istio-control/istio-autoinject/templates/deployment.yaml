@@ -48,9 +48,14 @@ spec:
             - --tlsKeyFile=/etc/istio/certs/key.pem
             - --injectConfig=/etc/istio/inject/config
             - --meshConfig=/etc/istio/config/mesh
+            - --port=9443
             - --healthCheckInterval=2s
             - --healthCheckFile=/tmp/health
+                  {{- if eq .Release.Namespace "istio-system"}}
+            - --webhookConfigName=istio-sidecar-injector
+                  {{ else }}
             - --webhookConfigName=istio-sidecar-injector-{{ .Release.Namespace }}
+                  {{- end }}
             - --log_output_level=debug
           {{- if .Values.global.logAsJson }}
             - --log_as_json

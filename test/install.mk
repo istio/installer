@@ -23,11 +23,11 @@ run-build-micro: run-build-cluster
 	bin/iop istio-micro istio-discovery ${BASE}/istio-control/istio-discovery  -t \
 	  --set global.controlPlaneSecurityEnabled=false \
 	  --set pilot.useMCP=false \
-	  --set pilot.plugins="health" > kustomize/micro/discovery.yaml
+	  --set pilot.plugins="health" > kustomize/micro/gen-discovery.yaml
 	bin/iop istio-micro istio-ingress ${BASE}/gateways/istio-ingress  -t \
 	  --set global.istioNamespace=istio-micro \
       --set global.controlPlaneSecurityEnabled=false \
-      > kustomize/micro/istio-ingress.yaml
+      > kustomize/micro/gen-istio-ingress.yaml
 
 # A canary pilot, to be used for testing config changes in pilot.
 run-build-canary: run-build-cluster

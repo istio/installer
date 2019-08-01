@@ -17,6 +17,7 @@ spec:
       app: pilot
       release: istio-micro-istio-discovery
       istio: pilot
+---
 
 ---
 # Source: istio-discovery/templates/configmap-envoy.yaml
@@ -188,6 +189,8 @@ data:
                               cluster: out.galley.15019
                               timeout: 0.000s
 
+---
+
 
 ---
 # Source: istio-discovery/templates/configmap.yaml
@@ -265,9 +268,22 @@ data:
     ingressService: "istio-ingressgateway"
     ingressControllerMode: "OFF"
     ingressClass: "istio"
+    # Set expected values when SDS is disabled
     # Unix Domain Socket through which envoy communicates with NodeAgent SDS to get
     # key/cert for mTLS. Use secret-mount files instead of SDS if set to empty.
-    sdsUdsPath: 
+    sdsUdsPath: ""
+    # This flag is used by secret discovery service(SDS).
+    # If set to true(prerequisite: https://kubernetes.io/docs/concepts/storage/volumes/#projected), Istio will inject volumes mount
+    # for k8s service account JWT, so that K8s API server mounts k8s service account JWT to envoy container, which
+    # will be used to generate key/cert eventually. This isn't supported for non-k8s case.
+    enableSdsTokenMount: false
+    # This flag is used by secret discovery service(SDS).
+    # If set to true, envoy will fetch normal k8s service account JWT from '/var/run/secrets/kubernetes.io/serviceaccount/token'
+    # (https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/#accessing-the-api-from-a-pod)
+    # and pass to sds server, which will be used to request key/cert eventually.
+    # this flag is ignored if enableSdsTokenMount is set.
+    # This isn't supported for non-k8s case.
+    sdsUseK8sSaJwt: false
 
     outboundTrafficPolicy:
       mode: ALLOW_ANY
@@ -313,9 +329,11 @@ data:
       #
       # Address where istio Pilot service is running
       discoveryAddress: istio-pilot.istio-micro:15010
+---
 
 ---
 # Source: istio-discovery/templates/serviceaccount.yaml
+
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -324,9 +342,12 @@ metadata:
   labels:
     app: pilot
     release: istio-micro-istio-discovery
+---
+
 
 ---
 # Source: istio-discovery/templates/clusterrole.yaml
+
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -359,9 +380,12 @@ rules:
 - apiGroups: [""]
   resources: ["endpoints", "pods", "services", "namespaces", "nodes", "secrets"]
   verbs: ["get", "list", "watch"]
+---
+
 
 ---
 # Source: istio-discovery/templates/clusterrolebinding.yaml
+
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -377,6 +401,8 @@ subjects:
   - kind: ServiceAccount
     name: istio-pilot-service-account
     namespace: istio-micro
+---
+
 
 ---
 # Source: istio-discovery/templates/service.yaml
@@ -401,6 +427,7 @@ spec:
     name: http-monitoring
   selector:
     istio: pilot
+---
 
 ---
 # Source: istio-discovery/templates/deployment.yaml
@@ -415,7 +442,8 @@ metadata:
     release: istio-micro-istio-discovery
     istio: pilot
   annotations:
-    checksum/config-volume:  dc8df904a9925f4267d882d8e08bac9b52d7e0a15653e566eed896600d529696
+    checksum/config-volume-envoy:  484d861bd4b1aeb2ed1be80162d1a548f91495d15ae62122ce020acd8f9e7d1e
+    checksum/config-volume:  5022a7d9a3e6d91edfc3a1993a6b0997ae7f127f475e10d428fced86ee476020
 spec:
   strategy:
     rollingUpdate:
@@ -428,6 +456,8 @@ spec:
     metadata:
       labels:
         app: pilot
+        # Label used by the 'default' service. For versioned deployments we match with app and version.
+        # This avoids default deployment picking the canary
         istio: pilot
       annotations:
         sidecar.istio.io/inject: "false"
@@ -526,9 +556,11 @@ spec:
                 operator: In
                 values:
                 - s390x      
+---
 
 ---
 # Source: istio-discovery/templates/enable-mesh-mtls.yaml
+
 # Destination rule to disable (m)TLS when talking to API server, as API server doesn't have sidecar.
 # Customer should add similar destination rules for other services that dont' have sidecar.
 apiVersion: networking.istio.io/v1alpha3
@@ -545,6 +577,7 @@ spec:
       mode: DISABLE
 
 ---
+
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
@@ -557,9 +590,14 @@ spec:
   trafficPolicy:
     tls:
       mode: DISABLE
+---
+
+
+
 
 ---
 # Source: istio-discovery/templates/autoscale.yaml
+
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:

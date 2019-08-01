@@ -92,7 +92,7 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: istio
+          name: injector-mesh
       - name: certs
         secret:
 {{- if .Values.sidecarInjectorWebhook.selfSigned }}

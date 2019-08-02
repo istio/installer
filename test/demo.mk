@@ -11,7 +11,7 @@ test-demo-simple:
 
 # Run the 'install demo' test. Should run with a valid kube config and cluster - KIND or real.
 # The demo environment should be compatible and we should be able to upgrade from 1.2
-run-test-demo: run-build-demo ${TMPDIR}
+run-test-demo: run-build-cluster run-build-demo ${TMPDIR}
 	kubectl apply -k kustomize/cluster
 
 	# To verify upgrade
@@ -35,6 +35,14 @@ run-test-demo: run-build-demo ${TMPDIR}
 		--injectConfigFile istio-control/istio-autoinject/files/injection-template.yaml \
 	 | kubectl apply -n demo -f -
 
+	# Do a simple test for bookinfo
+	ONE_NAMESPACE=1 $(MAKE) run-bookinfo
+
+	# Rollback
+	kubectl apply -k kustomize/istio-1.2/default --prune -l release=istio
+
+	# Do a simple test for bookinfo again
+	ONE_NAMESPACE=1 $(MAKE) run-bookinfo
 
 test-demo-multi:
 	$(MAKE) KIND_CLUSTER=${KIND_CLUSTER}-upgrade maybe-clean maybe-prepare sync

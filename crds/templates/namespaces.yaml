@@ -19,7 +19,7 @@ metadata:
 ---
 {{- end }}
 
-{{- if ne .Values.global.configNamespace .Release.Namespace }}
+{{- if and (ne .Values.global.configNamespace .Release.Namespace) (ne .Values.global.configNamespace .Values.global.istioNamespace) }}
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -41,7 +41,7 @@ metadata:
 ---
 {{- end }}
 
-{{- if ne .Values.global.prometheusNamespace .Release.Namespace }}
+{{- if and (ne .Values.global.prometheusNamespace .Release.Namespace) (ne .Values.global.prometheusNamespace .Values.global.telemetryNamespace) }}
 apiVersion: v1
 kind: Namespace
 metadata:

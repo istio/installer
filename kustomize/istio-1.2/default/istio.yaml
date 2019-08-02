@@ -2157,6 +2157,7 @@ spec:
           - --validation-webhook-config-file
           - /etc/config/validatingwebhookconfiguration.yaml
           - --monitoringPort=15014
+          - --validation-port=9443
           - --log_output_level=default:info
           volumeMounts:
           - name: certs

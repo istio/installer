@@ -50,7 +50,7 @@ spec:
             - --meshConfig=/etc/istio/config/mesh
             - --port=9443
             - --healthCheckInterval=2s
-            - --healthCheckFile=/tmp/health
+            {{/*- --healthCheckFile=/tmp/health*/}}
                   {{- if eq .Release.Namespace "istio-system"}}
             - --webhookConfigName=istio-sidecar-injector
                   {{ else }}
@@ -60,6 +60,9 @@ spec:
           {{- if .Values.global.logAsJson }}
             - --log_as_json
           {{- end }}
+          {{/*securityContext:*/}}
+              {{/*runAsUser: 1337*/}}
+              {{/*runAsGroup: 1337*/}}
           volumeMounts:
           - name: config-volume
             mountPath: /etc/istio/config

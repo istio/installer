@@ -50,7 +50,7 @@ spec:
             - --meshConfig=/etc/istio/config/mesh
             - --port=9443
             - --healthCheckInterval=2s
-            - --healthCheckFile=/tmp/health
+            - --healthCheckFile=/health
                   {{- if eq .Release.Namespace "istio-system"}}
             - --webhookConfigName=istio-sidecar-injector
                   {{ else }}
@@ -78,7 +78,7 @@ spec:
               command:
                 - /usr/local/bin/sidecar-injector
                 - probe
-                - --probe-path=/tmp/health
+                - --probe-path=/health
                 - --interval=4s
             initialDelaySeconds: 4
             periodSeconds: 4
@@ -87,7 +87,7 @@ spec:
               command:
                 - /usr/local/bin/sidecar-injector
                 - probe
-                - --probe-path=/tmp/health
+                - --probe-path=/health
                 - --interval=4s
             initialDelaySeconds: 4
             periodSeconds: 4

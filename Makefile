@@ -79,6 +79,9 @@ CUSTOM_SIDECAR_INJECTOR_NAMESPACE ?=
 # A cluster must support multiple control plane versions.
 ISTIO_SYSTEM_NS ?= istio-system
 ISTIO_TESTING_NS ?= istio-testing
+# Default is ONE_NAMESPACE for 1.3. Set it to 0 to test multiple control planes.
+ONE_NAMESPACE ?= 1
+
 ifeq ($(ONE_NAMESPACE), 1)
 ISTIO_CONTROL_NS ?= ${ISTIO_SYSTEM_NS}
 ISTIO_TELEMETRY_NS ?= ${ISTIO_SYSTEM_NS}
@@ -154,8 +157,14 @@ KUBECONFIG ?= ~/.kube/config
 # 2. Errors reported
 # 3. make sync ( to copy modified files - unless MOUNT=1 was used)
 # 4. make docker-run-test - run the tests in the same KIND environment
-test: info dep maybe-clean maybe-prepare sync docker-run-test maybe-clean
+#
+# Make test will cleanup the previous run at startup
+test: pretest docker-run-test maybe-clean
 
+# Retest is like test, but without creating the cluster and cleanup. Use it to repeat tests in case of failure.
+retest: sync docker-run-test
+
+pretest: info dep maybe-clean maybe-prepare sync
 
 # Build all templates inside the hermetic docker image. Tools are installed.
 build:

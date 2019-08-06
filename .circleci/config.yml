@@ -31,6 +31,7 @@ integrationRemoteIsolatedNamespaces: &integrationRemoteIsolatedNamespaces
       environment:
         GOPATH: /go
         SKIP_CLEANUP: 1
+        ONE_NAMESPACE: 0
         TMPDIR: /go/tmp
 
 # Common procedure to initialize working directory
@@ -248,7 +249,8 @@ jobs:
           path: /go/out/logs
 
   # Uses machine and minikube --root, using one-step installation
-  # Used to verify that minikube still works, and get a baseline/compare performance.
+  # Used to verify that minikube still works, and get a baseline/compare performance with remote docker.
+  # This is testing the demo - should match install-demo results and time.
   install-minikube:
     <<: *integrationDefaults
     environment: &minikubeEnv
@@ -262,19 +264,14 @@ jobs:
       - checkout
       - run: bin/testEnvRootMinikube.sh start
       - run: bin/testEnvRootMinikube.sh wait
+      - run: make gitdep
       - run:
-          command: make install-crds install-base
+          # Create KIND cluster (separate so we get time info)
+          command: make info dep prepare
       - run:
-          command: make install-ingress
+          command: make sync
       - run:
-          command: make install-telemetry
-      - run:
-          command: make install-policy
-      - run:
-          command: make info dep
-      - run:
-          no_output_timeout: 20m
-          command: make git.dep run-test.integration.kube.presubmit
+          command: make docker-run-test TEST_TARGET="run-test-demo"
       - store_artifacts:
           path: /home/circleci/logs
       - store_artifacts:

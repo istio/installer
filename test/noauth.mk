@@ -41,11 +41,12 @@ run-test-noauth-micro:
 # Installs minimal istio (pilot + ingressgateway) to support knative serving.
 # Then installs a simple service and waits for the route to be ready.
 run-test-knative:
-	# Install Knative CRDs (istio-crds applied via install-crds)
-	kubectl apply --selector=knative.dev/crd-install=true --filename test/knative/serving.yaml
-
 	kubectl apply -k kustomize/cluster --prune -l istio=cluster
 
+	# Install Knative CRDs (istio-crds applied via install-crds)
+	# Using serving seems to be flaky - no matches for kind "Image" in version "caching.internal.knative.dev/v1alpha1"
+	kubectl apply --selector=knative.dev/crd-install=true --filename test/knative/crds.yaml
+	kubectl wait --for=condition=Established -f test/knative/crds.yaml
 
 	# Install pilot, ingress - using a kustomization that installs them in istio-micro instead of istio-system
 	kubectl apply -k test/knative
@@ -53,6 +54,7 @@ run-test-knative:
 	kubectl apply -f test/kind/ingress-service-micro.yaml
 
 	kubectl apply --filename test/knative/serving.yaml
+
 	kubectl wait deployments webhook controller activator autoscaler \
 	  -n knative-serving --for=condition=available --timeout=${WAIT_TIMEOUT}
 

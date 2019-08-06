@@ -38,6 +38,12 @@ run-build-ingress:
 	  --set global.controlPlaneSecurityEnabled=false \
       > kustomize/istio-ingress/gen-istio-ingress.yaml
 
+	# Required since we can't yet kustomize the CLI ( need to switch to viper and env first )
+	bin/iop istio-micro istio-ingress ${BASE}/gateways/istio-ingress  -t \
+	  --set global.istioNamespace=istio-micro \
+	  --set global.controlPlaneSecurityEnabled=false \
+      > test/knative/gen-istio-ingress.yaml
+
 run-build-citadel:
 	bin/iop ${ISTIO_SYSTEM_NS} istio-system-security ${BASE}/security/citadel -t --set kustomize=true > kustomize/citadel/citadel.yaml
 

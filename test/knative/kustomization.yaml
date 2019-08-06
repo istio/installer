@@ -5,9 +5,9 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
+  - gen-istio-ingress.yaml
 
 bases:
-  - ../../kustomize/istio-ingress
   - ../../kustomize/minimal
 
 patchesStrategicMerge:

@@ -23,6 +23,7 @@ run-all-tests: run-build \
     run-test-demo \
 	run-simple \
 	run-simple-strict \
+	test-canary \
     run-test.integration.kube.presubmit \
 	run-prometheus-operator-config-test
 

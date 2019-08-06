@@ -177,6 +177,8 @@ jobs:
       - run:
           command: make docker-run-test TEST_TARGET="run-bookinfo"
       - run:
+          command: make docker-run-test TEST_TARGET="test-canary"
+      - run:
           when: always
           command: make kind-logs
       - store_test_results:
@@ -210,6 +212,7 @@ jobs:
           path: /go/out/logs
 
   # Verify a-la-carte with no certificates ( smallest possible install, and cases without certs/mtls)
+  # KNative tests.
   noauth:
     <<: *integrationRemoteOneNamespace
 
@@ -227,7 +230,7 @@ jobs:
       - run:
           command: make info dep prepare
       - run:
-          command: make sync
+          command: make sync run-build
       - run:
           command: make docker-run-test TEST_TARGET="run-test-noauth-micro"
       - run:

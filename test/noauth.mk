@@ -11,7 +11,7 @@ test-noauth: run-build-cluster run-build-minimal run-build-ingress
 
 # Run a test with the smallest/simplest install possible
 run-test-noauth-micro:
-	kubectl apply -k kustomize/cluster
+	kubectl apply -k kustomize/cluster --prune -l istio=cluster
 
 	kubectl apply -k kustomize/minimal --prune -l release=istio-system-istio-discovery
 	# TODO: add upgrade/downgrade tests from 1.2.x for minimal profile
@@ -41,10 +41,11 @@ run-test-noauth-micro:
 # Installs minimal istio (pilot + ingressgateway) to support knative serving.
 # Then installs a simple service and waits for the route to be ready.
 run-test-knative:
-	kubectl apply -k kustomize/cluster
-
 	# Install Knative CRDs (istio-crds applied via install-crds)
 	kubectl apply --selector=knative.dev/crd-install=true --filename test/knative/serving.yaml
+
+	kubectl apply -k kustomize/cluster --prune -l istio=cluster
+
 
 	# Install pilot, ingress - using a kustomization that installs them in istio-micro instead of istio-system
 	kubectl apply -k test/knative

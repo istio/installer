@@ -170,6 +170,6 @@ run-minimal-test:
 			-istio.test.kube.config=${KUBECONFIG} \
 			-istio.test.nocleanup \
 			-istio.test.kube.deploy=0 \
-			-istio.test.kube.configNamespace=istio-control \
+			-istio.test.kube.configNamespace=${ISTIO_CONTROL_NS} \
 			-istio.test.kube.customSidecarInjectorNamespace=${CUSTOM_SIDECAR_INJECTOR_NAMESPACE} \
 			-v)

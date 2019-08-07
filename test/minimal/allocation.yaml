@@ -9,9 +9,11 @@ spec:
         - name: istio-proxy
           resources:
             limits:
-              memory: 50Mi
+              cpu: 10m
+              memory: 100Mi
             requests:
-              memory: 50Mi
+              cpu: 10m
+              memory: 100Mi
 
 ---
 
@@ -26,6 +28,8 @@ spec:
         - name: discovery
           resources:
             limits:
-              memory: 50Mi
+              cpu: 10m
+              memory: 100Mi
             requests:
-              memory: 50Mi
+              cpu: 10m
+              memory: 100Mi

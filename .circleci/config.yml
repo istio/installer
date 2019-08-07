@@ -234,11 +234,42 @@ jobs:
       - run:
           command: make docker-run-test TEST_TARGET="run-test-noauth-full"
       - run:
+          command: make docker-run-test TEST_TARGET="run-test-knative"
+      - run:
           command: make clean
       - run:
           command: make info dep prepare
       - run:
           command: make sync
+      - run:
+          command: make docker-run-test TEST_TARGET="run-test-knative"
+      - run:
+          when: always
+          command: make kind-logs
+      - store_test_results:
+          path: /go/out/tests
+      - store_artifacts:
+          path: /go/out/logs
+
+  # KNative standalone test.
+  knative:
+    <<: *integrationRemoteOneNamespace
+
+    # Can run multiple images, first is primary, all use localhost
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          command: |
+            mkdir -p $GOPATH/tmp
+            mkdir -p $GOPATH/src/istio.io/
+            git clone https://github.com/istio/istio.git $GOPATH/src/istio.io/istio
+            git clone https://github.com/istio/tools.git $GOPATH/src/istio.io/tools
+      - run:
+          command: make info dep prepare
+      - run:
+          command: make sync run-build
       - run:
           command: make docker-run-test TEST_TARGET="run-test-knative"
       - run:
@@ -297,7 +328,7 @@ jobs:
       - run:
           command: make kind-run TARGET="install-base ENABLE_NAMESPACES_BY_DEFAULT=false"
       - run:
-          command: make docker-run-test TEST_TARGET="run-minimal-test ENABLE_NAMESPACES_BY_DEFAULT=false"
+          command: make docker-run-test TEST_TARGET="run-reachability-test ENABLE_NAMESPACES_BY_DEFAULT=false"
       - run:
           when: always
           command: make kind-logs
@@ -325,6 +356,7 @@ workflows:
       - install-minikube
       - install-demo
       - noauth
+      - knative
       - run-test-on-base-installation
 
   all:

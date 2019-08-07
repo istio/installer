@@ -25,6 +25,7 @@ run-all-tests: run-build \
 	run-simple-strict \
 	test-canary \
     run-test.integration.kube.presubmit \
+    run-reachability-test \
 	run-prometheus-operator-config-test
 
 # Tests using multiple namespaces. Out of scope for 1.3
@@ -165,7 +166,7 @@ run-prometheus-operator-config-test: install-prometheus-operator install-prometh
 	until timeout ${WAIT_TIMEOUT} kubectl -n ${ISTIO_CONTROL_NS} get pod/prometheus-prometheus-0; do echo "Waiting for pods to be created..."; done
 	kubectl -n ${ISTIO_CONTROL_NS} wait pod/prometheus-prometheus-0 --for=condition=Ready --timeout=${WAIT_TIMEOUT}
 
-run-minimal-test:
+run-reachability-test:
 	mkdir -p ${GOPATH}/out/logs ${GOPATH}/out/tmp
 	(set -o pipefail; cd ${GOPATH}/src/istio.io/istio; \
 		go test ./tests/integration/security/reachability/... \

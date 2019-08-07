@@ -13,9 +13,8 @@ test-noauth: run-build-cluster run-build-minimal run-build-ingress
 run-test-noauth-micro:
 	kubectl apply -k kustomize/cluster --prune -l istio=cluster
 
-	kubectl apply -k kustomize/minimal --prune -l release=istio-system-istio-discovery
-	# TODO: add upgrade/downgrade tests from 1.2.x for minimal profile
-	kubectl apply -k kustomize/istio-ingress --prune -l release=istio-system-istio-ingress
+	# Use a kustomization to lower the alloc (to fit in circle)
+	kubectl apply -k test/minimal --prune -l release=istio-minimal
 
 	kubectl wait deployments istio-pilot istio-ingressgateway -n istio-system --for=condition=available --timeout=${WAIT_TIMEOUT}
 
@@ -40,7 +39,13 @@ run-test-noauth-micro:
 
 # Installs minimal istio (pilot + ingressgateway) to support knative serving.
 # Then installs a simple service and waits for the route to be ready.
-run-test-knative:
+#
+# This test can be run in several environments:
+# - using a 'minimal' pilot+ingress in istio-system
+# - using a full istio in istio-system
+# - using only a 'minimal' istio+ingress in a separate namespace - nothing in istio-system
+# The last config seems to be broken in CircleCI but passes locally, still investigating.
+run-test-knative: run-build-cluster run-build-minimal run-build-ingress
 	kubectl apply -k kustomize/cluster --prune -l istio=cluster
 
 	# Install Knative CRDs (istio-crds applied via install-crds)
@@ -49,8 +54,10 @@ run-test-knative:
 	kubectl wait --for=condition=Established -f test/knative/crds.yaml
 
 	# Install pilot, ingress - using a kustomization that installs them in istio-micro instead of istio-system
+	# The kustomization installs a modified istio-ingress+istio-pilot, using separate namespace
 	kubectl apply -k test/knative
 	kubectl wait deployments istio-ingressgateway istio-pilot -n istio-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
+
 	kubectl apply -f test/kind/ingress-service-micro.yaml
 
 	kubectl apply --filename test/knative/serving.yaml

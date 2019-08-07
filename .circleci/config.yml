@@ -177,8 +177,6 @@ jobs:
       - run:
           command: make docker-run-test TEST_TARGET="run-bookinfo"
       - run:
-          command: make docker-run-test TEST_TARGET="test-canary"
-      - run:
           when: always
           command: make kind-logs
       - store_test_results:

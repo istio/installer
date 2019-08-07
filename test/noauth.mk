@@ -61,7 +61,8 @@ run-test-knative:
 	kubectl apply --filename test/knative/service.yaml
 
 	# The route may take some small period of time to be create, so we cannot just directly wait on it
-	until timeout ${WAIT_TIMEOUT} kubectl wait routes helloworld-go --for=condition=ready --timeout=${WAIT_TIMEOUT}; do echo "waiting for route"; done
+	# Longer timneout - default is 240s
+	kubectl wait routes helloworld-go --for=condition=ready --timeout=600s
 
 	# Verify that ingress, pilot and knative are all happy
 	#curl localhost:30090/hello -v -H Host:helloworld-go.default.example.com

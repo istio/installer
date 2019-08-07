@@ -102,7 +102,9 @@ run-mixer:
 		E2E_ARGS="${E2E_ARGS} --namespace=mixertest")
 
 # Test targets to run. Exclude tests that are broken for now
-INT_TARGETS = $(shell GOPATH=${GOPATH} go list ../istio/tests/integration/... | grep -v "/mixer\|telemetry/tracing\|/istioctl")
+# Reachability tests are run in the 'run-minimal-test', no need to duplicate it.
+# (also helps to shard the tests)
+INT_TARGETS = $(shell GOPATH=${GOPATH} go list ../istio/tests/integration/... | grep -v "/mixer\|security/reachability\|telemetry/tracing\|/istioctl")
 
 INT_FLAGS ?= \
 	--istio.test.hub ${HUB} \

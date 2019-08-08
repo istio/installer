@@ -38,7 +38,7 @@ spec:
             {{- if .Values.global.sds.enabled }}
             - --sds-enabled=true
             {{- end }}
-            - --append-dns-names={{ .Values.security.appendDnsNames }}
+            - --append-dns-names={{ .Values.security.enableGenerateWebhookCerts }}
             - --grpc-port=8060
             - --citadel-storage-namespace={{ .Release.Namespace }}
           {{- if .Values.kustomize }}

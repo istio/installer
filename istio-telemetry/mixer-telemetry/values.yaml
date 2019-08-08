@@ -27,6 +27,7 @@ mixer:
         cpu: 4800m
         memory: 4G
 
+    # Indicate if Galley is enabled to send MCP queries
     useMCP: true
 
   env:

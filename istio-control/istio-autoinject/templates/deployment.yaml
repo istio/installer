@@ -49,6 +49,7 @@ spec:
             - --injectConfig=/etc/istio/inject/config
             - --meshConfig=/etc/istio/config/mesh
             - --port=9443
+            - --enableManageWebhookConfig={{ .Values.sidecarInjectorWebhook.enableManageWebhookConfig }}
             - --healthCheckInterval=2s
             - --healthCheckFile=/health
                   {{- if eq .Release.Namespace "istio-system"}}

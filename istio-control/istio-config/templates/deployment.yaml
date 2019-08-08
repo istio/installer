@@ -63,6 +63,7 @@ spec:
           - --validation-port=9443
           - --enable-server=true
           - --deployment-namespace={{ .Release.Namespace }}
+          - --enable-reconcileWebhookConfiguration={{ .Values.galley.enableReconcileWebhookConfiguration }}
           - --validation-webhook-config-file
           - /etc/config/validatingwebhookconfiguration.yaml
           - --monitoringPort=15014

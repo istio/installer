@@ -36,3 +36,6 @@ galley:
   # “security” and value “S1”.
   podAntiAffinityLabelSelector: []
   podAntiAffinityTermLabelSelector: []
+
+  # Enable reconcile validatingwebhookconfiguration
+  enableReconcileWebhookConfiguration: true

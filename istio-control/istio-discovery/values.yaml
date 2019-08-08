@@ -94,6 +94,8 @@ pilot:
     # Will not define mixerCheckServer and mixerReportServer
     enabled: false
 
+  useMCP: true
+
 ## Mixer settings
 mixer:
   telemetry:

@@ -26,7 +26,8 @@ run-all-tests: run-build \
 	test-canary \
     run-test.integration.kube.presubmit \
     run-reachability-test \
-	run-prometheus-operator-config-test
+	run-prometheus-operator-config-test \
+	run-kiali-operator-config-test
 
 # Tests using multiple namespaces. Out of scope for 1.3
 run-multinamespace: run-build install-full
@@ -165,6 +166,13 @@ run-prometheus-operator-config-test: install-prometheus-operator install-prometh
 	# kubectl wait is problematic, as the pod may not exist before the command is issued.
 	until timeout ${WAIT_TIMEOUT} kubectl -n ${ISTIO_CONTROL_NS} get pod/prometheus-prometheus-0; do echo "Waiting for pods to be created..."; done
 	kubectl -n ${ISTIO_CONTROL_NS} wait pod/prometheus-prometheus-0 --for=condition=Ready --timeout=${WAIT_TIMEOUT}
+
+# This test currently only validates the correct config generation and install in API server.
+run-kiali-operator-config-test: install-kiali-operator install-kiali-operator-config
+	if [ "$$(kubectl -n ${ISTIO_TELEMETRY_NS} get kiali -o name | wc -l)" -ne "1" ]; then echo "Failure to find kaili resouces!"; exit 1; fi
+	# kubectl wait is problematic, as the pod may not exist before the command is issued.
+	until timeout ${WAIT_TIMEOUT} kubectl -n ${ISTIO_TELEMETRY_NS} get deployments/kiali; do echo "Waiting for pod to be created..."; done
+	kubectl -n ${ISTIO_CONTROL_NS} wait deployments/kaili --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 run-reachability-test:
 	mkdir -p ${GOPATH}/out/logs ${GOPATH}/out/tmp

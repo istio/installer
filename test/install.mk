@@ -214,3 +214,20 @@ install-prometheus-operator-config:
 	kubectl label ns ${ISTIO_CONTROL_NS} istio-injection=disabled --overwrite
 	# NOTE: we don't use iop to install, as it defaults to `--prune`, which is incompatible with the prom operator (it prunes the stateful set)
 	bin/iop ${ISTIO_CONTROL_NS} istio-prometheus-operator ${BASE}/istio-telemetry/prometheus-operator/ -t ${PROM_OPTS} | kubectl apply -n ${ISTIO_CONTROL_NS} -f -
+
+# This target should only be used in situations in which the kiali operator has not already been installed in a cluster.
+install-kiali-operator: PROM_OP_NS="kaili-operator"
+install-kiali-operator:
+	git clone https://github.com/kiali/kiali.git ${GOPATH}/src/github.com/kiali
+	git checkout v1.1
+	cd ${GOPATH}/src/github.com/kiali/operator
+	OPERATOR_WATCH_NAMESPACE=${ISTIO_TELEMETRY_NS} OPERATOR_NAMESPACE=${PROM_OP_NS} make operator-create
+	kubectl -n ${PROM_OP_NS} wait --for=condition=available --timeout=${WAIT_TIMEOUT} deploy/kiali-operator
+	# kubectl wait is problematic, as the CRDs may not exist before the command is issued.
+	ßuntil timeout ${WAIT_TIMEOUT} kubectl get crds/kialis.kiali.io; do echo "Waiting for CRDs to be created..."; done
+
+# This target expects that the kiali operator (and its CRDs have already been installed).
+# It is provided as a way to install Istio kiali operator config in isolation.
+install-kaili-operator-config:
+	cd ${GOPATH}/src/istio.io/installer
+	${BASE}/bin/iop ${ISTIO_TELEMETRY_NS} kiali ${BASE}/istio-telemetry/kiali-operator/ --set createDemoSecret=true

@@ -20,22 +20,6 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: istio-control
-  labels:
-    istio-operator-managed: Reconcile
-    istio-injection: disabled
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: istio-telemetry
-  labels:
-    istio-operator-managed: Reconcile
-    istio-injection: disabled
----
-apiVersion: v1
-kind: Namespace
-metadata:
   name: istio-telemetry
   labels:
     istio-operator-managed: Reconcile

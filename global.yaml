@@ -405,6 +405,7 @@ global:
   # Please set either failover or distribute configuration but not both.
   #
   # localityLbSetting:
+  #   enabled: true
   #   distribute:
   #   - from: "us-central1/*"
   #     to:
@@ -412,12 +413,14 @@ global:
   #       "us-central2/*": 20
   #
   # localityLbSetting:
+  #   enabled: true
   #   failover:
   #   - from: us-east
   #     to: eu-west
   #   - from: us-west
   #     to: us-east
-  localityLbSetting: {}
+  localityLbSetting:
+    enabled: true
 
   # Specifies whether helm test is enabled or not.
   # This field is set to false by default, so 'helm template ...'

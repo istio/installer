@@ -35,13 +35,12 @@ template: |
     - "{{ index .ObjectMeta.Annotations `traffic.sidecar.istio.io/kubevirtInterfaces` }}"
     {{ end -}}
     imagePullPolicy: "{{ valueOrDefault .Values.global.imagePullPolicy `Always` }}"
+  {{- if .Values.global.proxy_init.resources }}
     resources:
-      requests:
-        cpu: 10m
-        memory: 10Mi
-      limits:
-        cpu: 100m
-        memory: 50Mi
+      {{ toYaml .Values.global.proxy_init.resources | indent 4 }}
+  {{- else }}
+    resources: {}
+  {{- end }}
     securityContext:
       runAsUser: 0
       runAsNonRoot: false

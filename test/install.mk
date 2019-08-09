@@ -216,7 +216,7 @@ install-prometheus-operator-config:
 	bin/iop ${ISTIO_CONTROL_NS} istio-prometheus-operator ${BASE}/istio-telemetry/prometheus-operator/ -t ${PROM_OPTS} | kubectl apply -n ${ISTIO_CONTROL_NS} -f -
 
 # This target should only be used in situations in which the kiali operator has not already been installed in a cluster.
-install-kiali-operator: PROM_OP_NS="kaili-operator"
+install-kiali-operator: PROM_OP_NS="kiali-operator"
 install-kiali-operator:
 	# make operator-create depends on envsubst command
 	apt-get install gettext-base -y
@@ -230,4 +230,4 @@ install-kiali-operator:
 # This target expects that the kiali operator (and its CRDs have already been installed).
 # It is provided as a way to install Istio kiali operator config in isolation.
 install-kiali-operator-config:
-	${BASE}/bin/iop ${ISTIO_TELEMETRY_NS} kiali ${BASE}/istio-telemetry/kiali-operator/ --set createDemoSecret=true
+	${BASE}/bin/iop ${ISTIO_TELEMETRY_NS} kiali ${BASE}/istio-telemetry/kiali-operator/ --set kiali.createDemoSecret=true

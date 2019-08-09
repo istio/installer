@@ -88,11 +88,11 @@ jobs:
       - run:
           command: make docker-run-test TEST_TARGET="install-policy"
       - run:
+          command: make docker-run-test TEST_TARGET="run-kiali-operator-config-test"
+      - run:
           no_output_timeout: 20m
           command: make docker-run-test TEST_TARGET="run-test.integration.kube.presubmit"
           # simple is currently failing
-      - run:
-          command: make docker-run-test TEST_TARGET="run-kiali-operator-config-test"
       - run:
           command: make docker-run-test TEST_TARGET="run-prometheus-operator-config-test"
       - run:

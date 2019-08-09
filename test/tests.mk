@@ -169,10 +169,10 @@ run-prometheus-operator-config-test: install-prometheus-operator install-prometh
 
 # This test currently only validates the correct config generation and install in API server.
 run-kiali-operator-config-test: install-kiali-operator install-kiali-operator-config
-	if [ "$$(kubectl -n ${ISTIO_TELEMETRY_NS} get kiali -o name | wc -l)" -ne "1" ]; then echo "Failure to find kaili resouces!"; exit 1; fi
+	if [ "$$(kubectl -n ${ISTIO_TELEMETRY_NS} get kiali -o name | wc -l)" -ne "1" ]; then echo "Failure to find kiali resouces!"; exit 1; fi
 	# kubectl wait is problematic, as the pod may not exist before the command is issued.
 	until timeout ${WAIT_TIMEOUT} kubectl -n ${ISTIO_TELEMETRY_NS} get deployments/kiali; do echo "Waiting for pod to be created..."; done
-	kubectl -n ${ISTIO_CONTROL_NS} wait deployments/kaili --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl -n ${ISTIO_CONTROL_NS} wait deployments/kiali --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 run-reachability-test:
 	mkdir -p ${GOPATH}/out/logs ${GOPATH}/out/tmp

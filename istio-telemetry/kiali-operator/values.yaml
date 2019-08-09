@@ -56,6 +56,15 @@ kiali:
   # When true, a secret will be created with a default username and password. Useful for demos.
   createDemoSecret: false
 
+  # A list of namespaces Kiali is to be given access to.
+  # These namespaces have service mesh components that are to be observed by Kiali.
+  # You can provide names using regex expressions matched against all namespaces the operator can see.
+  # The default makes all namespaces accessible except for some internal namespaces that typically should be ignored.
+  # NOTE! If this has an entry with the special value of "**" (two asterisks), that will denote you want
+  # Kiali to be given access to all namespaces via a single cluster role (if using this special value of "**",
+  # you are required to have already granted the operator permissions to create cluster roles and cluster role bindings).
+  # accessibleNamespaces: ["^((?!(istio-operator|kube.*|openshift.*|ibm.*|kiali-operator)).)*$"]
+
   security:
     enabled: true
     cert_file: /kiali-cert/cert-chain.pem

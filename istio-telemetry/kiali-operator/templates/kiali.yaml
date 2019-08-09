@@ -19,6 +19,9 @@ spec:
     image_pull_policy: {{ .Values.global.imagePullPolicy }}
     image_version: {{ .Values.kiali.tag }}
     namespace: {{ .Release.Namespace }}
+    {{- if .Values.kiali.accessibleNamespaces }}
+    accessible_namespaces: {{ .Values.kiali.accessibleNamespaces }}
+    {{- end }}
     ingress_enabled: {{ .Values.kiali.ingress.enabled }}
     verbose_mode: 3
     view_only_mode: {{ .Values.kiali.dashboard.viewOnlyMode }}

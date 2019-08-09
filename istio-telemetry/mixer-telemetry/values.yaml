@@ -52,6 +52,9 @@ mixer:
 
     stackdriver:
       enabled: false
+      tracer:
+        enabled: false
+        sampleProbability: 1
 
     # Setting this to false sets the useAdapterCRDs mixer startup argument to false
     useAdapterCRDs: false

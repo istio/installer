@@ -15,6 +15,15 @@ spec:
       sampleProbability: {{ .Values.mixer.adapters.stackdriver.tracer.sampleProbability | default 1 }}
     {{- end }}
     pushInterval: 10s
+    {{- if ne .Values.mixer.adapters.stackdriver.auth.serviceAccountPath "" }}
+    serviceAccountPath: {{ .Values.mixer.adapters.stackdriver.auth.serviceAccountPath }}
+    {{- end }}
+    {{- if ne .Values.mixer.adapters.stackdriver.auth.apiKey "" }}
+    apiKey: {{ .Values.mixer.adapters.stackdriver.auth.apiKey }}
+    {{- end }}
+    {{- if .Values.mixer.adapters.stackdriver.auth.appCredentials }}
+    appCredentials: {{ .Values.mixer.adapters.stackdriver.auth.appCredentials }}
+    {{- end }}
     metricInfo:
       server-request-count.instance.{{ .Release.Namespace }}:
         # Due to a bug in gogoproto deserialization, Enums in maps must be

@@ -52,6 +52,12 @@ mixer:
 
     stackdriver:
       enabled: false
+
+      auth:
+        appCredentials: false
+        apiKey: ""
+        serviceAccountPath: ""
+
       tracer:
         enabled: false
         sampleProbability: 1

@@ -246,7 +246,7 @@ global:
   # For components that don't use ServiceAccounts (i.e. grafana, servicegraph, tracing)
   # ImagePullSecrets will be added to the corresponding Deployment(StatefulSet) objects.
   # Must be set for any clustser configured with private docker registry.
-  imagePullSecrets:
+  imagePullSecrets: []
     # - private-registry-key
 
   # Specify pod scheduling arch(amd64, ppc64le, s390x) and weight as follows:

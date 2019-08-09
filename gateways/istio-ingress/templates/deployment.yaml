@@ -249,9 +249,9 @@ spec:
           - name: sdsudspath
             mountPath: /var/run/sds
             readOnly: true
-          {{- end }}
           - name: istio-token
             mountPath: /var/run/secrets/tokens
+          {{- end }}
           {{- if $gateway.sds.enabled }}
           - name: ingressgatewaysdsudspath
             mountPath: /var/run/ingress_gateway

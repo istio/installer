@@ -270,10 +270,8 @@ template: |
     - mountPath: /var/run/sds
       name: sds-uds-path
       readOnly: true
-    {{- if .Values.global.sds.useTrustworthyJwt }}
     - mountPath: /var/run/secrets/tokens
       name: istio-token
-    {{- end }}
     {{- if .Values.global.sds.customTokenDirectory }}
     - mountPath: "{{ .Values.global.sds.customTokenDirectory -}}"
       name: custom-sds-token
@@ -308,12 +306,6 @@ template: |
   - name: sds-uds-path
     hostPath:
       path: /var/run/sds
-  {{- if .Values.global.sds.customTokenDirectory }}
-  - name: custom-sds-token
-    secret:
-      secretName: sdstokensecret
-  {{- end }}
-  {{- if .Values.global.sds.useTrustworthyJwt }}
   - name: istio-token
     projected:
       sources:
@@ -321,6 +313,10 @@ template: |
           path: istio-token
           expirationSeconds: 43200
           audience: {{ .Values.global.trustDomain }}
+  {{- if .Values.global.sds.customTokenDirectory }}
+  - name: custom-sds-token
+    secret:
+      secretName: sdstokensecret
   {{- end }}
   {{- else }}
   - name: istio-certs

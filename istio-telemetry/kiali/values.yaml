@@ -6,6 +6,7 @@ kiali:
   replicaCount: 1
   hub: docker.io/kiali
   tag: v1.1.0
+  image: kiali
   contextPath: /kiali # The root context path to access the Kiali UI.
   nodeSelector: {}
 

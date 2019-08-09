@@ -23,7 +23,8 @@ data:
 
     # Set accessLogFile to empty string to disable access log.
     accessLogFile: "{{ .Values.global.proxy.accessLogFile }}"
-    #
+
+    enableEnvoyAccessLogService: {{ .Values.global.proxy.envoyAccessLogService.enabled }}
 
     {{- if .Values.mixer.telemetry.reportBatchMaxEntries }}
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
@@ -195,5 +196,10 @@ data:
       # Address where istio Pilot service is running
       discoveryAddress: istio-pilot.{{ .Release.Namespace }}:15010
     {{- end }}
+    {{- if .Values.global.proxy.envoyAccessLogService.enabled }}
+      # Envoy's AccessLog Service pushes access logs to a remote collector via the Access Log Service gRPC API.
+      envoyAccessLogService:
+        address: {{ .Values.global.proxy.envoyAccessLogService.host }}:{{ .Values.global.proxy.envoyAccessLogService.port }}
+    {{- end}}
 ---
 {{- end }}

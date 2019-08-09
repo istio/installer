@@ -44,6 +44,10 @@ spec:
     matchLabels:
       app: istio-egressgateway
       istio: egressgateway
+  strategy:
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 25%
   template:
     metadata:
       labels:

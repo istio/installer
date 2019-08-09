@@ -14,11 +14,18 @@ run-test-noauth-micro:
 	kubectl apply -k kustomize/cluster --prune -l istio=cluster
 
 	# Use a kustomization to lower the alloc (to fit in circle)
-	kubectl apply -k test/minimal --prune -l release=istio-minimal
+	kubectl apply -k test/minimal --prune -l release=istio-system-istio-discovery
+	kubectl apply -k test/minimal --prune -l release=istio-system-istio-ingress
 
 	kubectl wait deployments istio-pilot istio-ingressgateway -n istio-system --for=condition=available --timeout=${WAIT_TIMEOUT}
 
+	# Add a node port service, so the tests can also run from container - port is 30080
+	# If running with 'local mount' - it also sets a port in the main docker contaier, so port is accessible from dev
+	# machine. Otherwise the test should in inside the kind container node.
 	kubectl apply -f test/kind/ingress-service.yaml
+
+	# Apply an ingress, to verify ingress is configured properly
+	kubectl apply -f test/simple/ingress.yaml
 
 	# Verify that we can kube-inject using files ( there is no injector in this config )
 	kubectl create ns simple-micro || true
@@ -34,7 +41,10 @@ run-test-noauth-micro:
 
 	# Verify ingress and pilot are happy
 	# The 'simple' fortio has a rewrite rule - so /fortio/fortio/ is the real UI
-	#curl localhost:30080/fortio/fortio/ -v
+	curl -s localhost:30080/fortio/fortio/ |grep fortio_chart.js
+
+	# This is the ingress gateway, no rewrite. Without host it hits the redirect
+	curl -s localhost:30080/fortio/ -HHost:fortio-ingress.example.com | grep fortio_chart.js
 
 
 # Installs minimal istio (pilot + ingressgateway) to support knative serving.
@@ -58,6 +68,7 @@ run-test-knative: run-build-cluster run-build-minimal run-build-ingress
 	kubectl apply -k test/knative
 	kubectl wait deployments istio-ingressgateway istio-pilot -n istio-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
 
+	# Set host port 30090, for the ingressateway in istio-micro
 	kubectl apply -f test/kind/ingress-service-micro.yaml
 
 	kubectl apply --filename test/knative/serving.yaml

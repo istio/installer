@@ -1,25 +1,4 @@
 ---
-# Source: istio-discovery/templates/poddisruptionbudget.yaml
-
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: istio-pilot
-  namespace: istio-system
-  labels:
-    app: pilot
-    release: istio-system-istio
-    istio: pilot
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: pilot
-      release: istio-system-istio
-      istio: pilot
----
-
----
 # Source: istio-discovery/templates/configmap-envoy.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -211,7 +190,7 @@ data:
 
   values.yaml: |-
     appNamespaces: []
-    autoscaleEnabled: true
+    autoscaleEnabled: false
     autoscaleMax: 5
     autoscaleMin: 1
     configMap: true
@@ -244,7 +223,7 @@ data:
     telemetry:
       enabled: true
     tolerations: []
-    traceSampling: 1
+    traceSampling: 100
     useMCP: true
     
 
@@ -253,7 +232,7 @@ data:
     enableTracing: true
 
     # Set accessLogFile to empty string to disable access log.
-    accessLogFile: ""
+    accessLogFile: "/dev/stdout"
     #
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
     reportBatchMaxEntries: 100
@@ -446,8 +425,9 @@ metadata:
     istio: pilot
   annotations:
     checksum/config-volume-envoy:  9726bd6803a3694896aebf780e59da64a778683d1fa5460467e3ed4188143ba8
-    checksum/config-volume:  f1d65c1dc42649a87e02687fcd4452d43f6955a25ba8ba7e96b2a06508670eea
+    checksum/config-volume:  5b5052e7a08b058ffc3604473cc2815750e69e9a36c683030a6930e2b35723be
 spec:
+  replicas: 1
   strategy:
     rollingUpdate:
       maxSurge: 100%
@@ -509,7 +489,7 @@ spec:
           - name: GODEBUG
             value: "gctrace=1"
           - name: PILOT_TRACE_SAMPLING
-            value: "1"
+            value: "100"
           - name: PILOT_DISABLE_XDS_MARSHALING_TO_ANY
             value: "1"
           - name: CONFIG_NAMESPACE
@@ -558,8 +538,8 @@ spec:
               cpu: 2000m
               memory: 128Mi
             requests:
-              cpu: 100m
-              memory: 128Mi
+              cpu: 10m
+              memory: 40Mi
             
           volumeMounts:
           - name: istio-certs
@@ -653,25 +633,8 @@ spec:
 ---
 # Source: istio-discovery/templates/autoscale.yaml
 
-apiVersion: autoscaling/v2beta1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: istio-pilot
-  namespace: istio-system
-  labels:
-    app: pilot
-    release: istio-system-istio
-spec:
-  maxReplicas: 5
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: istio-pilot
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      targetAverageUtilization: 80
+
 ---
+# Source: istio-discovery/templates/poddisruptionbudget.yaml
+
 

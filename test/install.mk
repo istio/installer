@@ -229,5 +229,5 @@ install-kiali-operator:
 
 # This target expects that the kiali operator (and its CRDs have already been installed).
 # It is provided as a way to install Istio kiali operator config in isolation.
-install-kaili-operator-config:
+install-kiali-operator-config:
 	${BASE}/bin/iop ${ISTIO_TELEMETRY_NS} kiali ${BASE}/istio-telemetry/kiali-operator/ --set createDemoSecret=true

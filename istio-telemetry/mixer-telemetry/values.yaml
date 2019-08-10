@@ -1,37 +1,4 @@
 mixer:
-  telemetry:
-    image: mixer
-    enabled: true
-    replicaCount: 1
-    rollingMaxSurge: 100%
-    rollingMaxUnavailable: 25%
-    autoscaleEnabled: true
-    autoscaleMin: 1
-    autoscaleMax: 5
-    cpu:
-      targetAverageUtilization: 80
-    sessionAffinityEnabled: false
-
-    # mixer load shedding configuration.
-    # When mixer detects that it is overloaded, it starts rejecting grpc requests.
-    loadshedding:
-      # disabled, logonly or enforce
-      mode: enforce
-      # based on measurements 100ms p50 translates to p99 of under 1s. This is ok for telemetry which is inherently async.
-      latencyThreshold: 100ms
-    resources:
-      requests:
-        cpu: 1000m
-        memory: 1G
-      limits:
-        # It is best to do horizontal scaling of mixer using moderate cpu allocation.
-        # We have experimentally found that these values work well.
-        cpu: 4800m
-        memory: 4G
-
-    # Indicate if Galley is enabled to send MCP queries
-    useMCP: true
-
   env:
     GODEBUG: gctrace=1
     # max procs should be ceil(cpu limit + 1)
@@ -66,6 +33,39 @@ mixer:
 
     # Setting this to false sets the useAdapterCRDs mixer startup argument to false
     useAdapterCRDs: false
+
+  telemetry:
+    image: mixer
+    enabled: true
+    replicaCount: 1
+    rollingMaxSurge: 100%
+    rollingMaxUnavailable: 25%
+    autoscaleEnabled: true
+    autoscaleMin: 1
+    autoscaleMax: 5
+    cpu:
+      targetAverageUtilization: 80
+    sessionAffinityEnabled: false
+
+    # mixer load shedding configuration.
+    # When mixer detects that it is overloaded, it starts rejecting grpc requests.
+    loadshedding:
+      # disabled, logonly or enforce
+      mode: enforce
+      # based on measurements 100ms p50 translates to p99 of under 1s. This is ok for telemetry which is inherently async.
+      latencyThreshold: 100ms
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 1G
+      limits:
+        # It is best to do horizontal scaling of mixer using moderate cpu allocation.
+        # We have experimentally found that these values work well.
+        cpu: 4800m
+        memory: 4G
+
+    # Indicate if Galley is enabled to send MCP queries
+    useMCP: true
 
     nodeSelector: {}
     tolerations: []

@@ -485,8 +485,8 @@ spec:
             cpu: 4800m
             memory: 4G
           requests:
-            cpu: 1000m
-            memory: 1G
+            cpu: 50m
+            memory: 100Mi
           
         volumeMounts:
         - name: istio-certs
@@ -541,7 +541,7 @@ spec:
         resources:
           limits:
             cpu: 2000m
-            memory: 128Mi
+            memory: 1024Mi
           requests:
             cpu: 10m
             memory: 40Mi
@@ -730,6 +730,8 @@ spec:
       valueType: BOOL
     quota.cache_hit:
       valueType: BOOL
+    context.proxy_version:
+      valueType: STRING
 
 ---
 apiVersion: "config.istio.io/v1alpha2"

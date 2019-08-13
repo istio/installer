@@ -216,8 +216,8 @@ data:
     replicaCount: 1
     resources:
       requests:
-        cpu: 500m
-        memory: 2048Mi
+        cpu: 10m
+        memory: 100Mi
     rollingMaxSurge: 100%
     rollingMaxUnavailable: 25%
     telemetry:
@@ -233,7 +233,8 @@ data:
 
     # Set accessLogFile to empty string to disable access log.
     accessLogFile: "/dev/stdout"
-    #
+
+    enableEnvoyAccessLogService: false
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
     reportBatchMaxEntries: 100
     # reportBatchMaxTime is the max waiting time before the telemetry data of a request is sent to the mixer server
@@ -269,9 +270,8 @@ data:
 
     outboundTrafficPolicy:
       mode: ALLOW_ANY
-
     localityLbSetting:
-      {}
+      enabled: true
       
 
     defaultConfig:
@@ -425,7 +425,7 @@ metadata:
     istio: pilot
   annotations:
     checksum/config-volume-envoy:  9726bd6803a3694896aebf780e59da64a778683d1fa5460467e3ed4188143ba8
-    checksum/config-volume:  5b5052e7a08b058ffc3604473cc2815750e69e9a36c683030a6930e2b35723be
+    checksum/config-volume:  f55f0648496785933730755842a0a5aedeea53925fa15339ce737b04feabeb2d
 spec:
   replicas: 1
   strategy:
@@ -490,14 +490,12 @@ spec:
             value: "gctrace=1"
           - name: PILOT_TRACE_SAMPLING
             value: "100"
-          - name: PILOT_DISABLE_XDS_MARSHALING_TO_ANY
-            value: "1"
           - name: CONFIG_NAMESPACE
             value: istio-config
           resources:
             requests:
-              cpu: 500m
-              memory: 2048Mi
+              cpu: 10m
+              memory: 100Mi
             
           volumeMounts:
           - name: config-volume
@@ -536,7 +534,7 @@ spec:
           resources:
             limits:
               cpu: 2000m
-              memory: 128Mi
+              memory: 1024Mi
             requests:
               cpu: 10m
               memory: 40Mi

@@ -76,12 +76,12 @@ DEMO_OPTS="-f test/demo/values.yaml"
 # For backward compat, demo profile uses istio-system.
 run-build-demo: dep
 	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/security/citadel -t ${DEMO_OPTS} > test/demo/gen-citadel.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-control/istio-config -t ${DEMO_OPTS} >> test/demo/gen-galley.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-control/istio-discovery -t ${DEMO_OPTS} >> test/demo/gen-pilot.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-control/istio-config -t ${DEMO_OPTS} > test/demo/gen-galley.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-control/istio-discovery -t ${DEMO_OPTS} > test/demo/gen-pilot.yaml
 	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-control/istio-autoinject -t ${DEMO_OPTS} \
-	  --set sidecarInjectorWebhook.enableNamespacesByDefault=${ENABLE_NAMESPACES_BY_DEFAULT} >> test/demo/gen-inject-allns.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/gateways/istio-ingress -t ${DEMO_OPTS} >> test/demo/gen-ingress.yaml
-	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-telemetry/mixer-telemetry -t ${DEMO_OPTS} >> test/demo/gen-telemetry.yaml
+	  --set sidecarInjectorWebhook.enableNamespacesByDefault=${ENABLE_NAMESPACES_BY_DEFAULT} > test/demo/gen-inject-allns.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/gateways/istio-ingress -t ${DEMO_OPTS} > test/demo/gen-ingress.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/istio-telemetry/mixer-telemetry -t ${DEMO_OPTS} > test/demo/gen-telemetry.yaml
 
 	# Extras present only in demo profile
 	bin/iop ${ISTIO_SYSTEM_NS} istio ${BASE}/gateways/istio-egress -t ${DEMO_OPTS} > test/demo/gen-egress.yaml

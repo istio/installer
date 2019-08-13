@@ -40,6 +40,7 @@ metadata:
     istio: egressgateway
     release: istio-system-istio
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: istio-egressgateway
@@ -111,8 +112,8 @@ spec:
               cpu: 2000m
               memory: 256Mi
             requests:
-              cpu: 100m
-              memory: 128Mi
+              cpu: 10m
+              memory: 40Mi
             
           env:
           - name: NODE_NAME
@@ -294,27 +295,6 @@ spec:
 ---
 # Source: istio-egress/templates/autoscale.yaml
 
-apiVersion: autoscaling/v2beta1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: egressgateway
-  namespace: istio-system
-  labels:
-    app: istio-egressgateway
-    release: istio-system-istio
-spec:
-  maxReplicas: 5
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: egressgateway
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        targetAverageUtilization: 80
----
 
 ---
 # Source: istio-egress/templates/poddisruptionbudget.yaml

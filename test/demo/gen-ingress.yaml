@@ -73,6 +73,7 @@ metadata:
     istio: ingressgateway
     release: istio-system-istio
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: istio-ingressgateway
@@ -151,10 +152,10 @@ spec:
           resources:
             limits:
               cpu: 2000m
-              memory: 256Mi
+              memory: 1024Mi
             requests:
-              cpu: 100m
-              memory: 128Mi
+              cpu: 10m
+              memory: 40Mi
             
           env:
           - name: NODE_NAME
@@ -276,31 +277,6 @@ spec:
 
 
 ---
-# Source: istio-ingress/templates/autoscale.yaml
-
-apiVersion: autoscaling/v2beta1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: ingressgateway
-  namespace: istio-system
-  labels:
-    app: istio-ingressgateway
-    release: istio-system-istio
-spec:
-  maxReplicas: 5
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: ingressgateway
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        targetAverageUtilization: 80
----
-
----
 # Source: istio-ingress/templates/sidecar.yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: Sidecar
@@ -322,6 +298,10 @@ spec:
 
 
 
+
+
+---
+# Source: istio-ingress/templates/autoscale.yaml
 
 
 ---

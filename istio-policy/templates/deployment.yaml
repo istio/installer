@@ -75,12 +75,17 @@ spec:
 {{- end }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy | default "Always" }}
         ports:
+        - containerPort: 9091
         - containerPort: 15014
         - containerPort: 42422
         args:
           - --monitoringPort=15014
           - --address
+{{- if .Values.global.controlPlaneSecurityEnabled }}
           - unix:///sock/mixer.socket
+{{- else }}
+          - tcp://0.0.0.0:9091
+{{- end }}
 {{- if .Values.global.logging.level }}
           - --log_output_level={{ .Values.global.logging.level }}
 {{- end}}
@@ -138,6 +143,7 @@ spec:
             port: 15014
           initialDelaySeconds: 5
           periodSeconds: 5
+{{- if .Values.global.controlPlaneSecurityEnabled }}
       - name: istio-proxy
 {{- if contains "/" .Values.global.proxy.image }}
         image: "{{ .Values.global.proxy.image }}"
@@ -146,7 +152,6 @@ spec:
 {{- end }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy | default "Always" }}
         ports:
-        - containerPort: 9091
         - containerPort: 15004
         - containerPort: 15090
           protocol: TCP
@@ -209,5 +214,6 @@ spec:
         {{- end }}
         - name: uds-socket
           mountPath: /sock
+{{- end }}
 ---
 

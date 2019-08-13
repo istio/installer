@@ -13,6 +13,9 @@ test-noauth: run-build-cluster run-build-minimal run-build-ingress
 run-test-noauth-micro:
 	kubectl apply -k kustomize/cluster --prune -l istio=cluster
 
+	# Verify that we can kube-inject using files ( there is no injector in this config )
+	kubectl create ns simple-micro || true
+
 	# Use a kustomization to lower the alloc (to fit in circle)
 	kubectl apply -k test/minimal --prune -l release=istio-system-istio-discovery
 	kubectl apply -k test/minimal --prune -l release=istio-system-istio-ingress
@@ -27,9 +30,6 @@ run-test-noauth-micro:
 	# Apply an ingress, to verify ingress is configured properly
 	kubectl apply -f test/simple/ingress.yaml
 
-	# Verify that we can kube-inject using files ( there is no injector in this config )
-	kubectl create ns simple-micro || true
-
 	istioctl kube-inject -f test/simple/servicesToBeInjected.yaml \
 		-n simple-micro \
 		--meshConfigFile test/simple/mesh.yaml \
@@ -38,6 +38,7 @@ run-test-noauth-micro:
 	 | kubectl apply -n simple-micro -f -
 
 	kubectl wait deployments echosrv-deployment-1 -n simple-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl wait deployments echosrv-deployment-2 -n simple-micro --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 	# Verify ingress and pilot are happy
 	# The 'simple' fortio has a rewrite rule - so /fortio/fortio/ is the real UI

@@ -19,14 +19,15 @@ global:
   # It is assumed that istio-system is running either 1.0 or an upgraded version of 1.1, but only security components are
   # used (citadel generating the secrets).
   istioNamespace: istio-system
-  configNamespace: istio-system
+
+  configNamespace: istio-control
 
   # Telemetry namespace, including tracing.
-  telemetryNamespace: istio-system
+  telemetryNamespace: istio-telemetry
 
-  prometheusNamespace: istio-system
+  prometheusNamespace: istio-telemetry
 
-  policyNamespace: istio-system
+  policyNamespace: istio-policy
 
 
   ## End new settings

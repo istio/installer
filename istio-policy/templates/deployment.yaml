@@ -136,6 +136,7 @@ spec:
             port: 15014
           initialDelaySeconds: 5
           periodSeconds: 5
+{{- if .Values.global.controlPlaneSecurityEnabled }}
       - name: istio-proxy
 {{- if contains "/" .Values.global.proxy.image }}
         image: "{{ .Values.global.proxy.image }}"
@@ -205,5 +206,6 @@ spec:
         {{- end }}
         - name: uds-socket
           mountPath: /sock
+{{- end }}
 ---
 

@@ -284,20 +284,30 @@ but in the case of K8S ingress it is currently required.
     iop istio-telemetry istio-mixer $IBASE/istio-telemetry/mixer-telemetry/ --set global.istioNamespace=istio-master
 
     iop istio-telemetry istio-prometheus $IBASE/istio-telemetry/prometheus/ --set global.istioNamespace=istio-master
+
+    iop istio-telemetry istio-tracing $IBASE/istio-telemetry/tracing/ --set global.istioNamespace=istio-master
 ```
 
 ## Policy
 
-TODO - see example
+```bash
+    iop istio-policy istio-policy $IBASE/istio-policy/ --set global.istioNamespace=istio-master
+```
 
 ## Egress
+
+```bash
+    iop istio-egress istio-egress $IBASE/gateways/istio-egress/ --set global.istioNamespace=istio-master
+```
 
 
 ## Other components
 
 ### Kiali
 
-###
+```bash
+    iop istio-telemetry istio-kiali $IBASE/istio-telemetry/kiali/ --set global.istioNamespace=istio-master
+```
 
 ## Additional test templates
 

@@ -40,10 +40,15 @@ metadata:
     istio: egressgateway
     release: istio-system-istio
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: istio-egressgateway
       istio: egressgateway
+  strategy:
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
@@ -57,7 +62,7 @@ spec:
     spec:
       containers:
         - name: istio-proxy
-          image: "gcr.io/istio-release/proxyv2:master-latest-daily"
+          image: "gcr.io/istio-release/proxyv2:release-1.3-latest-daily"
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -107,8 +112,8 @@ spec:
               cpu: 2000m
               memory: 256Mi
             requests:
-              cpu: 100m
-              memory: 128Mi
+              cpu: 10m
+              memory: 40Mi
             
           env:
           - name: NODE_NAME
@@ -290,27 +295,6 @@ spec:
 ---
 # Source: istio-egress/templates/autoscale.yaml
 
-apiVersion: autoscaling/v2beta1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: egressgateway
-  namespace: istio-system
-  labels:
-    app: istio-egressgateway
-    release: istio-system-istio
-spec:
-  maxReplicas: 5
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: egressgateway
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        targetAverageUtilization: 80
----
 
 ---
 # Source: istio-egress/templates/poddisruptionbudget.yaml

@@ -240,6 +240,8 @@ data:
       requests:
         cpu: 500m
         memory: 2048Mi
+    rollingMaxSurge: 100%
+    rollingMaxUnavailable: 25%
     telemetry:
       enabled: true
     tolerations: []
@@ -252,8 +254,9 @@ data:
     enableTracing: true
 
     # Set accessLogFile to empty string to disable access log.
-    accessLogFile: ""
-    #
+    accessLogFile: "/dev/stdout"
+
+    enableEnvoyAccessLogService: false
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
     reportBatchMaxEntries: 100
     # reportBatchMaxTime is the max waiting time before the telemetry data of a request is sent to the mixer server
@@ -287,9 +290,8 @@ data:
 
     outboundTrafficPolicy:
       mode: ALLOW_ANY
-
     localityLbSetting:
-      {}
+      enabled: true
       
 
     defaultConfig:
@@ -373,12 +375,12 @@ metadata:
     istio: pilot
   annotations:
     checksum/config-volume-envoy:  6102a6f3c16f84f15a04b0e7b94a08bcecf3d911a68012168c314ce425677124
-    checksum/config-volume:  a4b627cec344e8380ebab6a7cbd60fbc59c86e704a44554ab169ac5165096297
+    checksum/config-volume:  b8dc2bbc5ea7db38b725758302403fd98803e170a12cac9d956997fa5100a127
 spec:
   strategy:
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      maxSurge: 100%
+      maxUnavailable: 25%
   selector:
     matchLabels:
       app: pilot
@@ -401,7 +403,7 @@ spec:
       serviceAccountName: istio-pilot-service-account
       containers:
         - name: discovery
-          image: "gcr.io/istio-release/pilot:master-latest-daily"
+          image: "gcr.io/istio-release/pilot:release-1.3-latest-daily"
           imagePullPolicy: Always
           args:
           - "discovery"
@@ -438,8 +440,6 @@ spec:
             value: "gctrace=1"
           - name: PILOT_TRACE_SAMPLING
             value: "1"
-          - name: PILOT_DISABLE_XDS_MARSHALING_TO_ANY
-            value: "1"
           - name: CONFIG_NAMESPACE
             value: istio-config
           resources:
@@ -451,7 +451,7 @@ spec:
           - name: config-volume
             mountPath: /etc/istio/config
         - name: istio-proxy
-          image: "gcr.io/istio-release/proxyv2:master-latest-daily"
+          image: "gcr.io/istio-release/proxyv2:release-1.3-latest-daily"
           imagePullPolicy: Always
           ports:
           - containerPort: 15011
@@ -484,10 +484,10 @@ spec:
           resources:
             limits:
               cpu: 2000m
-              memory: 128Mi
+              memory: 1024Mi
             requests:
-              cpu: 100m
-              memory: 128Mi
+              cpu: 0m
+              memory: 1Mi
             
           volumeMounts:
           - name: istio-certs

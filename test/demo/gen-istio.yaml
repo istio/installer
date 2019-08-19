@@ -28,7 +28,7 @@ rules:
   resources: ["secrets"]
   verbs: ["create", "get", "watch", "list", "update", "delete"]
 - apiGroups: [""]
-  resources: ["serviceaccounts", "services", "namespaces"]
+  resources: ["serviceaccounts", "services"]
   verbs: ["get", "watch", "list"]
 - apiGroups: ["authentication.k8s.io"]
   resources: ["tokenreviews"]
@@ -100,8 +100,8 @@ spec:
   replicas: 1
   strategy:
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      maxSurge: 100%
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
@@ -113,7 +113,7 @@ spec:
       serviceAccountName: istio-citadel-service-account
       containers:
         - name: citadel
-          image: "gcr.io/istio-release/citadel:master-latest-daily"
+          image: "gcr.io/istio-release/citadel:release-1.3-latest-daily"
           imagePullPolicy: Always
           args:
             - --append-dns-names=true
@@ -122,6 +122,9 @@ spec:
             - --custom-dns-names=istio-galley-service-account.istio-config:istio-galley.istio-config.svc,istio-galley-service-account.istio-control:istio-galley.istio-control.svc,istio-galley-service-account.istio-control-master:istio-galley.istio-control-master.svc,istio-galley-service-account.istio-master:istio-galley.istio-master.svc,istio-galley-service-account.istio-pilot11:istio-galley.istio-pilot11.svc,istio-pilot-service-account.istio-control:istio-pilot-service-account.istio-control,istio-pilot-service-account.istio-pilot11:istio-pilot-service-account.istio-system,istio-sidecar-injector-service-account.istio-control:istio-sidecar-injector.istio-control.svc,istio-sidecar-injector-service-account.istio-control-master:istio-sidecar-injector.istio-control-master.svc,istio-sidecar-injector-service-account.istio-master:istio-sidecar-injector.istio-master.svc,istio-sidecar-injector-service-account.istio-pilot11:istio-sidecar-injector.istio-pilot11.svc,istio-sidecar-injector-service-account.istio-remote:istio-sidecar-injector.istio-remote.svc,
             - --self-signed-ca=true
             - --trust-domain=cluster.local
+          env:
+          - name: CITADEL_ENABLE_NAMESPACES_BY_DEFAULT
+            value: "true"
           livenessProbe:
             httpGet:
               path: /version
@@ -130,7 +133,8 @@ spec:
             periodSeconds: 5
           resources:
             requests:
-              cpu: 10m
+              cpu: 0m
+              memory: 1Mi
             
       affinity:      
         nodeAffinity:
@@ -525,8 +529,8 @@ spec:
       istio: galley
   strategy:
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      maxSurge: 100%
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
@@ -541,7 +545,7 @@ spec:
       serviceAccountName: istio-galley-service-account
       containers:
         - name: galley
-          image: "gcr.io/istio-release/galley:master-latest-daily"
+          image: "gcr.io/istio-release/galley:release-1.3-latest-daily"
           imagePullPolicy: Always
           ports:
           - containerPort: 9443
@@ -598,7 +602,7 @@ spec:
               cpu: 100m
             
         - name: istio-proxy
-          image: "gcr.io/istio-release/proxyv2:master-latest-daily"
+          image: "gcr.io/istio-release/proxyv2:release-1.3-latest-daily"
           imagePullPolicy: Always
           ports:
           - containerPort: 9902
@@ -629,7 +633,7 @@ spec:
           resources:
             limits:
               cpu: 2000m
-              memory: 128Mi
+              memory: 1024Mi
             requests:
               cpu: 10m
               memory: 40Mi
@@ -894,7 +898,7 @@ data:
 
   values.yaml: |-
     appNamespaces: []
-    autoscaleEnabled: true
+    autoscaleEnabled: false
     autoscaleMax: 5
     autoscaleMin: 1
     configMap: true
@@ -920,8 +924,10 @@ data:
     replicaCount: 1
     resources:
       requests:
-        cpu: 500m
-        memory: 2048Mi
+        cpu: 10m
+        memory: 100Mi
+    rollingMaxSurge: 100%
+    rollingMaxUnavailable: 25%
     telemetry:
       enabled: true
     tolerations: []
@@ -935,7 +941,8 @@ data:
 
     # Set accessLogFile to empty string to disable access log.
     accessLogFile: "/dev/stdout"
-    #
+
+    enableEnvoyAccessLogService: false
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
     reportBatchMaxEntries: 100
     # reportBatchMaxTime is the max waiting time before the telemetry data of a request is sent to the mixer server
@@ -971,9 +978,8 @@ data:
 
     outboundTrafficPolicy:
       mode: ALLOW_ANY
-
     localityLbSetting:
-      {}
+      enabled: true
       
 
     defaultConfig:
@@ -1127,12 +1133,13 @@ metadata:
     istio: pilot
   annotations:
     checksum/config-volume-envoy:  9726bd6803a3694896aebf780e59da64a778683d1fa5460467e3ed4188143ba8
-    checksum/config-volume:  aca16b883d19f7f91ee3b14cc7308f42132334d2ede7d74e16c961385f6b2504
+    checksum/config-volume:  f55f0648496785933730755842a0a5aedeea53925fa15339ce737b04feabeb2d
 spec:
+  replicas: 1
   strategy:
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      maxSurge: 100%
+      maxUnavailable: 25%
   selector:
     matchLabels:
       istio: pilot
@@ -1154,7 +1161,7 @@ spec:
       serviceAccountName: istio-pilot-service-account
       containers:
         - name: discovery
-          image: "gcr.io/istio-release/pilot:master-latest-daily"
+          image: "gcr.io/istio-release/pilot:release-1.3-latest-daily"
           imagePullPolicy: Always
           args:
           - "discovery"
@@ -1191,20 +1198,18 @@ spec:
             value: "gctrace=1"
           - name: PILOT_TRACE_SAMPLING
             value: "100"
-          - name: PILOT_DISABLE_XDS_MARSHALING_TO_ANY
-            value: "1"
           - name: CONFIG_NAMESPACE
             value: istio-config
           resources:
             requests:
-              cpu: 500m
-              memory: 2048Mi
+              cpu: 10m
+              memory: 100Mi
             
           volumeMounts:
           - name: config-volume
             mountPath: /etc/istio/config
         - name: istio-proxy
-          image: "gcr.io/istio-release/proxyv2:master-latest-daily"
+          image: "gcr.io/istio-release/proxyv2:release-1.3-latest-daily"
           imagePullPolicy: Always
           ports:
           - containerPort: 15011
@@ -1237,7 +1242,7 @@ spec:
           resources:
             limits:
               cpu: 2000m
-              memory: 128Mi
+              memory: 1024Mi
             requests:
               cpu: 10m
               memory: 40Mi
@@ -1334,27 +1339,6 @@ spec:
 ---
 # Source: istio-discovery/templates/autoscale.yaml
 
-apiVersion: autoscaling/v2beta1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: istio-pilot
-  namespace: istio-system
-  labels:
-    app: pilot
-    release: istio-system-istio
-spec:
-  maxReplicas: 5
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: istio-pilot
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      targetAverageUtilization: 80
----
 
 ---
 # Source: istio-discovery/templates/poddisruptionbudget.yaml
@@ -1433,7 +1417,7 @@ metadata:
     istio: sidecar-injector
 data:
   values: |-
-    {"clusterResources":true,"global":{"arch":{"amd64":2,"ppc64le":2,"s390x":2},"configNamespace":"istio-system","configValidation":true,"controlPlaneSecurityEnabled":true,"defaultNodeSelector":{},"defaultPodDisruptionBudget":{"enabled":false},"defaultResources":{"requests":{"cpu":"10m"}},"disablePolicyChecks":false,"enableHelmTest":false,"enableTracing":true,"hub":"gcr.io/istio-release","imagePullPolicy":"Always","imagePullSecrets":null,"istioNamespace":"istio-system","k8sIngress":{"enableHttps":false,"enabled":false,"gatewayName":"ingressgateway"},"localityLbSetting":{},"logAsJson":false,"logging":{"level":"default:info"},"meshExpansion":{"enabled":false,"useILB":false},"meshNetworks":{},"mtls":{"enabled":false},"multiCluster":{"enabled":false},"oneNamespace":false,"outboundTrafficPolicy":{"mode":"ALLOW_ANY"},"policyCheckFailOpen":false,"policyNamespace":"istio-system","priorityClassName":"","prometheusNamespace":"istio-system","proxy":{"accessLogEncoding":"TEXT","accessLogFile":"/dev/stdout","accessLogFormat":"","autoInject":"enabled","clusterDomain":"cluster.local","componentLogLevel":"misc:error","concurrency":2,"dnsRefreshRate":"300s","enableCoreDump":false,"envoyMetricsService":{"enabled":false,"host":null,"port":null},"envoyStatsd":{"enabled":false,"host":null,"port":null},"excludeIPRanges":"","excludeInboundPorts":"","excludeOutboundPorts":"","image":"proxyv2","includeIPRanges":"*","includeInboundPorts":"*","kubevirtInterfaces":"","logLevel":"warning","privileged":false,"readinessFailureThreshold":30,"readinessInitialDelaySeconds":1,"readinessPeriodSeconds":2,"resources":{"limits":{"cpu":"2000m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"40Mi"}},"statusPort":15020,"tracer":"zipkin"},"proxy_init":{"image":"proxy_init"},"sds":{"enabled":false,"udsPath":"","useNormalJwt":false,"useTrustworthyJwt":false},"sidecarInjectorWebhook":{"enabled":true,"rewriteAppHTTPProbe":false},"tag":"master-latest-daily","telemetryNamespace":"istio-system","tracer":{"datadog":{"address":"$(HOST_IP):8126"},"lightstep":{"accessToken":"","address":"","cacertPath":"","secure":true},"zipkin":{"address":""}},"trustDomain":"","useMCP":true},"grafana":{"enabled":true},"istio_cni":{"enabled":false},"kiali":{"createDemoSecret":true,"enabled":true},"mixer":{"adapters":{"stdio":{"enabled":true}},"policy":{"enabled":true},"telemetry":{"enabled":true}},"pilot":{"traceSampling":100},"sidecarInjectorWebhook":{"alwaysInjectSelector":[],"enableNamespacesByDefault":true,"image":"sidecar_injector","injectLabel":"istio-injection","neverInjectSelector":[],"nodeSelector":{},"podAntiAffinityLabelSelector":[],"podAntiAffinityTermLabelSelector":[],"replicaCount":1,"rewriteAppHTTPProbe":false,"selfSigned":false,"tolerations":[]},"tracing":{"enabled":true},"version":""}
+    {"clusterResources":true,"configValidation":true,"gateways":{"istio-egressgateway":{"autoscaleEnabled":false,"enabled":true,"resources":{"requests":{"cpu":"10m","memory":"40Mi"}}},"istio-ingressgateway":{"autoscaleEnabled":false,"resources":{"requests":{"cpu":"10m","memory":"40Mi"}}}},"global":{"arch":{"amd64":2,"ppc64le":2,"s390x":2},"configNamespace":"istio-system","configValidation":true,"controlPlaneSecurityEnabled":true,"defaultNodeSelector":{},"defaultPodDisruptionBudget":{"enabled":false},"defaultResources":{"requests":{"cpu":"0m","memory":"1Mi"}},"disablePolicyChecks":false,"enableHelmTest":false,"enableTracing":true,"hub":"gcr.io/istio-release","imagePullPolicy":"Always","imagePullSecrets":[],"istioNamespace":"istio-system","k8sIngress":{"enableHttps":false,"enabled":false,"gatewayName":"ingressgateway"},"localityLbSetting":{"enabled":true},"logAsJson":false,"logging":{"level":"default:info"},"meshExpansion":{"enabled":false,"useILB":false},"meshNetworks":{},"mtls":{"enabled":false},"multiCluster":{"enabled":false},"oneNamespace":false,"outboundTrafficPolicy":{"mode":"ALLOW_ANY"},"policyCheckFailOpen":false,"policyNamespace":"istio-system","priorityClassName":"","prometheusNamespace":"istio-system","proxy":{"accessLogEncoding":"TEXT","accessLogFile":"/dev/stdout","accessLogFormat":"","autoInject":"enabled","clusterDomain":"cluster.local","componentLogLevel":"misc:error","concurrency":2,"dnsRefreshRate":"300s","enableCoreDump":false,"envoyAccessLogService":{"enabled":false,"host":null,"port":null},"envoyMetricsService":{"enabled":false,"host":null,"port":null},"envoyStatsd":{"enabled":false,"host":null,"port":null},"excludeIPRanges":"","excludeInboundPorts":"","excludeOutboundPorts":"","image":"proxyv2","includeIPRanges":"*","includeInboundPorts":"*","kubevirtInterfaces":"","logLevel":"warning","privileged":false,"readinessFailureThreshold":30,"readinessInitialDelaySeconds":1,"readinessPeriodSeconds":2,"resources":{"limits":{"cpu":"2000m","memory":"1024Mi"},"requests":{"cpu":"10m","memory":"40Mi"}},"statusPort":15020,"tracer":"zipkin"},"proxy_init":{"image":"proxy_init","resources":{"limits":{"cpu":"100m","memory":"50Mi"},"requests":{"cpu":"10m","memory":"10Mi"}}},"sds":{"enabled":false,"udsPath":""},"sidecarInjectorWebhook":{"enabled":true,"rewriteAppHTTPProbe":false},"tag":"release-1.3-latest-daily","telemetryNamespace":"istio-system","tracer":{"datadog":{"address":"$(HOST_IP):8126"},"lightstep":{"accessToken":"","address":"","cacertPath":"","secure":true},"zipkin":{"address":""}},"trustDomain":"","useMCP":true},"grafana":{"enabled":true},"istio_cni":{"enabled":false},"kiali":{"createDemoSecret":true,"enabled":true},"mixer":{"adapters":{"stdio":{"enabled":true}},"policy":{"autoscaleEnabled":false,"enabled":true,"resources":{"requests":{"cpu":"10m","memory":"100Mi"}}},"telemetry":{"autoscaleEnabled":false,"enabled":true,"resources":{"requests":{"cpu":"50m","memory":"100Mi"}}}},"pilot":{"autoscaleEnabled":false,"resources":{"requests":{"cpu":"10m","memory":"100Mi"}},"traceSampling":100},"resources":{"requests":{"cpu":"0m","memory":"1Mi"}},"sidecarInjectorWebhook":{"alwaysInjectSelector":[],"enableNamespacesByDefault":true,"image":"sidecar_injector","injectLabel":"istio-injection","neverInjectSelector":[],"nodeSelector":{},"podAntiAffinityLabelSelector":[],"podAntiAffinityTermLabelSelector":[],"replicaCount":1,"rewriteAppHTTPProbe":false,"rollingMaxSurge":"100%","rollingMaxUnavailable":"25%","selfSigned":false,"tolerations":[]},"tracing":{"enabled":true},"version":""}
 
   config: |-
     policy: enabled
@@ -1459,6 +1443,8 @@ data:
         - "/usr/local/bin/istio-iptables.sh"
         - "-p"
         - 15001
+        - "-z"
+        - "15006"
         - "-u"
         - 1337
         - "-m"
@@ -1480,13 +1466,12 @@ data:
         - "{{ index .ObjectMeta.Annotations `traffic.sidecar.istio.io/kubevirtInterfaces` }}"
         {{ end -}}
         imagePullPolicy: "{{ valueOrDefault .Values.global.imagePullPolicy `Always` }}"
+      {{- if .Values.global.proxy_init.resources }}
         resources:
-          requests:
-            cpu: 10m
-            memory: 10Mi
-          limits:
-            cpu: 100m
-            memory: 50Mi
+          {{ toYaml .Values.global.proxy_init.resources | indent 4 }}
+      {{- else }}
+        resources: {}
+      {{- end }}
         securityContext:
           runAsUser: 0
           runAsNonRoot: false
@@ -1576,7 +1561,11 @@ data:
       {{- end }}
       {{- if .Values.global.proxy.envoyMetricsService.enabled }}
         - --envoyMetricsServiceAddress
-        - "{{ .ProxyConfig.EnvoyMetricsServiceAddress }}"
+        - "{{ .ProxyConfig.GetEnvoyMetricsService.GetAddress }}"
+      {{- end }}
+      {{- if .Values.global.proxy.envoyAccessLogService.enabled }}
+        - --envoyAccessLogServiceAddress
+        - "{{ .ProxyConfig.GetEnvoyAccessLogService.GetAddress }}"
       {{- end }}
         - --proxyAdminPort
         - "{{ .ProxyConfig.ProxyAdminPort }}"
@@ -1591,6 +1580,8 @@ data:
         - --controlPlaneAuthPolicy
         - NONE
         {{- end }}
+        - --dnsRefreshRate
+        - {{ valueOrDefault .Values.global.proxy.dnsRefreshRate "300s" }}
       {{- if (ne (annotation .ObjectMeta "status.sidecar.istio.io/port" .Values.global.proxy.statusPort) "0") }}
         - --statusPort
         - "{{ annotation .ObjectMeta `status.sidecar.istio.io/port` .Values.global.proxy.statusPort }}"
@@ -1634,6 +1625,8 @@ data:
               fieldPath: metadata.namespace
         - name: ISTIO_META_INTERCEPTION_MODE
           value: "{{ or (index .ObjectMeta.Annotations `sidecar.istio.io/interceptionMode`) .ProxyConfig.InterceptionMode.String }}"
+        - name: ISTIO_META_INCLUDE_INBOUND_PORTS
+          value: "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeInboundPorts` (applicationPorts .Spec.Containers) }}"
         {{- if .Values.global.network }}
         - name: ISTIO_META_NETWORK
           value: "{{ .Values.global.network }}"
@@ -1706,10 +1699,8 @@ data:
         - mountPath: /var/run/sds
           name: sds-uds-path
           readOnly: true
-        {{- if .Values.global.sds.useTrustworthyJwt }}
         - mountPath: /var/run/secrets/tokens
           name: istio-token
-        {{- end }}
         {{- if .Values.global.sds.customTokenDirectory }}
         - mountPath: "{{ .Values.global.sds.customTokenDirectory -}}"
           name: custom-sds-token
@@ -1744,12 +1735,6 @@ data:
       - name: sds-uds-path
         hostPath:
           path: /var/run/sds
-      {{- if .Values.global.sds.customTokenDirectory }}
-      - name: custom-sds-token
-        secret:
-          secretName: sdstokensecret
-      {{- end }}
-      {{- if .Values.global.sds.useTrustworthyJwt }}
       - name: istio-token
         projected:
           sources:
@@ -1757,6 +1742,10 @@ data:
               path: istio-token
               expirationSeconds: 43200
               audience: {{ .Values.global.trustDomain }}
+      {{- if .Values.global.sds.customTokenDirectory }}
+      - name: custom-sds-token
+        secret:
+          secretName: sdstokensecret
       {{- end }}
       {{- else }}
       - name: istio-certs
@@ -1876,8 +1865,8 @@ spec:
       istio: sidecar-injector
   strategy:
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      maxSurge: 100%
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
@@ -1888,12 +1877,12 @@ spec:
         chart: sidecarInjectorWebhook
       annotations:
         sidecar.istio.io/inject: "false"
-        checksum/config-volume: 6b6f57b2761f40b83c392c59ca79366d52dd97b89a75996cf5be7555194eba55
+        checksum/config-volume: 106836a809fe0fe307066d6fa1c22a9c95459f78398dcf3279e1cce228b1e449
     spec:
       serviceAccountName: istio-sidecar-injector-service-account
       containers:
         - name: sidecar-injector-webhook
-          image: "gcr.io/istio-release/sidecar_injector:master-latest-daily"
+          image: "gcr.io/istio-release/sidecar_injector:release-1.3-latest-daily"
           imagePullPolicy: Always
           args:
             - --caCertFile=/etc/istio/certs/root-cert.pem
@@ -1940,7 +1929,8 @@ spec:
             periodSeconds: 4
           resources:
             requests:
-              cpu: 10m
+              cpu: 0m
+              memory: 1Mi
             
       volumes:
       - name: config-volume
@@ -2109,10 +2099,15 @@ metadata:
     istio: ingressgateway
     release: istio-system-istio
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: istio-ingressgateway
       istio: ingressgateway
+  strategy:
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
@@ -2127,7 +2122,7 @@ spec:
       serviceAccountName: istio-ingressgateway-service-account
       containers:
         - name: istio-proxy
-          image: "gcr.io/istio-release/proxyv2:master-latest-daily"
+          image: "gcr.io/istio-release/proxyv2:release-1.3-latest-daily"
           imagePullPolicy: Always
           ports:
             - containerPort: 15020
@@ -2183,10 +2178,10 @@ spec:
           resources:
             limits:
               cpu: 2000m
-              memory: 256Mi
+              memory: 1024Mi
             requests:
-              cpu: 100m
-              memory: 128Mi
+              cpu: 10m
+              memory: 40Mi
             
           env:
           - name: NODE_NAME
@@ -2308,31 +2303,6 @@ spec:
 
 
 ---
-# Source: istio-ingress/templates/autoscale.yaml
-
-apiVersion: autoscaling/v2beta1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: ingressgateway
-  namespace: istio-system
-  labels:
-    app: istio-ingressgateway
-    release: istio-system-istio
-spec:
-  maxReplicas: 5
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: ingressgateway
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        targetAverageUtilization: 80
----
-
----
 # Source: istio-ingress/templates/sidecar.yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: Sidecar
@@ -2354,6 +2324,10 @@ spec:
 
 
 
+
+
+---
+# Source: istio-ingress/templates/autoscale.yaml
 
 
 ---
@@ -2770,7 +2744,8 @@ spec:
   - name: prometheus
     port: 42422
   selector:
-    app: istio-telemetry
+    istio: mixer
+    istio-mixer-type: telemetry
 ---
 
 ---
@@ -2789,8 +2764,8 @@ spec:
   replicas: 1
   strategy:
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      maxSurge: 100%
+      maxUnavailable: 25%
   selector:
     matchLabels:
       istio: mixer
@@ -2798,7 +2773,7 @@ spec:
   template:
     metadata:
       labels:
-        app: telemetry
+        app: istio-telemetry
         istio: mixer
         istio-mixer-type: telemetry
       annotations:
@@ -2854,7 +2829,7 @@ spec:
                 - s390x      
       containers:
       - name: mixer
-        image: "gcr.io/istio-release/mixer:master-latest-daily"
+        image: "gcr.io/istio-release/mixer:release-1.3-latest-daily"
         imagePullPolicy: Always
         ports:
         - containerPort: 15014
@@ -2879,8 +2854,8 @@ spec:
             cpu: 4800m
             memory: 4G
           requests:
-            cpu: 1000m
-            memory: 1G
+            cpu: 50m
+            memory: 100Mi
           
         volumeMounts:
         - name: istio-certs
@@ -2897,9 +2872,8 @@ spec:
             port: 15014
           initialDelaySeconds: 5
           periodSeconds: 5
-
       - name: istio-proxy
-        image: "gcr.io/istio-release/proxyv2:master-latest-daily"
+        image: "gcr.io/istio-release/proxyv2:release-1.3-latest-daily"
         imagePullPolicy: Always
         ports:
         - containerPort: 9091
@@ -2936,7 +2910,7 @@ spec:
         resources:
           limits:
             cpu: 2000m
-            memory: 128Mi
+            memory: 1024Mi
           requests:
             cpu: 10m
             memory: 40Mi
@@ -3125,6 +3099,8 @@ spec:
       valueType: BOOL
     quota.cache_hit:
       valueType: BOOL
+    context.proxy_version:
+      valueType: STRING
 
 ---
 apiVersion: "config.istio.io/v1alpha2"

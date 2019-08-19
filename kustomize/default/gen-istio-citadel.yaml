@@ -119,8 +119,8 @@ spec:
   replicas: 1
   strategy:
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      maxSurge: 100%
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
@@ -132,7 +132,7 @@ spec:
       serviceAccountName: istio-citadel-service-account
       containers:
         - name: citadel
-          image: "gcr.io/istio-release/citadel:master-latest-daily"
+          image: "gcr.io/istio-release/citadel:release-1.3-latest-daily"
           imagePullPolicy: Always
           args:
             - --append-dns-names=true
@@ -141,6 +141,9 @@ spec:
             - --custom-dns-names=istio-galley-service-account.istio-config:istio-galley.istio-config.svc,istio-galley-service-account.istio-control:istio-galley.istio-control.svc,istio-galley-service-account.istio-control-master:istio-galley.istio-control-master.svc,istio-galley-service-account.istio-master:istio-galley.istio-master.svc,istio-galley-service-account.istio-pilot11:istio-galley.istio-pilot11.svc,istio-pilot-service-account.istio-control:istio-pilot-service-account.istio-control,istio-pilot-service-account.istio-pilot11:istio-pilot-service-account.istio-system,istio-sidecar-injector-service-account.istio-control:istio-sidecar-injector.istio-control.svc,istio-sidecar-injector-service-account.istio-control-master:istio-sidecar-injector.istio-control-master.svc,istio-sidecar-injector-service-account.istio-master:istio-sidecar-injector.istio-master.svc,istio-sidecar-injector-service-account.istio-pilot11:istio-sidecar-injector.istio-pilot11.svc,istio-sidecar-injector-service-account.istio-remote:istio-sidecar-injector.istio-remote.svc,
             - --self-signed-ca=true
             - --trust-domain=cluster.local
+          env:
+          - name: CITADEL_ENABLE_NAMESPACES_BY_DEFAULT
+            value: "true"
           livenessProbe:
             httpGet:
               path: /version

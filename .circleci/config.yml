@@ -223,7 +223,7 @@ jobs:
           command: |
             mkdir -p $GOPATH/tmp
             mkdir -p $GOPATH/src/istio.io/
-            git clone https://github.com/istio/istio.git $GOPATH/src/istio.io/istio
+            git clone -b release-1.3 https://github.com/istio/istio.git $GOPATH/src/istio.io/istio
             git clone https://github.com/istio/tools.git $GOPATH/src/istio.io/tools
       - run:
           command: make info dep prepare
@@ -256,7 +256,7 @@ jobs:
           command: |
             mkdir -p $GOPATH/tmp
             mkdir -p $GOPATH/src/istio.io/
-            git clone https://github.com/istio/istio.git $GOPATH/src/istio.io/istio
+            git clone -b release-1.3 https://github.com/istio/istio.git $GOPATH/src/istio.io/istio
             git clone https://github.com/istio/tools.git $GOPATH/src/istio.io/tools
       - run:
           command: make info dep prepare

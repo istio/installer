@@ -298,7 +298,7 @@ GITBASE ?= "https://github.com"
 
 ${TOP}/src/istio.io/istio:
 	mkdir -p ${TOP}/src/istio.io
-	git clone ${GITBASE}/istio/istio.git ${TOP}/src/istio.io/istio
+	git clone -b release-1.3 ${GITBASE}/istio/istio.git ${TOP}/src/istio.io/istio
 
 ${TOP}/src/istio.io/tools:
 	mkdir -p ${TOP}/src/istio.io
@@ -307,7 +307,7 @@ ${TOP}/src/istio.io/tools:
 gitdep:
 	mkdir -p ${TOP}/tmp
 	mkdir -p ${TOP}/src/istio.io/
-	git clone https://github.com/istio/istio.git ${TOP}/src/istio.io/istio
+	git clone -b release-1.3 https://github.com/istio/istio.git ${TOP}/src/istio.io/istio
 	git clone https://github.com/istio/tools.git ${TOP}/src/istio.io/tools
 
 #

@@ -37,6 +37,9 @@ spec:
   resources:
     requests:
       memory: 400Mi
+{{- if .Values.prometheus.spec }}
+{{ toYaml .Values.prometheus.spec | indent 2 }}
+{{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole

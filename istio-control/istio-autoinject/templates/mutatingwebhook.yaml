@@ -29,7 +29,9 @@ webhooks:
         resources: ["pods"]
     failurePolicy: Fail
     namespaceSelector:
-{{- if .Values.sidecarInjectorWebhook.enableNamespacesByDefault }}
+{{- if .Values.sidecarInjectorWebhook.namespaceSelector }}
+      {{- toYaml .Values.sidecarInjectorWebhook.namespaceSelector | trim | nindent 6 }}
+{{- else if .Values.sidecarInjectorWebhook.enableNamespacesByDefault }}
       matchExpressions:
       - key: name
         operator: NotIn

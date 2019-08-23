@@ -6,7 +6,7 @@ metadata:
   name: istio-jaeger-pvc
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.tracing.provider }}
+    app: tracing
     release: {{ .Release.Name }}
 spec:
   storageClassName: {{ .Values.tracing.jaeger.storageClassName }}

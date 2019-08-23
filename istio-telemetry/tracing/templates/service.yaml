@@ -4,7 +4,7 @@ metadata:
   name: zipkin
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.tracing.provider }}
+    app: tracing
     release: {{ .Release.Name }}
 spec:
   type: {{ .Values.tracing.service.type }}
@@ -14,7 +14,7 @@ spec:
       protocol: TCP
       name: {{ .Values.tracing.service.name }}
   selector:
-    app: {{ .Values.tracing.provider }}
+    app: tracing
 ---
 {{- if ne .Values.tracing.provider "opencensus"}}
 apiVersion: v1
@@ -27,7 +27,7 @@ metadata:
     {{ $key }}: {{ $val | quote }}
     {{- end }}
   labels:
-    app: {{ .Values.tracing.provider }}
+    app: tracing
     release: {{ .Release.Name }}
 spec:
   ports:
@@ -40,5 +40,52 @@ spec:
       targetPort: 9411
 {{ end}}
   selector:
-    app: {{ .Values.tracing.provider }}
+    app: tracing
+{{- end }}
+
+{{- if eq .Values.tracing.provider "jaeger" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger-query
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- range $key, $val := .Values.tracing.service.annotations }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  labels:
+    app: tracing
+    jaeger-infra: jaeger-service
+    release: {{ .Release.Name }}
+spec:
+  ports:
+    - name: query-http
+      port: 16686
+      protocol: TCP
+      targetPort: 16686
+  selector:
+    app: tracing
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger-collector
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: tracing
+    jaeger-infra: collector-service
+    release: {{ .Release.Name }}
+spec:
+  ports:
+  - name: jaeger-collector-tchannel
+    port: 14267
+    protocol: TCP
+    targetPort: 14267
+  - name: jaeger-collector-http
+    port: 14268
+    targetPort: 14268
+    protocol: TCP
+  selector:
+    app: tracing
+  type: ClusterIP
 {{- end }}

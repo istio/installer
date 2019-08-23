@@ -1,0 +1,18 @@
+{{ if eq .Values.tracing.provider "opencensus" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oc-collector-config
+  labels:
+    app: opencensus
+    component: oc-collector-config
+data:
+  oc-collector-config: |
+    receivers:
+      zipkin:
+        address: "127.0.0.1:9411"
+    exporters:
+{{- if .Values.tracing.opencensus.exporters }}
+{{ toYaml .Values.tracing.opencensus.exporters | indent 6 }}
+{{- end }}
+{{ end }}

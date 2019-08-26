@@ -34,9 +34,6 @@ mixer:
       contextGraph:
         enabled: false
 
-      label:
-        meshUID: ""
-
     # Setting this to false sets the useAdapterCRDs mixer startup argument to false
     useAdapterCRDs: false
 

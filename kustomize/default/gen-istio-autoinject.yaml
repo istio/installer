@@ -300,7 +300,7 @@ data:
         - name: ISTIO_META_INTERCEPTION_MODE
           value: "{{ or (index .ObjectMeta.Annotations `sidecar.istio.io/interceptionMode`) .ProxyConfig.InterceptionMode.String }}"
         - name: ISTIO_META_INCLUDE_INBOUND_PORTS
-          value: "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeInboundPorts` `*` }}"
+          value: "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeInboundPorts` (applicationPorts .Spec.Containers) }}"
         {{- if .Values.global.network }}
         - name: ISTIO_META_NETWORK
           value: "{{ .Values.global.network }}"
@@ -558,7 +558,7 @@ spec:
         chart: sidecarInjectorWebhook
       annotations:
         sidecar.istio.io/inject: "false"
-        checksum/config-volume: 23a63e961a56df2dbdd9f6f1c4e8ce1b237dc95f54c8758e543ad54c85fecae0
+        checksum/config-volume: f8325cc50ac11b03915f0d628e61ce052e6f28ea33ebc81e049e8470b380091d
     spec:
       serviceAccountName: istio-sidecar-injector-service-account
       containers:

@@ -254,7 +254,7 @@ data:
     enableTracing: true
 
     # Set accessLogFile to empty string to disable access log.
-    accessLogFile: "/dev/stdout"
+    accessLogFile: ""
 
     enableEnvoyAccessLogService: false
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
@@ -445,7 +445,7 @@ metadata:
     istio: pilot
   annotations:
     checksum/config-volume-envoy:  ce051e0f3f422f8fad7318cba46a4e5bc0973ca751be5652c5bdc0397f5fca89
-    checksum/config-volume:  42f6010db26567aaff967a00eb9cb32a5a82db87d74ee8bdc265b57dac803ff4
+    checksum/config-volume:  d4f71dc67bedee527651418ae134019170ac6bc7e3ef8ba47475a1dcfeca9516
 spec:
   strategy:
     rollingUpdate:

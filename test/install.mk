@@ -74,10 +74,10 @@ REL ?= istio-1.3.0-rc.0
 # under $TOP/rel
 
 run-build-rel:
-	helm template ${TOP}/rel/${REL}/install/kubernetes/helm/istio --name istio --namespace istio-system > kustomize/istio-1.3/default/istio.yaml
+	helm template ${TOP}/rel/${REL}/install/kubernetes/helm/istio --name istio --namespace istio-system > kustomize/istio-1.3/default/gen-istio.yaml
 	cp ${TOP}/rel/${REL}/install/kubernetes/helm/istio/values.yaml  kustomize/istio-1.3/default
 	helm template ${TOP}/rel/${REL}/install/kubernetes/helm/istio --name istio --namespace istio-system \
-		-f ${TOP}/rel/${REL}/install/kubernetes/helm/istio/values-istio-minimal.yaml > kustomize/istio-1.3/minimal/istio.yaml
+		-f ${TOP}/rel/${REL}/install/kubernetes/helm/istio/values-istio-minimal.yaml > kustomize/istio-1.3/minimal/gen-istio.yaml
 	cp ${TOP}/rel/${REL}/install/kubernetes/helm/istio/values-istio-minimal.yaml kustomize/istio-1.3/minimal
 
 DEMO_OPTS="-f test/demo/values.yaml"

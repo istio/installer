@@ -73,12 +73,17 @@ spec:
 {{- end }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy | default "Always" }}
         ports:
+        - containerPort: 9091
         - containerPort: 15014
         - containerPort: 42422
         args:
           - --monitoringPort=15014
           - --address
+{{- if .Values.global.controlPlaneSecurityEnabled }}
           - unix:///sock/mixer.socket
+{{- else }}
+          - tcp://0.0.0.0:9091
+{{- end }}
 {{- if .Values.global.logging.level }}
           - --log_output_level={{ .Values.global.logging.level }}
 {{- end}}
@@ -106,8 +111,13 @@ spec:
           {{- else }}
           - --trace_zipkin_url=http://zipkin.{{ .Values.global.telemetryNamespace }}:9411/api/v1/spans
           {{- end }}
-        {{- if .Values.mixer.policy.env }}
         env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        {{- if .Values.mixer.policy.env }}
         {{- range $key, $val := .Values.mixer.policy.env }}
         - name: {{ $key }}
           value: "{{ $val }}"
@@ -145,7 +155,6 @@ spec:
 {{- end }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy | default "Always" }}
         ports:
-        - containerPort: 9091
         - containerPort: 15004
         - containerPort: 15090
           protocol: TCP

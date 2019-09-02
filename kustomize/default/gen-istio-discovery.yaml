@@ -254,7 +254,8 @@ data:
 
     # Set accessLogFile to empty string to disable access log.
     accessLogFile: ""
-    #
+
+    enableEnvoyAccessLogService: false
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
     reportBatchMaxEntries: 100
     # reportBatchMaxTime is the max waiting time before the telemetry data of a request is sent to the mixer server
@@ -290,9 +291,8 @@ data:
 
     outboundTrafficPolicy:
       mode: ALLOW_ANY
-
     localityLbSetting:
-      {}
+      enabled: true
       
 
     defaultConfig:
@@ -363,6 +363,9 @@ rules:
   resources: ["*"]
   verbs: ["*"]
 - apiGroups: ["rbac.istio.io"]
+  resources: ["*"]
+  verbs: ["get", "watch", "list"]
+- apiGroups: ["security.istio.io"]
   resources: ["*"]
   verbs: ["get", "watch", "list"]
 - apiGroups: ["networking.istio.io"]
@@ -446,7 +449,7 @@ metadata:
     istio: pilot
   annotations:
     checksum/config-volume-envoy:  9726bd6803a3694896aebf780e59da64a778683d1fa5460467e3ed4188143ba8
-    checksum/config-volume:  f1d65c1dc42649a87e02687fcd4452d43f6955a25ba8ba7e96b2a06508670eea
+    checksum/config-volume:  c7478d92170519dd398b42d14c5babdf813060a2aadcac4b80769b06c161cd88
 spec:
   strategy:
     rollingUpdate:
@@ -510,8 +513,6 @@ spec:
             value: "gctrace=1"
           - name: PILOT_TRACE_SAMPLING
             value: "1"
-          - name: PILOT_DISABLE_XDS_MARSHALING_TO_ANY
-            value: "1"
           - name: CONFIG_NAMESPACE
             value: istio-config
           resources:
@@ -556,7 +557,7 @@ spec:
           resources:
             limits:
               cpu: 2000m
-              memory: 128Mi
+              memory: 1024Mi
             requests:
               cpu: 100m
               memory: 128Mi

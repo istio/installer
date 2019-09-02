@@ -58,7 +58,7 @@ export TAG
 EXTRA ?= --set global.hub=${HUB} --set global.tag=${TAG}
 OUT ?= ${TOP}/out
 
-BUILD_IMAGE ?= istionightly/ci:2019-07-01
+BUILD_IMAGE ?= istionightly/ci:2019-08-14
 
 GO ?= go
 
@@ -328,6 +328,7 @@ ${TOP}/bin/dep:
 
 lint:
 	$(MAKE) kind-run TARGET="run-lint"
+
 
 include test/install.mk
 include test/tests.mk

@@ -167,9 +167,11 @@ spec:
       - name: istio-certs
         secret:
           secretName: istio.istio-galley-service-account
+{{- if .Values.global.controlPlaneSecurityEnabled }}
       - name: envoy-config
         configMap:
           name: galley-envoy-config
+{{- end }}
   {{- end }}
       - name: config
         configMap:

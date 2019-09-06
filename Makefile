@@ -58,7 +58,7 @@ export TAG
 EXTRA ?= --set global.hub=${HUB} --set global.tag=${TAG}
 OUT ?= ${TOP}/out
 
-BUILD_IMAGE ?= istionightly/ci:2019-07-01
+BUILD_IMAGE ?= istionightly/ci:2019-08-30
 
 GO ?= go
 
@@ -182,7 +182,7 @@ kind-run:
 # Runs the test in docker. Will exec into KIND and run "make $TEST_TARGET" (default: run-all-tests)
 docker-run-test:
 	docker exec -e KUBECONFIG=/etc/kubernetes/admin.conf -e ONE_NAMESPACE=$(ONE_NAMESPACE) \
-		${KIND_CLUSTER}-control-plane \
+		-e GO111MODULE=on ${KIND_CLUSTER}-control-plane \
 		bash -c "cd ${TOP}/src/istio.io/installer; make git.dep ${TEST_TARGET}"
 
 # Start a KIND cluster, using current docker environment, and a custom image including helm
@@ -328,6 +328,7 @@ ${TOP}/bin/dep:
 
 lint:
 	$(MAKE) kind-run TARGET="run-lint"
+
 
 include test/install.mk
 include test/tests.mk

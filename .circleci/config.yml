@@ -12,6 +12,17 @@ integrationDefaults: &integrationDefaults
     - KUBECONFIG: /go/out/minikube.conf
     - TEST_ENV: minikube-none
 
+# remote docker environment for one namespace. Appears to be faster
+integrationRemoteOneNamespace: &integrationRemoteOneNamespace
+  working_directory: /go/src/istio.io/installer
+  docker:
+    - image: istionightly/ci:2019-08-30
+      environment:
+        GOPATH: /go
+        SKIP_CLEANUP: 1
+        ONE_NAMESPACE: 1
+        TMPDIR: /go/tmp
+
 # Common procedure to initialize working directory
 initWorkingDir: &initWorkingDir
   type: shell

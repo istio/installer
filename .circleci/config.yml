@@ -250,8 +250,6 @@ workflows:
                  - dev
     jobs:
       - build
-      - integration-presubmit-one-namespace-kind
-      - integration-presubmit-isolated-namespaces-kind
       - integration-old-kind
       - install-minikube
       - install-demo
@@ -262,8 +260,6 @@ workflows:
   all:
     jobs:
       - build
-      - integration-presubmit-one-namespace-kind
-      - integration-presubmit-isolated-namespaces-kind
       - integration-old-kind
       - install-minikube
       - install-demo

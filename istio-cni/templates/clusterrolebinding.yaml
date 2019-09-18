@@ -25,7 +25,7 @@ roleRef:
   kind: ClusterRole
   name: {{ .Values.psp_cluster_role }}
 subjects:
-  kind: ServiceAccount
+- kind: ServiceAccount
   name: istio-cni
   namespace: {{ .Release.Namespace }}
 {{- end }}

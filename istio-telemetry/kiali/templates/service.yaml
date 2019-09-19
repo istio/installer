@@ -3,13 +3,29 @@ kind: Service
 metadata:
   name: kiali
   namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- range $key, $val := .Values.kiali.service.annotations }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
   labels:
     app: kiali
     release: {{ .Release.Name }}
 spec:
+  type: {{ .Values.kiali.service.type }}
   ports:
-    - name: http-kiali
+    - name: {{ .Values.kiali.service.name }}
       protocol: TCP
-      port: 20001
+      targetPort: 20001
+      port: {{ .Values.kiali.service.externalPort }}
   selector:
     app: kiali
+{{- if .Values.kiali.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.grafana.service.loadBalancerIP }}"
+{{- end }}
+  {{if .Values.kiali.service.loadBalancerSourceRanges}}
+  loadBalancerSourceRanges:
+    {{range $rangeList := .Values.kiali.service.loadBalancerSourceRanges}}
+    - {{ $rangeList }}
+    {{end}}
+  {{end}}
+

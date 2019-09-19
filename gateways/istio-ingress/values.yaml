@@ -56,6 +56,7 @@ gateways:
     autoscaleEnabled: true
     autoscaleMin: 1
     autoscaleMax: 5
+    # daemonsetEnabled: false #change to true to deploy as "kind: DaemonSet" otherwise "kind: Deployment"
 
     cpu:
       targetAverageUtilization: 80

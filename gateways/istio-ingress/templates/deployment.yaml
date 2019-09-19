@@ -1,6 +1,10 @@
 {{ $gateway := index .Values "gateways" "istio-ingressgateway" }}
 apiVersion: apps/v1
+{{- if not $gateway.daemonsetEnabled }}
 kind: Deployment
+{{- else }}
+kind: DaemonSet
+{{- end }}
 metadata:
   name: istio-ingressgateway
   namespace: {{ .Release.Namespace }}
@@ -9,7 +13,7 @@ metadata:
     istio: ingressgateway
     release: {{ .Release.Name }}
 spec:
-{{- if not $gateway.autoscaleEnabled }}
+{{- if and (not $gateway.autoscaleEnabled) (not $gateway.daemonsetEnabled) }}
 {{- if $gateway.replicaCount }}
   replicas: {{ $gateway.replicaCount }}
 {{- else }}
@@ -20,10 +24,17 @@ spec:
     matchLabels:
       app: istio-ingressgateway
       istio: ingressgateway
+  {{- if not $gateway.daemonsetEnabled }}
   strategy:
     rollingUpdate:
       maxSurge: {{ $gateway.rollingMaxSurge }}
       maxUnavailable: {{ $gateway.rollingMaxUnavailable }}
+  {{- else }}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ $gateway.rollingMaxUnavailable }}
+  {{- end }}
   template:
     metadata:
       labels:

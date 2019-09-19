@@ -1,5 +1,6 @@
 {{ $gateway := index .Values "gateways" "istio-ingressgateway" }}
 {{- if and $gateway.autoscaleEnabled $gateway.autoscaleMin $gateway.autoscaleMax }}
+{{- if not $gateway.daemonsetEnabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
@@ -21,4 +22,5 @@ spec:
         name: cpu
         targetAverageUtilization: {{ $gateway.cpu.targetAverageUtilization }}
 ---
+{{- end }}
 {{- end }}

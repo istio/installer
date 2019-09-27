@@ -152,7 +152,7 @@ For upgrades from the official installer, it is recommended to install the secur
 at the end uninstall the official installer, and lock down istio-system.
 
 This is currently required if any mTLS is used. In future other Spifee implementations can be used, and
-it is possible to use other tools that create the expected certificates for Istio.  
+it is possible to use other tools that create the expected certificates for Istio.
 
 ```bash
 # use the default HUB=gcr.io/istio-release, TAG=master-latest-daily defined in global.yaml

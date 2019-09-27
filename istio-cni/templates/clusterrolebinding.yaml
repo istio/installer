@@ -14,7 +14,7 @@ subjects:
   name: istio-cni
   namespace: {{ .Release.Namespace }}
 ---
-{{- if hasKey .Values.cni "psp_cluster_role" }}
+{{- if ne .Values.cni.psp_cluster_role "" }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:

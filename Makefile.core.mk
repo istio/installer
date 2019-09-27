@@ -52,7 +52,7 @@ export GOPATH
 # TODO: make sure a '1.1' tag is applied to latest minor release, or have a manifest we can download
 STABLE_TAG = 1.1.0
 HUB ?= clyang
-TAG ?= dev
+TAG ?= dev-distroless
 export HUB
 export TAG
 EXTRA ?= --set global.hub=${HUB} --set global.tag=${TAG}

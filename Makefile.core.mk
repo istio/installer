@@ -331,6 +331,12 @@ lint:
 
 lint_modern: lint-go lint-python lint-copyright-banner lint-markdown lint-protos
 
+.PHONY: istioctl
+istioctl: ${TOP}/bin/istioctl
+${TOP}/bin/istioctl:
+	# TODO replace with always latest, preferably `go get istioctl`
+	curl -s https://storage.googleapis.com/istio-prerelease/daily-build/master-20190930-09-15/istioctl-master-20190930-09-15-linux.tar.gz | tar zxvf - -C ${TOP}/bin
+
 include test/install.mk
 include test/tests.mk
 include test/noauth.mk

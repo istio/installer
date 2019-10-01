@@ -21,11 +21,6 @@ spec:
         sidecar.istio.io/inject: "false"
         prometheus.io/scrape: "true"
         prometheus.io/port: "14269"
-{{- if .Values.tracing.contextPath }}
-        prometheus.io/path: "{{ .Values.tracing.contextPath }}/metrics"
-{{- else }}
-        prometheus.io/path: "/{{ .Values.tracing.provider }}/metrics"
-{{- end }}
         {{- if .Values.tracing.jaeger.podAnnotations }}
 {{ toYaml .Values.tracing.jaeger.podAnnotations | indent 8 }}
         {{- end }}

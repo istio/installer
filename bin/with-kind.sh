@@ -16,6 +16,11 @@
 
 set -eux
 
+export ARTIFACTS="${ARTIFACTS:-$(mktemp -d)}"
+
+# Temporary hack
+export PATH=${GOPATH}/bin:${PATH}
+
 function cleanup_kind_cluster() {
   if [[ -z "${SKIP_KIND_CLEANUP:-}" ]]; then
     kind export logs --name istio-testing "${ARTIFACTS}/kind"

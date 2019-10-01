@@ -12,6 +12,7 @@ integrationDefaults: &integrationDefaults
     - KUBECONFIG: /go/out/minikube.conf
     - TEST_ENV: minikube-none
     - GOPROXY: https://proxy.golang.org
+    - GO111MODULE: on
 
 # remote docker environment for one namespace. Appears to be faster
 integrationRemoteOneNamespace: &integrationRemoteOneNamespace

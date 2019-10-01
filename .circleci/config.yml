@@ -195,6 +195,7 @@ jobs:
             - TEST_ENV: minikube-none
             - RESOURCES_FLAGS: "-f test/kind/user-values.yaml"
             - GOPROXY: https://proxy.golang.org
+            - GO111MODULE: on
     steps:
       - <<: *initWorkingDir
       - checkout

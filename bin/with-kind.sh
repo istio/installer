@@ -21,11 +21,6 @@ export ARTIFACTS="${ARTIFACTS:-$(mktemp -d)}"
 # Temporary hack
 export PATH=${GOPATH}/bin:${PATH}
 
-# Really temporary hack
-pushd ..
-git clone https://github.com/istio/istio
-popd
-
 function cleanup_kind_cluster() {
   if [[ -z "${SKIP_KIND_CLEANUP:-}" ]]; then
     kind export logs --name istio-testing "${ARTIFACTS}/kind"

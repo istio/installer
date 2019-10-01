@@ -335,7 +335,7 @@ lint_modern: lint-go lint-python lint-copyright-banner lint-markdown lint-protos
 istioctl: ${TOP}/bin/istioctl
 ${TOP}/bin/istioctl:
 	mkdir -p ${TOP}/bin
-	cd ../istio; go install ./istioctl/cmd/istioctl
+	cd ${TOP}/src/istio.io/istio; go install ./istioctl/cmd/istioctl
 
 include test/install.mk
 include test/tests.mk

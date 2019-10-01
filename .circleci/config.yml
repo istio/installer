@@ -194,6 +194,7 @@ jobs:
             - ISTIO_CONTROL: istio-control
             - TEST_ENV: minikube-none
             - RESOURCES_FLAGS: "-f test/kind/user-values.yaml"
+            - GOPROXY: https://proxy.golang.org
     steps:
       - <<: *initWorkingDir
       - checkout

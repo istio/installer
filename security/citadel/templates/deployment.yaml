@@ -61,8 +61,8 @@ spec:
           {{- if .Values.security.trustDomain }}
             - --trust-domain={{ .Values.security.trustDomain }}
           {{- end }}
-          {{- if .Values.workloadCertTtl }}
-            - --workload-cert-ttl={{ .Values.workloadCertTtl }}
+          {{- if .Values.security.workloadCertTtl }}
+            - --workload-cert-ttl={{ .Values.security.workloadCertTtl }}
           {{- end }}
           {{- if .Values.global.logAsJson }}
             - --log_as_json

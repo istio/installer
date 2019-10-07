@@ -245,6 +245,10 @@ spec:
             value: {{ $val }}
           {{- end }}
           {{- end }}
+          {{- if and (not $gateway.env.ISTIO_META_NETWORK) .Values.global.network }}
+          - name: ISTIO_META_NETWORK
+            value: {{ .Values.global.network }}
+          {{- end }}
 {{- if $gateway.podAnnotations }}
           - name: "ISTIO_METAJSON_ANNOTATIONS"
             value: |

@@ -465,7 +465,7 @@ global:
   enableHelmTest: false
 
   # Configures DNS certificates provisioned through Chiron linked into Pilot.
-  # Te values in this file are all hard-coded; please ensure the namespaces
+  # The DNS names in this file are all hard-coded; please ensure the namespaces
   # in dnsNames are consistent with those of your services.
   certificates:
     - secretName: dns.istio-galley-service-account

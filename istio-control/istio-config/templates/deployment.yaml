@@ -175,7 +175,11 @@ spec:
   {{- if or .Values.global.controlPlaneSecurityEnabled .Values.global.configValidation }}
       - name: istio-certs
         secret:
+        {{- if .Values.global.certificates }}
+          secretName: dns.istio-galley-service-account
+        {{- else }}
           secretName: istio.istio-galley-service-account
+        {{- end }}
   {{- end }}
   {{- if .Values.global.controlPlaneSecurityEnabled }}
       - name: envoy-config

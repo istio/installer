@@ -63,7 +63,7 @@ spec:
   {{- else }}
           - --enable-validation=false
   {{- end }}
-  {{- if .Values.global.operator }}
+  {{- if .Values.global.operatorManageWebhooks }}
           - --enable-reconcileWebhookConfiguration=false
   {{- else }}
           - --enable-reconcileWebhookConfiguration=true

@@ -239,13 +239,12 @@ spec:
           - name: ISTIO_META_USER_SDS
             value: "true"
           {{- end }}
-          {{- if $gateway.env }}
           {{- range $key, $val := $gateway.env }}
           - name: {{ $key }}
             value: {{ $val }}
           {{- end }}
-          {{- end }}
-          {{- if and (not $gateway.env.ISTIO_META_NETWORK) .Values.global.network }}
+          {{ $network_set := index $gateway.env "ISTIO_META_NETWORK" }}
+          {{- if and (not $network_set) .Values.global.network }}
           - name: ISTIO_META_NETWORK
             value: {{ .Values.global.network }}
           {{- end }}

@@ -172,7 +172,8 @@ run-base-reachability: ${GOBIN}/istioctl install-base run-reachability-test
 run-reachability-test:
 	mkdir -p ${GOPATH}/out/logs ${GOPATH}/out/tmp
 	(set -o pipefail; cd ${GOPATH}/src/istio.io/istio; \
-		go test ./tests/integration/security/reachability/... \
+		go test ./tests/integration/security/... \
+			-run ^TestReachability$ \
 			-istio.test.env kube \
 			-istio.test.kube.config=${KUBECONFIG} \
 			-istio.test.nocleanup \

@@ -15,10 +15,10 @@ data:
       prometheus: {{ .Values.global.prometheusNamespace }}
     istio_namespace: {{ .Values.global.istioNamespace }}
     auth:
-      strategy: {{ .Values.dashboard.auth.strategy }}
-{{- if eq .Values.dashboard.auth.strategy "ldap" }}
+      strategy: {{ .Values.kiali.dashboard.auth.strategy }}
+{{- if eq .Values.kiali.dashboard.auth.strategy "ldap" }}
       ldap:
-{{- with .Values.dashboard.auth.strategy.ldap }}
+{{- with .Values.kiali.dashboard.auth.strategy.ldap }}
 {{ toYaml . | indent 8 }}
 {{- end }}
 {{- end }}

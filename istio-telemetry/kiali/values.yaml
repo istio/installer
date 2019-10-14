@@ -64,7 +64,6 @@ kiali:
       #   ldap_user_filter: "(cn=%s)"
       #   ldap_user_id_key: "cn"
 
-    createDemoSecret: true # When true, a secret will be created with a default username and password. Useful for demos.
     secretName: kiali # You must create a secret with this name - one is not provided out-of-box unless you've chose to create a demo secret.
     usernameKey: username # This is the key name within the secret whose value is the actual username.
     passphraseKey: passphrase # This is the key name within the secret whose value is the actual passphrase.
@@ -74,7 +73,7 @@ kiali:
     grafanaURL:  # If you have Grafana installed and it is accessible to client browsers, then set this to its external URL. Kiali will redirect users to this URL when Grafana metrics are to be shown.
     jaegerURL:  # If you have Jaeger installed and it is accessible to client browsers, then set this property to its external URL. Kiali will redirect users to this URL when Jaeger tracing is to be shown.
 
-
+  createDemoSecret: true # When true, a secret will be created with a default username and password. Useful for demos.
 
   resources: {}
   security:

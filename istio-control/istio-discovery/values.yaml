@@ -25,8 +25,7 @@ pilot:
   # Applications namespace list pilot manages
   appNamespaces: []
 
-  env:
-    GODEBUG: gctrace=1
+  env: {}
 
   cpu:
     targetAverageUtilization: 80

@@ -253,6 +253,8 @@ spec:
             value: |
 {{ toJson $gateway.podAnnotations | indent 16}}
 {{ end }}
+          - name: SDS_ENABLED
+            value: {{ .Values.global.sds.enabled }}
           volumeMounts:
           {{ if .Values.global.sds.enabled }}
           - name: sdsudspath

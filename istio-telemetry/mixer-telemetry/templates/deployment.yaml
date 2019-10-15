@@ -200,7 +200,7 @@ spec:
               apiVersion: v1
               fieldPath: status.podIP
         - name: SDS_ENABLED
-          value: {{ .Values.global.sds.enabled }}
+          value: "{{ .Values.global.sds.enabled }}"
         resources:
 {{- if .Values.global.proxy.resources }}
 {{ toYaml .Values.global.proxy.resources | indent 10 }}

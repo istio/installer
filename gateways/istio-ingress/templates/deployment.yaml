@@ -265,7 +265,7 @@ spec:
           - name: ISTIO_META_CLUSTER_ID
             value: "{{ $.Values.global.multiCluster.clusterName | default `Kubernetes` }}"
           - name: SDS_ENABLED
-            value: {{ .Values.global.sds.enabled }}
+            value: "{{ .Values.global.sds.enabled }}"
           volumeMounts:
           {{ if .Values.global.sds.enabled }}
           - name: sdsudspath

@@ -118,3 +118,5 @@ mixer:
     # A positive time value indicates the maximum wait time since the last request will telemetry data
     # be batched before being sent to the mixer server
     reportBatchMaxTime: 1s
+
+    sessionAffinityEnabled: false

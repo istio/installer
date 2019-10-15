@@ -205,7 +205,7 @@ global:
 
   proxy_init:
     # Base name for the proxy_init container, used to configure iptables.
-    image: proxy_init
+    image: proxyv2
     resources:
       limits:
         cpu: 100m

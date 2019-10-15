@@ -207,7 +207,7 @@ template: |
        {{- end}}
        ]
    - name: ISTIO_META_CLUSTER_ID
-     value: "{{ valueOrDefault .Values.global.multicluster.clusterName `Kubernetes` }}"
+     value: "{{ valueOrDefault .Values.global.multiCluster.clusterName `Kubernetes` }}"
     - name: ISTIO_META_POD_NAME
       valueFrom:
         fieldRef:

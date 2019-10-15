@@ -134,9 +134,9 @@ spec:
             value: "{{ .Values.pilot.enableProtocolSniffingForInbound }}"
           resources:
 {{- if .Values.pilot.resources }}
-{{ toYaml .Values.pilot.resources | indent 12 }}
+{{ toYaml .Values.pilot.resources | trim | indent 12 }}
 {{- else }}
-{{ toYaml .Values.global.defaultResources | indent 12 }}
+{{ toYaml .Values.global.defaultResources | trim | indent 12 }}
 {{- end }}
           volumeMounts:
           - name: config-volume
@@ -192,9 +192,9 @@ spec:
             value: {{ .Values.global.sds.enabled }}
           resources:
 {{- if .Values.global.proxy.resources }}
-{{ toYaml .Values.global.proxy.resources | indent 12 }}
+{{ toYaml .Values.global.proxy.resources | trim | indent 12 }}
 {{- else }}
-{{ toYaml .Values.global.defaultResources | indent 12 }}
+{{ toYaml .Values.global.defaultResources | trim | indent 12 }}
 {{- end }}
           volumeMounts:
           - name: istio-certs
@@ -236,8 +236,6 @@ spec:
           optional: true
   {{- end }}
       affinity:
-      {{- include "nodeaffinity" . | indent 6 }}
-      {{- include "podAntiAffinity" . | indent 6 }}
 {{- if .Values.pilot.tolerations }}
       tolerations:
 {{ toYaml .Values.pilot.tolerations | indent 6 }}

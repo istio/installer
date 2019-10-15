@@ -19,4 +19,9 @@ data:
     neverInjectSelector:
 {{ toYaml .Values.sidecarInjectorWebhook.neverInjectSelector | trim | indent 6 }}
 {{ .Files.Get "files/injection-template.yaml" | trim | indent 4 }}
+    injectedAnnotations:
+    {{- range $key, $val := .Values.sidecarInjectorWebhook.injectedAnnotations }}
+      "{{ $key }}": "{{ $val }}"
+    {{- end }}
+
 {{- end }}

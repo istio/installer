@@ -181,6 +181,13 @@ spec:
             value: istio-egressgateway
           - name: ISTIO_META_OWNER
             value: kubernetes://api/apps/v1/namespaces/{{ .Release.Namespace }}/deployments/istio-egressgateway
+          {{- if $.Values.global.meshID }}
+          - name: ISTIO_META_MESH_ID
+            value: "{{ $.Values.global.meshID }}"
+          {{- else if $.Values.global.trustDomain }}
+          - name: ISTIO_META_MESH_ID
+            value: "{{ $.Values.global.trustDomain }}"
+          {{- end }}
           - name: ISTIO_META_POD_NAME
             valueFrom:
               fieldRef:

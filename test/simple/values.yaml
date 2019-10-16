@@ -11,7 +11,7 @@ version: ""
 
 global:
   hub: gcr.io/istio-testing
-  tag: latest
+  tag: 1.4-dev
 
   imagePullPolicy: Always
 

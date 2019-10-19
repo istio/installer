@@ -101,8 +101,14 @@ pilot:
     ingressClass: istio
 
   telemetry:
-    # Will not define mixerCheckServer and mixerReportServer
-    enabled: true
+    mixerv1:
+      # Will not define mixerCheckServer and mixerReportServer
+      enabled: true
+
+    mixerv2:
+      # For Null VM case now. If enabled, will set disableMixerHttpReports to true and not define mixerReportServer
+      # also enable metadata exchange and stats filter.
+      enabled: false
 
   policy:
     # Will not define mixerCheckServer and mixerReportServer

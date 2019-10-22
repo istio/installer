@@ -10,7 +10,7 @@ data:
 
   meshNetworks: |-
     # Network config
-{{ toYaml .Values.pilot.meshNetworks | indent 4 }}
+{{ toYaml .Values.pilot.meshNetworks | trim | indent 4 }}
 
   values.yaml: |-
 {{ toYaml .Values.pilot | indent 4 }}

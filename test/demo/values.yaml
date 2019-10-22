@@ -17,6 +17,9 @@ global:
   # Reflects in pilot config - should move to proper API and istio-config
   disablePolicyChecks: false
 
+  mtls:
+    auto: true
+
   sidecarInjectorWebhook:
     enabled: true
     # If true, webhook or istioctl injector will rewrite PodSpec for liveness

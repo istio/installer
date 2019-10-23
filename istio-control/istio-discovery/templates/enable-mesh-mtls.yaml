@@ -62,7 +62,8 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   peers:
-  - mode: PERMISSIVE
+  - mtls:
+      mode: PERMISSIVE
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule

@@ -111,7 +111,7 @@ spec:
       serviceAccountName: istio-citadel-service-account
       containers:
         - name: citadel
-          image: "gcr.io/istio-testing/citadel:latest"
+          image: "gcr.io/istio-testing/citadel:1.4-dev"
           imagePullPolicy: Always
           args:
             - --append-dns-names=true

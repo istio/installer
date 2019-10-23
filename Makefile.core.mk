@@ -52,7 +52,7 @@ export GOPATH
 # TODO: make sure a '1.1' tag is applied to latest minor release, or have a manifest we can download
 STABLE_TAG = 1.1.0
 HUB ?= gcr.io/istio-testing
-TAG ?= latest
+TAG ?= 1.4-dev
 export HUB
 export TAG
 EXTRA ?= --set global.hub=${HUB} --set global.tag=${TAG}

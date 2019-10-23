@@ -509,7 +509,7 @@ spec:
       serviceAccountName: istio-pilot-service-account
       containers:
         - name: discovery
-          image: "gcr.io/istio-testing/pilot:latest"
+          image: "gcr.io/istio-testing/pilot:1.4-dev"
           imagePullPolicy: Always
           args:
           - "discovery"
@@ -557,7 +557,7 @@ spec:
           - name: config-volume
             mountPath: /etc/istio/config
         - name: istio-proxy
-          image: "gcr.io/istio-testing/proxyv2:latest"
+          image: "gcr.io/istio-testing/proxyv2:1.4-dev"
           imagePullPolicy: Always
           ports:
           - containerPort: 15011

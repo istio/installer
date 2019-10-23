@@ -580,7 +580,7 @@ spec:
       serviceAccountName: istio-sidecar-injector-service-account
       containers:
         - name: sidecar-injector-webhook
-          image: "gcr.io/istio-testing/sidecar_injector:latest"
+          image: "gcr.io/istio-testing/sidecar_injector:1.4-dev"
           imagePullPolicy: Always
           args:
             - --caCertFile=/etc/istio/certs/root-cert.pem

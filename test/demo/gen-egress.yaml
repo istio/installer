@@ -98,7 +98,7 @@ spec:
     spec:
       containers:
         - name: istio-proxy
-          image: "gcr.io/istio-testing/proxyv2:latest"
+          image: "gcr.io/istio-testing/proxyv2:1.4-dev"
           imagePullPolicy: Always
           ports:
             - containerPort: 80

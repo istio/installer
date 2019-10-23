@@ -506,7 +506,7 @@ spec:
       serviceAccountName: istio-pilot-service-account
       containers:
         - name: discovery
-          image: "gcr.io/istio-testing/pilot:latest"
+          image: "gcr.io/istio-testing/pilot:1.4-dev"
           imagePullPolicy: Always
           args:
           - "discovery"

@@ -25,15 +25,24 @@ pilot:
   # Applications namespace list pilot manages
   appNamespaces: []
 
-  env:
-    GODEBUG: gctrace=1
+  env: {}
 
   cpu:
     targetAverageUtilization: 80
 
+  # if protocol sniffing is enabled for outbound
+  enableProtocolSniffingForOutbound: true
+  # if protocol sniffing is enabled for inbound
+  enableProtocolSniffingForInbound: false
+
   nodeSelector: {}
   tolerations: []
   podAnnotations: {}
+
+  # You can use jwksResolverExtraRootCA to provide a root certificate
+  # in PEM format. This will then be trusted by pilot when resolving
+  # JWKS URIs.
+  jwksResolverExtraRootCA:
 
   plugins: []
 
@@ -114,3 +123,5 @@ mixer:
     # A positive time value indicates the maximum wait time since the last request will telemetry data
     # be batched before being sent to the mixer server
     reportBatchMaxTime: 1s
+
+    sessionAffinityEnabled: false

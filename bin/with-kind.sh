@@ -49,4 +49,4 @@ function setup_kind_cluster() {
 
 setup_kind_cluster
 
-exec "$@"
+"$@"

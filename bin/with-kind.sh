@@ -23,7 +23,7 @@ export PATH=${GOPATH}/bin:${PATH}
 
 function cleanup_kind_cluster() {
   if [[ -z "${SKIP_KIND_CLEANUP:-}" ]]; then
-    kind export logs --name istio-testing "${ARTIFACTS}/kind"
+    kind export logs --name istio-testing "${ARTIFACTS}/kind" || true
     kind delete cluster --name=istio-testing
   fi
 }

@@ -1,4 +1,4 @@
-{{- if .Values.pilot.telemetry.mixerv2.enabled }}
+{{- if and .Values.pilot.telemetry.enabled .Values.pilot.telemetry.v2.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:

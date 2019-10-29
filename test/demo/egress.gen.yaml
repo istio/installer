@@ -1,83 +1,87 @@
 ---
-# Source: istio-ingress/templates/serviceaccount.yaml
+# Source: istio-egress/templates/serviceaccount.yaml
+
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: istio-egressgateway-sds
+  namespace: istio-system
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: istio-egressgateway-sds
+  namespace: istio-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: istio-egressgateway-sds
+subjects:
+- kind: ServiceAccount
+  name: istio-egressgateway-service-account
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: istio-ingressgateway-service-account
+  name: istio-egressgateway-service-account
   namespace: istio-system
   labels:
-    app: istio-ingressgateway
+    app: istio-egressgateway
     release: istio-system-istio
 
+
 ---
-# Source: istio-ingress/templates/service.yaml
+# Source: istio-egress/templates/service.yaml
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: istio-ingressgateway
+  name: istio-egressgateway
   namespace: istio-system
   annotations:
   labels:
-    app: istio-ingressgateway
+    app: istio-egressgateway
     release: istio-system-istio
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
-    app: istio-ingressgateway
+    app: istio-egressgateway
   ports:
-    -
-      name: status-port
-      port: 15020
-      targetPort: 15020
     -
       name: http2
       port: 80
-      targetPort: 80
     -
       name: https
       port: 443
     -
-      name: kiali
-      port: 15029
-      targetPort: 15029
-    -
-      name: prometheus
-      port: 15030
-      targetPort: 15030
-    -
-      name: grafana
-      port: 15031
-      targetPort: 15031
-    -
-      name: tracing
-      port: 15032
-      targetPort: 15032
-    -
       name: tls
       port: 15443
       targetPort: 15443
-  
 ---
 
-
 ---
-# Source: istio-ingress/templates/deployment.yaml
+# Source: istio-egress/templates/deployment.yaml
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: istio-ingressgateway
+  name: istio-egressgateway
   namespace: istio-system
   labels:
-    app: istio-ingressgateway
-    istio: ingressgateway
+    app: istio-egressgateway
+    istio: egressgateway
+    
     release: istio-system-istio
 spec:
   selector:
     matchLabels:
-      app: istio-ingressgateway
-      istio: ingressgateway
+      app: istio-egressgateway
+      istio: egressgateway
   strategy:
     rollingUpdate:
       maxSurge: 100%
@@ -85,31 +89,23 @@ spec:
   template:
     metadata:
       labels:
-        app: istio-ingressgateway
-        istio: ingressgateway
+        app: istio-egressgateway
+        istio: egressgateway
+        
         heritage: Tiller
         release: istio
         chart: gateways
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
-      serviceAccountName: istio-ingressgateway-service-account
       containers:
         - name: istio-proxy
           image: "gcr.io/istio-testing/proxyv2:latest"
           imagePullPolicy: Always
           ports:
-            - containerPort: 15020
             - containerPort: 80
             - containerPort: 443
-            - containerPort: 15029
-            - containerPort: 15030
-            - containerPort: 15031
-            - containerPort: 15032
             - containerPort: 15443
-            - containerPort: 15011
-            - containerPort: 8060
-            - containerPort: 853
             - containerPort: 15090
               protocol: TCP
               name: http-envoy-prom
@@ -128,7 +124,7 @@ spec:
           - --connectTimeout
           - '10s' #connectTimeout
           - --serviceCluster
-          - istio-ingressgateway
+          - istio-egressgateway
           - --zipkinAddress
           - zipkin.istio-system:9411
           - --proxyAdminPort
@@ -188,9 +184,9 @@ spec:
               fieldRef:
                 fieldPath: spec.serviceAccountName
           - name: ISTIO_META_WORKLOAD_NAME
-            value: istio-ingressgateway
+            value: istio-egressgateway
           - name: ISTIO_META_OWNER
-            value: kubernetes://api/apps/v1/namespaces/istio-system/deployments/istio-ingressgateway
+            value: kubernetes://api/apps/v1/namespaces/istio-system/deployments/istio-egressgateway
           - name: ISTIO_META_POD_NAME
             valueFrom:
               fieldRef:
@@ -202,29 +198,38 @@ spec:
                 fieldPath: metadata.namespace
           - name: ISTIO_META_ROUTER_MODE
             value: sni-dnat
+          
+          - name: ISTIO_METAJSON_LABELS
+            value: |
+              {"app":"istio-egressgateway","istio":"egressgateway"}
+          - name: ISTIO_META_CLUSTER_ID
+            value: "Kubernetes"
+          - name: SDS_ENABLED
+            value: "false"
           volumeMounts:
           
           - name: istio-certs
             mountPath: /etc/certs
             readOnly: true
-          - name: ingressgateway-certs
-            mountPath: "/etc/istio/ingressgateway-certs"
+          - name: egressgateway-certs
+            mountPath: "/etc/istio/egressgateway-certs"
             readOnly: true
-          - name: ingressgateway-ca-certs
-            mountPath: "/etc/istio/ingressgateway-ca-certs"
+          - name: egressgateway-ca-certs
+            mountPath: "/etc/istio/egressgateway-ca-certs"
             readOnly: true
       volumes:
+      
       - name: istio-certs
         secret:
-          secretName: istio.istio-ingressgateway-service-account
+          secretName: istio.default
           optional: true
-      - name: ingressgateway-certs
+      - name: egressgateway-certs
         secret:
-          secretName: "istio-ingressgateway-certs"
+          secretName: "istio-egressgateway-certs"
           optional: true
-      - name: ingressgateway-ca-certs
+      - name: egressgateway-ca-certs
         secret:
-          secretName: "istio-ingressgateway-ca-certs"
+          secretName: "istio-egressgateway-ca-certs"
           optional: true
       affinity:      
         nodeAffinity:
@@ -261,91 +266,93 @@ spec:
                 - s390x      
 
 ---
-# Source: istio-ingress/templates/gateway.yaml
+# Source: istio-egress/templates/preconfigured.yaml
 
-# Main Gateway. Apps must bind to NAMESPACE/ingressgateway
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: ingressgateway
+  name: istio-multicluster-egressgateway
   namespace: istio-system
   labels:
+    app: istio-egressgateway
     release: istio-system-istio
 spec:
   selector:
-    istio: ingressgateway
+    istio: egressgateway
   servers:
-  - port:
-      number: 80
-      name: http
-      protocol: HTTP
-    hosts:
-      - "*"
-    # Additional ports in gateaway for the ingressPorts - apps using dedicated port instead of hostname
-
-
+  - hosts:
+    - "*.global"
+    port:
+      name: tls
+      number: 15443
+      protocol: TLS
+    tls: {}
 ---
-# Source: istio-ingress/templates/sidecar.yaml
 apiVersion: networking.istio.io/v1alpha3
-kind: Sidecar
+kind: VirtualService
 metadata:
-  name: default
-  namespace: istio-system
+  name: istio-multicluster-egressgateway
+  namespace: istio-system 
   labels:
+    app: istio-egressgateway
     release: istio-system-istio
 spec:
-  egress:
-    - hosts:
-        - "*/*"
+  gateways:
+  - istio-multicluster-egressgateway
+  hosts:
+  - "*.global"
+  tls:
+  - match:
+    - port: 15443
+      sniHosts:
+      - "*.global"
+    route:
+    - destination:
+        host: non.existent.cluster
+        port:
+          number: 15443
+      weight: 100
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: istio-multicluster-egressgateway
+  namespace: istio-system
+  labels:
+    app: istio-egressgateway
+    release: istio-system-istio
+spec:
+   workloadLabels:
+     istio: egressgateway
+   filters:
+   - listenerMatch:
+       portNumber: 15443
+       listenerType: GATEWAY
+     filterName: envoy.filters.network.sni_cluster
+     filterType: NETWORK
+     filterConfig: {}
+---
+## To ensure all traffic to *.global is using mTLS
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: istio-multicluster-destinationrule
+  namespace: istio-system
+  labels:
+    app: istio-egressgateway
+    release: istio-system-istio
+spec:
+  host: "*.global"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
 
 ---
-# Source: istio-ingress/templates/addongateway.yaml
-# Template for telemetry addon gateways
-
-
-
-
-
+# Source: istio-egress/templates/autoscale.yaml
 
 
 ---
-# Source: istio-ingress/templates/autoscale.yaml
-
-
----
-# Source: istio-ingress/templates/certificate.yaml
-
-
-
-
----
-# Source: istio-ingress/templates/hosts.yaml
-
-
-# TODO: range TCP ports, add ports
-# 
-
-
-
-
----
-# Source: istio-ingress/templates/meshexpansion.yaml
-
-
-
----
-# Source: istio-ingress/templates/poddisruptionbudget.yaml
-
-
----
-# Source: istio-ingress/templates/preconfigured.yaml
-
-
----
-# Source: istio-ingress/templates/role.yaml
-
-
----
-# Source: istio-ingress/templates/rolebindings.yaml
+# Source: istio-egress/templates/poddisruptionbudget.yaml
 
 

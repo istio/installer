@@ -6,7 +6,7 @@ metadata:
   namespace: istio-system
   name: pilot-envoy-config
   labels:
-    release: istio-system-istio
+    release: istio-system-istio-discovery
 data:
   envoy.yaml.tmpl: |-
     admin:
@@ -180,17 +180,16 @@ metadata:
   name: istio
   namespace: istio-system
   labels:
-    release: istio-system-istio
+    release: istio-system-istio-discovery
 data:
 
   meshNetworks: |-
     # Network config
     networks: {}
-    
 
   values.yaml: |-
     appNamespaces: []
-    autoscaleEnabled: false
+    autoscaleEnabled: true
     autoscaleMax: 5
     autoscaleMin: 1
     configMap: true
@@ -198,18 +197,20 @@ data:
     cpu:
       targetAverageUtilization: 80
     deploymentLabels: null
-    env:
-      GODEBUG: gctrace=1
+    enableProtocolSniffingForInbound: false
+    enableProtocolSniffingForOutbound: true
+    env: {}
     image: pilot
     ingress:
       ingressClass: istio
-      ingressControllerMode: "OFF"
+      ingressControllerMode: STRICT
       ingressService: istio-ingressgateway
+    jwksResolverExtraRootCA: null
     keepaliveMaxServerConnectionAge: 30m
     meshNetworks:
       networks: {}
     nodeSelector: {}
-    plugins: []
+    plugins: health
     podAnnotations: {}
     podAntiAffinityLabelSelector: []
     podAntiAffinityTermLabelSelector: []
@@ -218,39 +219,50 @@ data:
     replicaCount: 1
     resources:
       requests:
-        cpu: 10m
-        memory: 100Mi
+        cpu: 500m
+        memory: 2048Mi
     rollingMaxSurge: 100%
     rollingMaxUnavailable: 25%
     telemetry:
       enabled: true
     tolerations: []
-    traceSampling: 100
-    useMCP: true
-    
+    traceSampling: 1
+    useMCP: false
 
   mesh: |-
     # Set enableTracing to false to disable request tracing.
     enableTracing: true
 
     # Set accessLogFile to empty string to disable access log.
-    accessLogFile: "/dev/stdout"
+    accessLogFile: ""
 
     enableEnvoyAccessLogService: false
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
     reportBatchMaxEntries: 100
     # reportBatchMaxTime is the max waiting time before the telemetry data of a request is sent to the mixer server
     reportBatchMaxTime: 1s
-    mixerReportServer: istio-telemetry.istio-system.svc.cluster.local:15004
-    mixerCheckServer: istio-policy.istio-system.svc.cluster.local:15004
+    mixerReportServer: istio-telemetry.istio-system.svc.cluster.local:9091
+    mixerCheckServer: istio-policy.istio-system.svc.cluster.local:9091
 
     disablePolicyChecks: true
 
 
     # This is the k8s ingress service name, update if you used a different name
     ingressService: "istio-ingressgateway"
-    ingressControllerMode: "OFF"
+    ingressControllerMode: "STRICT"
     ingressClass: "istio"
+
+    # The trust domain corresponds to the trust root of a system.
+    # Refer to https://github.com/spiffe/spiffe/blob/master/standards/SPIFFE-ID.md#21-trust-domain
+    trustDomain: ""
+
+    #  The trust domain aliases represent the aliases of trust_domain.
+    #  For example, if we have
+    #  trustDomain: td1
+    #  trustDomainAliases: [“td2”, "td3"]
+    #  Any service with the identity "td1/ns/foo/sa/a-service-account", "td2/ns/foo/sa/a-service-account",
+    #  or "td3/ns/foo/sa/a-service-account" will be treated the same in the Istio mesh.
+    trustDomainAliases:
     # Set expected values when SDS is disabled
     # Unix Domain Socket through which envoy communicates with NodeAgent SDS to get
     # key/cert for mTLS. Use secret-mount files instead of SDS if set to empty.
@@ -272,14 +284,24 @@ data:
     # server side mTLS authentication policy, when destination rule for that service does not specify
     # TLS settings.
     enableAutoMtls: false
-    config_sources:
-    - address: localhost:15019
 
     outboundTrafficPolicy:
       mode: ALLOW_ANY
     localityLbSetting:
       enabled: true
-      
+
+    # Configures DNS certificates provisioned through Chiron linked into Pilot.
+    # The DNS certificate provisioning is enabled by default now so it get tested.
+    # TODO (lei-tang): we'll decide whether enable it by default or not before Istio 1.4 Release.
+    certificates:
+      - dnsNames:
+        - istio-galley.istio-system.svc
+        - istio-galley.istio-system
+        secretName: dns.istio-galley-service-account
+      - dnsNames:
+        - istio-sidecar-injector.istio-system.svc
+        - istio-sidecar-injector.istio-system
+        secretName: dns.istio-sidecar-injector-service-account
 
     defaultConfig:
       #
@@ -314,24 +336,11 @@ data:
           address: zipkin.istio-system:9411
       #
       # Mutual TLS authentication between sidecars and istio control plane.
-      controlPlaneAuthPolicy: MUTUAL_TLS
+      controlPlaneAuthPolicy: NONE
       #
       # Address where istio Pilot service is running
-      discoveryAddress: istio-pilot.istio-system:15011
+      discoveryAddress: istio-pilot.istio-system:15010
 
-      # Configures DNS certificates provisioned through Chiron linked into Pilot.
-      # The DNS certificate provisioning is enabled by default now so it get tested.
-      # TODO (lei-tang): we'll decide whether enable it by default or not before Istio 1.4 Release.
-      certificates:
-      - dnsNames:
-        - istio-galley.istio-system.svc
-        - istio-galley.istio-system
-        secretName: dns.istio-galley-service-account
-      - dnsNames:
-        - istio-sidecar-injector.istio-system.svc
-        - istio-sidecar-injector.istio-system
-        secretName: dns.istio-sidecar-injector-service-account
-      
 ---
 
 ---
@@ -344,7 +353,7 @@ metadata:
   namespace: istio-system
   labels:
     app: pilot
-    release: istio-system-istio
+    release: istio-system-istio-discovery
 ---
 
 
@@ -357,7 +366,7 @@ metadata:
   name: istio-pilot-istio-system
   labels:
     app: pilot
-    release: istio-system-istio
+    release: istio-system-istio-discovery
 rules:
 - apiGroups: ["config.istio.io"]
   resources: ["*"]
@@ -407,7 +416,7 @@ metadata:
   name: istio-pilot-istio-system
   labels:
     app: pilot
-    release: istio-system-istio
+    release: istio-system-istio-discovery
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -428,7 +437,7 @@ metadata:
   namespace: istio-system
   labels:
     app: pilot
-    release: istio-system-istio
+    release: istio-system-istio-discovery
     istio: pilot
 spec:
   ports:
@@ -454,10 +463,9 @@ metadata:
   # TODO: default template doesn't have this, which one is right ?
   labels:
     app: pilot
-    release: istio-system-istio
+    release: istio-system-istio-discovery
     istio: pilot
 spec:
-  replicas: 1
   strategy:
     rollingUpdate:
       maxSurge: 100%
@@ -491,6 +499,7 @@ spec:
           - cluster.local
           - --secureGrpcAddr
           - ""
+          - --plugins=health
           - --keepaliveMaxServerConnectionAge
           - "30m"
           ports:
@@ -514,65 +523,21 @@ spec:
               fieldRef:
                 apiVersion: v1
                 fieldPath: metadata.namespace
-          - name: GODEBUG
-            value: "gctrace=1"
           - name: PILOT_TRACE_SAMPLING
-            value: "100"
+            value: "1"
           - name: CONFIG_NAMESPACE
             value: istio-config
+          - name: PILOT_ENABLE_PROTOCOL_SNIFFING_FOR_OUTBOUND
+            value: "true"
+          - name: PILOT_ENABLE_PROTOCOL_SNIFFING_FOR_INBOUND
+            value: "false"
           resources:
             requests:
-              cpu: 10m
-              memory: 100Mi
-            
+              cpu: 500m
+              memory: 2048Mi
           volumeMounts:
           - name: config-volume
             mountPath: /etc/istio/config
-        - name: istio-proxy
-          image: "gcr.io/istio-testing/proxyv2:latest"
-          imagePullPolicy: Always
-          ports:
-          - containerPort: 15011
-          args:
-          - proxy
-          - --domain
-          - $(POD_NAMESPACE).svc.cluster.local
-          - --serviceCluster
-          - istio-pilot
-          - --templateFile
-          - /var/lib/envoy/envoy.yaml.tmpl
-          - --controlPlaneAuthPolicy
-          - MUTUAL_TLS
-          env:
-          - name: POD_NAME
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.name
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.namespace
-          - name: INSTANCE_IP
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: status.podIP
-          resources:
-            limits:
-              cpu: 2000m
-              memory: 1024Mi
-            requests:
-              cpu: 10m
-              memory: 40Mi
-            
-          volumeMounts:
-          - name: istio-certs
-            mountPath: /etc/certs
-            readOnly: true
-          - name: pilot-envoy-config
-            mountPath: /var/lib/envoy
       volumes:
       - name: config-volume
         configMap:
@@ -580,10 +545,6 @@ spec:
       - name: pilot-envoy-config
         configMap:
           name: pilot-envoy-config
-      - name: istio-certs
-        secret:
-          secretName: istio.istio-pilot-service-account
-          optional: true
       affinity:      
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -630,7 +591,7 @@ metadata:
   name: "api-server"
   namespace: istio-system
   labels:
-    release: istio-system-istio
+    release: istio-system-istio-discovery
 spec:
   host: "kubernetes.default.svc.cluster.local"
   trafficPolicy:
@@ -638,14 +599,25 @@ spec:
       mode: DISABLE
 
 ---
-
+# Authentication policy to enable permissive mode for all services (that have sidecar) in the mesh.
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "MeshPolicy"
+metadata:
+  name: "default"
+  labels:
+    release: istio-system-istio-discovery
+spec:
+  peers:
+  - mtls:
+      mode: PERMISSIVE
+---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: "default"
   namespace: istio-system
   labels:
-    release: istio-system-istio
+    release: istio-system-istio-discovery
 spec:
   host: "*.local"
   trafficPolicy:
@@ -659,8 +631,50 @@ spec:
 ---
 # Source: istio-discovery/templates/autoscale.yaml
 
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: istio-pilot
+  namespace: istio-system
+  labels:
+    app: pilot
+    release: istio-system-istio-discovery
+spec:
+  maxReplicas: 5
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: istio-pilot
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 80
+---
 
 ---
 # Source: istio-discovery/templates/poddisruptionbudget.yaml
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: istio-pilot
+  namespace: istio-system
+  labels:
+    app: pilot
+    release: istio-system-istio-discovery
+    istio: pilot
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: pilot
+      release: istio-system-istio-discovery
+      istio: pilot
+---
+
+---
+# Source: istio-discovery/templates/configmap-jwks.yaml
 
 

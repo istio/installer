@@ -51,8 +51,8 @@ export GOPATH
 # TAG of the last stable release of istio. Used for upgrade testing and to verify istioctl.
 # TODO: make sure a '1.1' tag is applied to latest minor release, or have a manifest we can download
 STABLE_TAG = 1.1.0
-HUB ?= gcr.io/istio-release
-TAG ?= master-latest-daily
+HUB ?= gcr.io/istio-testing
+TAG ?= latest
 export HUB
 export TAG
 EXTRA ?= --set global.hub=${HUB} --set global.tag=${TAG}
@@ -239,6 +239,9 @@ info:
 	env
 	id
 
+gen: run-build
+
+gen-check: gen check-clean-repo
 
 # Copy source code from the current machine to the docker.
 sync:
@@ -318,24 +321,25 @@ ${TOP}/src/sigs.k8s.io/kind:
 
 # Istio releases: deb and charts on https://storage.googleapis.com/istio-release
 #
-${TOP}/bin/kind: ${TOP}/src/sigs.k8s.io/kind
+${GOBIN}/kind: ${TOP}/src/sigs.k8s.io/kind
 	echo ${TOP}
 	mkdir -p ${TMPDIR}
 	GO111MODULE="on" go get -u sigs.k8s.io/kind@master
 
-${TOP}/bin/dep:
+${GOBIN}/dep:
 	go get -u github.com/golang/dep/cmd/dep
 
-lint:
-	$(MAKE) kind-run TARGET="run-lint"
+lint: lint_modern
 
-lint_modern: lint-go lint-python lint-copyright-banner lint-markdown lint-protos
+lint-helm-global:
+	${FINDFILES} -name 'Chart.yaml' -print0 | ${XARGS} -L 1 dirname | xargs -r helm lint --strict -f global.yaml
+
+lint_modern: lint-go lint-python lint-copyright-banner lint-markdown lint-protos lint-helm-global
 
 .PHONY: istioctl
-istioctl: ${TOP}/bin/istioctl
-${TOP}/bin/istioctl:
+istioctl: ${GOBIN}/istioctl
+${GOBIN}/istioctl:
 	mkdir -p ${TMPDIR}
-	mkdir -p ${TOP}/bin
 	cd ${TOP}/src/istio.io/istio; go install ./istioctl/cmd/istioctl
 
 include test/install.mk

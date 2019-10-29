@@ -63,7 +63,15 @@ spec:
   {{- else }}
           - --enable-validation=false
   {{- end }}
+  {{- if .Values.global.operatorManageWebhooks }}
+          - --enable-reconcileWebhookConfiguration=false
+  {{- else }}
+          - --enable-reconcileWebhookConfiguration=true
+  {{- end }}
           - --enable-server=true
+  {{- if .Values.galley.enableAnalysis }}
+          - --enableAnalysis=true
+  {{- end }}
           - --deployment-namespace={{ .Release.Namespace }}
           - --validation-webhook-config-file
           - /etc/config/validatingwebhookconfiguration.yaml
@@ -72,10 +80,20 @@ spec:
 {{- if $.Values.global.logging.level }}
           - --log_output_level={{ $.Values.global.logging.level }}
 {{- end}}
+{{- if .Values.global.certificates }}
+          - --validation.tls.clientCertificate=/etc/dnscerts/cert-chain.pem
+          - --validation.tls.privateKey=/etc/dnscerts/key.pem
+          - --validation.tls.caCertificates=/etc/dnscerts/root-cert.pem
+{{- end }}
           volumeMounts:
   {{- if .Values.global.configValidation }}
           - name: istio-certs
             mountPath: /etc/certs
+            readOnly: true
+  {{- end }}
+  {{- if .Values.global.certificates }}
+          - name: dnscerts
+            mountPath: /etc/dnscerts
             readOnly: true
   {{- end }}
           - name: config
@@ -149,6 +167,8 @@ spec:
               fieldRef:
                 apiVersion: v1
                 fieldPath: status.podIP
+          - name: SDS_ENABLED
+            value: "{{ .Values.global.sds.enabled }}"
           resources:
 {{- if .Values.global.proxy.resources }}
 {{ toYaml .Values.global.proxy.resources | indent 12 }}
@@ -168,6 +188,11 @@ spec:
       - name: istio-certs
         secret:
           secretName: istio.istio-galley-service-account
+  {{- end }}
+  {{- if .Values.global.certificates }}
+      - name: dnscerts
+        secret:
+          secretName: dns.istio-galley-service-account
   {{- end }}
   {{- if .Values.global.controlPlaneSecurityEnabled }}
       - name: envoy-config

@@ -3,7 +3,7 @@ grafana:
   replicaCount: 1
   image:
     repository: grafana/grafana
-    tag: 6.1.6
+    tag: 6.3.6
   persist: false
   storageClassName: ""
   accessMode: ReadWriteMany
@@ -99,6 +99,10 @@ grafana:
     # ---
     # GF_SMTP_USER: grafana-secrets
     # GF_SMTP_PASSWORD: grafana-secrets
+
+  resources: {}
+
+  prometheusNamespace: ""
 
   # Specify the pod anti-affinity that allows you to constrain which nodes
   # your pod is eligible to be scheduled based on labels on pods that are

@@ -1,23 +1,4 @@
 ---
-# Source: citadel/templates/poddisruptionbudget.yaml
-
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: istio-citadel
-  namespace: istio-system
-  labels:
-    app: citadel
-    istio: citadel
-    release: istio-system-istio-system-security
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: citadel
-      istio: citadel
-
----
 # Source: citadel/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -130,7 +111,7 @@ spec:
       serviceAccountName: istio-citadel-service-account
       containers:
         - name: citadel
-          image: "gcr.io/istio-release/citadel:master-latest-daily"
+          image: "gcr.io/istio-testing/citadel:latest"
           imagePullPolicy: Always
           args:
             - --append-dns-names=true
@@ -139,6 +120,7 @@ spec:
             - --custom-dns-names=$(CITADEL_DNS)
             - --self-signed-ca=true
             - --trust-domain=cluster.local
+            - --workload-cert-ttl=2160h
           env:
           - name: CITADEL_ENABLE_NAMESPACES_BY_DEFAULT
             value: "true"
@@ -150,8 +132,7 @@ spec:
             periodSeconds: 5
           resources:
             requests:
-              cpu: 0m
-              memory: 1Mi
+              cpu: 10m
             
       affinity:      
         nodeAffinity:
@@ -186,4 +167,23 @@ spec:
                 operator: In
                 values:
                 - s390x      
+
+---
+# Source: citadel/templates/poddisruptionbudget.yaml
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: istio-citadel
+  namespace: istio-system
+  labels:
+    app: citadel
+    istio: citadel
+    release: istio-system-istio-system-security
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: citadel
+      istio: citadel
 

@@ -19,7 +19,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FINDFILES=find . \( -path ./common-protos -o -path ./.git -o -path ./.github \) -prune -o -type f
+FINDFILES=find . \( -path ./common-protos -o -path ./.git -o -path ./.github -o -path ./licenses \) -prune -o -type f
 XARGS = xargs -0 -r
 
 lint-dockerfiles:
@@ -58,12 +58,15 @@ lint-protos:
 	@if test -d common-protos; then $(FINDFILES) -name '*.proto' -print0 | $(XARGS) -L 1 prototool lint --protoc-bin-path=/usr/bin/protoc --protoc-wkt-path=common-protos; fi
 
 lint-licenses:
-	@go mod download
+	@-go mod download
 	@license-lint --config common/config/license-lint.yml
 
 lint-all: lint-dockerfiles lint-scripts lint-yaml lint-helm lint-copyright-banner lint-go lint-python lint-markdown lint-sass lint-typescript lint-protos lint-licenses
 
-format-go:
+tidy-go:
+	@go mod tidy
+
+format-go: tidy-go
 	@${FINDFILES} -name '*.go' \( ! \( -name '*.gen.go' -o -name '*.pb.go' \) \) -print0 | ${XARGS} goimports -w -local "istio.io"
 
 format-python:
@@ -80,18 +83,30 @@ dump-licenses-csv:
 	@go mod download
 	@license-lint --config common/config/license-lint.yml --csv
 
+mirror-licenses:
+	@go mod download
+	@license-lint --mirror
+
+TMP := $(shell mktemp -d -u)
+UPDATE_BRANCH ?= "master"
+
 update-common:
-	@git clone -q --depth 1 --single-branch --branch master https://github.com/istio/common-files
-	@cd common-files ; git rev-parse HEAD >files/common/.commonfiles.sha
+	@mkdir -p $(TMP)
+	@git clone -q --depth 1 --single-branch --branch $(UPDATE_BRANCH) https://github.com/istio/common-files $(TMP)/common-files
+	@cd $(TMP)/common-files ; git rev-parse HEAD >files/common/.commonfiles.sha
 	@rm -fr common
-	@cp -rT common-files/files .
-	@rm -fr common-files
+	@cp -rT $(TMP)/common-files/files $(shell pwd)
+	@rm -fr $(TMP)/common-files
 
 update-common-protos:
-	@git clone -q --depth 1 --single-branch --branch master https://github.com/istio/common-files
-	@cd common-files ; git rev-parse HEAD > common-protos/.commonfiles.sha
+	@mkdir -p $(TMP)
+	@git clone -q --depth 1 --single-branch --branch $(UPDATE_BRANCH) https://github.com/istio/common-files $(TMP)/common-files
+	@cd $(TMP)/common-files ; git rev-parse HEAD > common-protos/.commonfiles.sha
 	@rm -fr common-protos
-	@cp -ar common-files/common-protos common-protos
-	@rm -fr common-files
+	@cp -ar $(TMP)/common-files/common-protos $(shell pwd)/common-protos
+	@rm -fr $(TMP)/common-files
 
-.PHONY: lint-dockerfiles lint-scripts lint-yaml lint-copyright-banner lint-go lint-python lint-helm lint-markdown lint-sass lint-typescript lint-protos lint-all format-go format-python format-protos update-common update-common-protos lint-licenses dump-licenses dump-licenses-csv
+check-clean-repo:
+	@common/scripts/check_clean_repo.sh
+
+.PHONY: lint-dockerfiles lint-scripts lint-yaml lint-copyright-banner lint-go lint-python lint-helm lint-markdown lint-sass lint-typescript lint-protos lint-all format-go format-python format-protos update-common update-common-protos lint-licenses dump-licenses dump-licenses-csv check-clean-repo

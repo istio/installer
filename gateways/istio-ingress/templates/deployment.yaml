@@ -1,12 +1,12 @@
-{{ $gateway := index .Values "gateways" "istio-ingressgateway" }}
+{{- $gateway := index .Values "gateways" "istio-ingressgateway" }}
+{{- $labels := (dict "app" "istio-ingressgateway" "istio" "ingressgateway") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: istio-ingressgateway
   namespace: {{ .Release.Namespace }}
   labels:
-    app: istio-ingressgateway
-    istio: ingressgateway
+{{ $labels | toYaml | indent 4 }}
     release: {{ .Release.Name }}
 spec:
 {{- if not $gateway.autoscaleEnabled }}
@@ -25,8 +25,7 @@ spec:
   template:
     metadata:
       labels:
-        app: istio-ingressgateway
-        istio: ingressgateway
+{{ $labels | toYaml | indent 8 }}
 {{- if eq .Release.Namespace "istio-system"}}
         heritage: Tiller
         release: istio
@@ -138,17 +137,13 @@ spec:
         {{- else }}
           - zipkin:9411
         {{- end }}
-        {{- if $gateway.envoyMetricsService }}
+        {{- if .Values.global.proxy.envoyMetricsService.enabled }}
           - --envoyMetricsServiceAddress
-          - {{ $gateway.envoyMetricsService.host }}:{{ $gateway.envoyMetricsService.port }}
+          - {{ .Values.global.proxy.envoyMetricsService.host }}:{{ .Values.global.proxy.envoyMetricsService.port }}
         {{- end }}
         {{- if .Values.global.proxy.envoyAccessLogService.enabled }}
           - --envoyAccessLogServiceAddress
           - {{ .Values.global.proxy.envoyAccessLogService.host }}:{{ .Values.global.proxy.envoyAccessLogService.port }}
-        {{- end }}
-        {{- if $gateway.applicationPorts }}
-          - --applicationPorts
-          - "{{ $gateway.applicationPorts }}"
         {{- end }}
           - --proxyAdminPort
           - "15000"
@@ -226,6 +221,13 @@ spec:
             value: istio-ingressgateway
           - name: ISTIO_META_OWNER
             value: kubernetes://api/apps/v1/namespaces/{{ .Release.Namespace }}/deployments/istio-ingressgateway
+          {{- if $.Values.global.meshID }}
+          - name: ISTIO_META_MESH_ID
+            value: "{{ $.Values.global.meshID }}"
+          {{- else if $.Values.global.trustDomain }}
+          - name: ISTIO_META_MESH_ID
+            value: "{{ $.Values.global.trustDomain }}"
+          {{- end }}
           - name: ISTIO_META_POD_NAME
             valueFrom:
               fieldRef:
@@ -239,17 +241,27 @@ spec:
           - name: ISTIO_META_USER_SDS
             value: "true"
           {{- end }}
-          {{- if $gateway.env }}
           {{- range $key, $val := $gateway.env }}
           - name: {{ $key }}
             value: {{ $val }}
           {{- end }}
+          {{ $network_set := index $gateway.env "ISTIO_META_NETWORK" }}
+          {{- if and (not $network_set) .Values.global.network }}
+          - name: ISTIO_META_NETWORK
+            value: {{ .Values.global.network }}
           {{- end }}
 {{- if $gateway.podAnnotations }}
           - name: "ISTIO_METAJSON_ANNOTATIONS"
             value: |
 {{ toJson $gateway.podAnnotations | indent 16}}
 {{ end }}
+          - name: ISTIO_METAJSON_LABELS
+            value: |
+              {{ $labels | toJson }}
+          - name: ISTIO_META_CLUSTER_ID
+            value: "{{ $.Values.global.multiCluster.clusterName | default `Kubernetes` }}"
+          - name: SDS_ENABLED
+            value: "{{ .Values.global.sds.enabled }}"
           volumeMounts:
           {{ if .Values.global.sds.enabled }}
           - name: sdsudspath

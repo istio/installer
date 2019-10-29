@@ -3,7 +3,7 @@ prometheus:
   replicaCount: 1
   hub: docker.io/prom
   image: prometheus
-  tag: v2.8.0
+  tag: v2.12.0
   retention: 6h
 
   # Controls the frequency of prometheus scraping
@@ -40,7 +40,9 @@ prometheus:
   nodeSelector: {}
   tolerations: []
   podAnnotations: {}
-
+  service: {}
+  resources: {}
+  datasources: []
   # Specify the pod anti-affinity that allows you to constrain which nodes
   # your pod is eligible to be scheduled based on labels on pods that are
   # already running on the node rather than based on labels on nodes.

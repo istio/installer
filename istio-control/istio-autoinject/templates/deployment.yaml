@@ -30,7 +30,6 @@ spec:
 {{- end }}
       annotations:
         sidecar.istio.io/inject: "false"
-        checksum/config-volume: {{ .Files.Get "files/injection-template.yaml" | sha256sum }}
         {{- if .Values.sidecarInjectorWebhook.podAnnotations }}
 {{ toYaml .Values.sidecarInjectorWebhook.podAnnotations | indent 8 }}
         {{- end }}
@@ -56,6 +55,11 @@ spec:
             - --port=9443
             - --healthCheckInterval=2s
             - --healthCheckFile=/tmp/health
+{{- if .Values.global.operatorManageWebhooks }}
+            - --reconcileWebhookConfig=false
+{{- else }}
+            - --reconcileWebhookConfig=true
+{{- end }}
                   {{- if eq .Release.Namespace "istio-system"}}
             - --webhookConfigName=istio-sidecar-injector
                   {{ else }}
@@ -110,6 +114,8 @@ spec:
         secret:
 {{- if .Values.sidecarInjectorWebhook.selfSigned }}
           secretName: istio-sidecar-injector-self-signed
+{{- else if .Values.global.certificates }}
+          secretName: dns.istio-sidecar-injector-service-account
 {{- else }}
           secretName: istio.istio-sidecar-injector-service-account
 {{- end }}

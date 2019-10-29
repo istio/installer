@@ -196,7 +196,6 @@ data:
     configNamespace: istio-config
     cpu:
       targetAverageUtilization: 80
-    deploymentLabels: null
     enableProtocolSniffingForInbound: false
     enableProtocolSniffingForOutbound: true
     env: {}
@@ -205,7 +204,6 @@ data:
       ingressClass: istio
       ingressControllerMode: "OFF"
       ingressService: istio-ingressgateway
-    jwksResolverExtraRootCA: null
     keepaliveMaxServerConnectionAge: 30m
     meshNetworks:
       networks: {}
@@ -283,7 +281,7 @@ data:
     # If true, automatically configure client side mTLS settings to match the corresponding service's
     # server side mTLS authentication policy, when destination rule for that service does not specify
     # TLS settings.
-    enableAutoMtls: false
+    enableAutoMtls: true
     config_sources:
     - address: localhost:15019
 

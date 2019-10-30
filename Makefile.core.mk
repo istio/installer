@@ -239,10 +239,7 @@ info:
 	env
 	id
 
-mkout:
-	mkdir -p ${OUT}/tmp
-
-gen: mkout tidy-go mirror-licenses run-build
+gen: run-build
 
 gen-check: gen check-clean-repo
 

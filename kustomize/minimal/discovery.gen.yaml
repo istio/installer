@@ -1,4 +1,25 @@
 ---
+# Source: istio-discovery/templates/poddisruptionbudget.yaml
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: istio-pilot
+  namespace: istio-system
+  labels:
+    app: pilot
+    release: istio-system-istio-discovery
+    istio: pilot
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: pilot
+      release: istio-system-istio-discovery
+      istio: pilot
+---
+
+---
 # Source: istio-discovery/templates/configmap-envoy.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -294,14 +315,7 @@ data:
     # The DNS certificate provisioning is enabled by default now so it get tested.
     # TODO (lei-tang): we'll decide whether enable it by default or not before Istio 1.4 Release.
     certificates:
-      - dnsNames:
-        - istio-galley.istio-system.svc
-        - istio-galley.istio-system
-        secretName: dns.istio-galley-service-account
-      - dnsNames:
-        - istio-sidecar-injector.istio-system.svc
-        - istio-sidecar-injector.istio-system
-        secretName: dns.istio-sidecar-injector-service-account
+      []
 
     defaultConfig:
       #
@@ -651,27 +665,6 @@ spec:
     resource:
       name: cpu
       targetAverageUtilization: 80
----
-
----
-# Source: istio-discovery/templates/poddisruptionbudget.yaml
-
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: istio-pilot
-  namespace: istio-system
-  labels:
-    app: pilot
-    release: istio-system-istio-discovery
-    istio: pilot
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: pilot
-      release: istio-system-istio-discovery
-      istio: pilot
 ---
 
 ---

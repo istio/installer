@@ -398,6 +398,7 @@ spec:
           - --readinessProbeInterval=1s
           - --insecure=true
           - --enable-validation=true
+          - --enable-reconcileWebhookConfiguration=true
           - --enable-server=true
           - --deployment-namespace=istio-system
           - --validation-webhook-config-file
@@ -466,6 +467,8 @@ spec:
               fieldRef:
                 apiVersion: v1
                 fieldPath: status.podIP
+          - name: SDS_ENABLED
+            value: "false"
           resources:
             limits:
               cpu: 2000m

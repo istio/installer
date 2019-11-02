@@ -1,6 +1,6 @@
 cni:
-  hub: docker.io/tiswanso
-  tag: v0.1-dev
+  hub: gcr.io/istio-testing
+  tag: 1.4-dev
   pullPolicy: Always
 
   logLevel: info

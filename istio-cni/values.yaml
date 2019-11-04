@@ -16,9 +16,11 @@ cni:
   cniBinDir: /opt/cni/bin
   cniConfDir: /etc/cni/net.d
   cniConfFileName: ""
+
   excludeNamespaces:
     - istio-system
 
+  # Custom annotations on pod level, if you need them
   podAnnotations: {}
 
   # If this value is set a RoleBinding will be created

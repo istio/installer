@@ -678,19 +678,6 @@ spec:
   - mtls:
       mode: PERMISSIVE
 ---
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: "default"
-  namespace: istio-system
-  labels:
-    release: istio-system-istio
-spec:
-  host: "*.local"
-  trafficPolicy:
-    tls:
-      mode: DISABLE
----
 
 
 

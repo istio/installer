@@ -71,6 +71,7 @@ rules:
       - namespaces
       - nodes
       - pods
+      - pods/log
       - services
       - replicationcontrollers
     verbs:
@@ -136,6 +137,7 @@ rules:
       - namespaces
       - nodes
       - pods
+      - pods/log
       - services
       - replicationcontrollers
     verbs:

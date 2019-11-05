@@ -59,7 +59,7 @@ spec:
             - --cert-chain=/etc/cacerts/cert-chain.pem
           {{- end }}
           {{- if .Values.security.trustDomain }}
-            - --trust-domain={{ .Values.security.trustDomain }}
+            - --trust-domain={{ .Values.global.trustDomain }}
           {{- end }}
           {{- if .Values.security.workloadCertTtl }}
             - --workload-cert-ttl={{ .Values.security.workloadCertTtl }}

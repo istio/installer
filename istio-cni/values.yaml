@@ -1,6 +1,6 @@
 cni:
-  hub: gcr.io/istio-testing
-  tag: 1.4-dev
+  hub: ""
+  tag: ""
   image: install-cni
   pullPolicy: Always
 

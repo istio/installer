@@ -1,6 +1,7 @@
 cni:
   hub: ""
   tag: ""
+  namespace: ""
   image: install-cni
   pullPolicy: Always
 

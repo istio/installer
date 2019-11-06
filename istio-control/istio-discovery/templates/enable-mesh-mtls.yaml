@@ -19,8 +19,7 @@ spec:
   - mtls: {}
 ---
 {{- if not .Values.global.mtls.auto }}
-# Corresponding destination rule to configure client side to use mutual TLS when talking to
-# any service (host) in the mesh.
+# We only need explicit destination rule with ISITO_MUTUAL when auto mTLS is not enabled.
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
@@ -35,8 +34,6 @@ spec:
       mode: ISTIO_MUTUAL
 ---
 {{ end }}
-# We only need explicit destination rule with ISITO_MUTUAL when auto mTLS is not
-# enabled.
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:

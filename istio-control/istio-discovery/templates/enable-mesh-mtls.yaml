@@ -18,6 +18,7 @@ spec:
   peers:
   - mtls: {}
 ---
+{{- if not .Values.global.mtls.auto }}
 # Corresponding destination rule to configure client side to use mutual TLS when talking to
 # any service (host) in the mesh.
 apiVersion: networking.istio.io/v1alpha3
@@ -33,7 +34,7 @@ spec:
     tls:
       mode: ISTIO_MUTUAL
 ---
-{{- if not .Values.global.mtls.auto }}
+{{ end }}
 # We only need explicit destination rule with ISITO_MUTUAL when auto mTLS is not
 # enabled.
 apiVersion: networking.istio.io/v1alpha3
@@ -49,7 +50,6 @@ spec:
     tls:
       mode: DISABLE
 ---
-{{ end }}
 {{- else }}
 # Authentication policy to enable permissive mode for all services (that have sidecar) in the mesh.
 apiVersion: "authentication.istio.io/v1alpha1"

@@ -433,34 +433,10 @@ spec:
               - key: beta.kubernetes.io/arch
                 operator: In
                 values:
-                - amd64
-                - ppc64le
-                - s390x
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 2
-            preference:
-              matchExpressions:
-              - key: beta.kubernetes.io/arch
-                operator: In
-                values:
-                - amd64
-          - weight: 2
-            preference:
-              matchExpressions:
-              - key: beta.kubernetes.io/arch
-                operator: In
-                values:
-                - ppc64le
-          - weight: 2
-            preference:
-              matchExpressions:
-              - key: beta.kubernetes.io/arch
-                operator: In
-                values:
-                - s390x      
+          preferredDuringSchedulingIgnoredDuringExecution:      
       containers:
       - name: mixer
-        image: "gcr.io/istio-testing/mixer:latest"
+        image: "docker.io/linsun/mixer:linsun"
         imagePullPolicy: Always
         ports:
         - containerPort: 9091
@@ -508,7 +484,7 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
       - name: istio-proxy
-        image: "gcr.io/istio-testing/proxyv2:latest"
+        image: "docker.io/linsun/proxyv2:linsun"
         imagePullPolicy: Always
         ports:
         - containerPort: 15004

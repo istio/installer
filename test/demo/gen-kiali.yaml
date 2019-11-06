@@ -32,6 +32,8 @@ data:
       pilot: istio-system
       prometheus: istio-system
     istio_namespace: istio-system
+    deployment:
+      accessible_namespaces: ['**']
     server:
       port: 20001
       web_root: /kiali
@@ -42,6 +44,9 @@ data:
         url: 
       grafana:
         url: 
+      prometheus:
+        url: http://prometheus.istio-system:9090
+
 
 ---
 # Source: kiali/templates/serviceaccount.yaml
@@ -121,6 +126,7 @@ rules:
       - monitoringdashboards
     verbs:
       - get
+      - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -252,7 +258,7 @@ spec:
     spec:
       serviceAccountName: kiali-service-account
       containers:
-      - image: "docker.io/kiali/kiali:v1.4.2"
+      - image: "quay.io/kiali/kiali:v1.9"
         imagePullPolicy: Always
         name: kiali
         command:
@@ -280,11 +286,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: PROMETHEUS_SERVICE_URL
-          value: http://prometheus.istio-system:9090
-          
-        - name: SERVER_WEB_ROOT
-          value: /kiali
         volumeMounts:
         - name: kiali-configuration
           mountPath: "/kiali-configuration"

@@ -18,8 +18,8 @@ spec:
   peers:
   - mtls: {}
 ---
-# Corresponding destination rule to configure client side to use mutual TLS when talking to
-# any service (host) in the mesh.
+{{- if not .Values.global.mtls.auto }}
+# Only add ISTIO_MUTUAL global destination rule when auto mtls is disabled and global mtls is enabled.
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
@@ -33,6 +33,7 @@ spec:
     tls:
       mode: ISTIO_MUTUAL
 ---
+{{ end }}
 # Destination rule to disable (m)TLS when talking to API server, as API server doesn't have sidecar.
 # Customer should add similar destination rules for other services that dont' have sidecar.
 apiVersion: networking.istio.io/v1alpha3

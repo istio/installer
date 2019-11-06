@@ -535,7 +535,7 @@ spec:
       containers:
         - name: discovery
           image: "gcr.io/istio-testing/pilot:1.4-dev"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           args:
           - "discovery"
           - --monitoringAddr=:15014
@@ -585,7 +585,7 @@ spec:
             mountPath: /etc/istio/config
         - name: istio-proxy
           image: "gcr.io/istio-testing/proxyv2:1.4-dev"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 15011
           args:

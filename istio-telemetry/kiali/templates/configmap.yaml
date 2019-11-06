@@ -14,6 +14,8 @@ data:
       pilot: {{ .Values.global.configNamespace }}
       prometheus: {{ .Values.global.prometheusNamespace }}
     istio_namespace: {{ .Values.global.istioNamespace }}
+    deployment:
+      accessible_namespaces: ['**']
     server:
       port: 20001
 {{- if .Values.kiali.contextPath }}
@@ -26,6 +28,12 @@ data:
         url: {{ .Values.kiali.dashboard.jaegerURL }}
       grafana:
         url: {{ .Values.kiali.dashboard.grafanaURL }}
+      prometheus:
+{{- if .Values.global.prometheusNamespace }}
+        url: http://prometheus.{{ .Values.global.prometheusNamespace }}:9090
+{{ else }}
+        url: http://prometheus:9090
+{{- end }}
 {{- if .Values.kiali.security.enabled }}
     identity:
       cert_file: {{ .Values.kiali.security.cert_file }}

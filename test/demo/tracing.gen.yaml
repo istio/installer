@@ -74,6 +74,7 @@ spec:
   selector:
     app: jaeger
 
+
 ---
 # Source: tracing/templates/service.yaml
 apiVersion: v1

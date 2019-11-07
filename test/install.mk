@@ -16,7 +16,7 @@ run-build:  dep run-build-cluster run-build-demo run-build-micro run-build-minim
 # Kustomization for cluster-wide resources. Must be used as first step ( if old installer was used - this might not be
 # required).
 run-build-cluster:
-	bin/iop istio-system cluster ${BASE}/crds -t > kustomize/cluster/crds-namespace.gen.yaml
+	bin/iop istio-system cluster ${BASE}/base -t > kustomize/cluster/crds-namespace.gen.yaml
 
 # Micro profile - just pilot and ingress, in a separate namespace.
 # This can be used side-by-side with istio-system. For example knative uses a similar config as ingress while allowing

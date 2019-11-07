@@ -1,8 +1,4 @@
 ---
-# Source: base/templates/endpoints.yaml
-
-
----
 # Source: base/templates/namespaces.yaml
 # To prevent accidental injection into istio control plane namespaces.
 apiVersion: v1
@@ -5212,6 +5208,10 @@ spec:
       served: true
       storage: true
 ---
+
+
+---
+# Source: base/templates/endpoints.yaml
 
 
 ---

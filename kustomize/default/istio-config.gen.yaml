@@ -1,4 +1,25 @@
 ---
+# Source: istio-config/templates/poddisruptionbudget.yaml
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: istio-galley
+  namespace: istio-system
+  labels:
+    app: galley
+    release: istio-system-istio
+    istio: galley
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: galley
+      release: istio-system-istio
+      istio: galley
+---
+
+---
 # Source: istio-config/templates/configmap-envoy.yaml
 
 apiVersion: v1
@@ -534,27 +555,6 @@ spec:
                 operator: In
                 values:
                 - s390x      
----
-
----
-# Source: istio-config/templates/poddisruptionbudget.yaml
-
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: istio-galley
-  namespace: istio-system
-  labels:
-    app: galley
-    release: istio-system-istio
-    istio: galley
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: galley
-      release: istio-system-istio
-      istio: galley
 ---
 
 ---

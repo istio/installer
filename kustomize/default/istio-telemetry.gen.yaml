@@ -461,7 +461,7 @@ spec:
       containers:
       - name: mixer
         image: "gcr.io/istio-testing/mixer:latest"
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9091
         - containerPort: 15014
@@ -509,7 +509,7 @@ spec:
           periodSeconds: 5
       - name: istio-proxy
         image: "gcr.io/istio-testing/proxyv2:latest"
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 15004
         - containerPort: 15090
@@ -525,6 +525,7 @@ spec:
         - /var/lib/envoy/envoy.yaml.tmpl
         - --controlPlaneAuthPolicy
         - MUTUAL_TLS
+        - --trust-domain=cluster.local
         env:
         - name: POD_NAME
           valueFrom:

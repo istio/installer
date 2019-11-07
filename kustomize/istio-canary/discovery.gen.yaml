@@ -258,7 +258,7 @@ data:
 
     # The trust domain corresponds to the trust root of a system.
     # Refer to https://github.com/spiffe/spiffe/blob/master/standards/SPIFFE-ID.md#21-trust-domain
-    trustDomain: ""
+    trustDomain: "cluster.local"
 
     #  The trust domain aliases represent the aliases of trust_domain.
     #  For example, if we have
@@ -409,7 +409,7 @@ spec:
       containers:
         - name: discovery
           image: "gcr.io/istio-testing/pilot:latest"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           args:
           - "discovery"
           - --monitoringAddr=:15014
@@ -418,6 +418,7 @@ spec:
           - cluster.local
           - --secureGrpcAddr
           - ""
+          - --trust-domain=cluster.local
           - --keepaliveMaxServerConnectionAge
           - "30m"
           ports:
@@ -428,7 +429,7 @@ spec:
               path: /ready
               port: 8080
             initialDelaySeconds: 5
-            periodSeconds: 30
+            periodSeconds: 5
             timeoutSeconds: 5
           env:
           - name: POD_NAME
@@ -458,7 +459,7 @@ spec:
             mountPath: /etc/istio/config
         - name: istio-proxy
           image: "gcr.io/istio-testing/proxyv2:latest"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 15011
           args:
@@ -471,6 +472,7 @@ spec:
           - /var/lib/envoy/envoy.yaml.tmpl
           - --controlPlaneAuthPolicy
           - MUTUAL_TLS
+          - --trust-domain=cluster.local
           env:
           - name: POD_NAME
             valueFrom:

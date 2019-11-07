@@ -258,7 +258,7 @@ data:
 
     # The trust domain corresponds to the trust root of a system.
     # Refer to https://github.com/spiffe/spiffe/blob/master/standards/SPIFFE-ID.md#21-trust-domain
-    trustDomain: ""
+    trustDomain: "cluster.local"
 
     #  The trust domain aliases represent the aliases of trust_domain.
     #  For example, if we have
@@ -357,6 +357,15 @@ metadata:
     app: pilot
     release: istio-system-istio
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: istio-reader-service-account
+  namespace: istio-system
+  labels:
+    app: istio-reader
+    release: istio-system-istio
+---
 
 
 ---
@@ -407,6 +416,29 @@ rules:
     - "certificatesigningrequests/status"
   verbs: ["update", "create", "get", "delete"]
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: istio-reader-istio-system
+  labels:
+    app: istio-reader
+    release: istio-system-istio
+rules:
+- apiGroups:
+  - "config.istio.io"
+  - "rbac.istio.io"
+  - "security.istio.io"
+  - "networking.istio.io"
+  - "authentication.istio.io"
+  resources: ["*"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["endpoints", "pods", "services", "nodes", "replicationcontrollers"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["replicasets"]
+  verbs: ["get", "list", "watch"]
+---
 
 
 ---
@@ -426,6 +458,22 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: istio-pilot-service-account
+    namespace: istio-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: istio-reader-istio-system
+  labels:
+    app: istio-reader
+    release: istio-system-istio
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: istio-reader-istio-system
+subjects:
+  - kind: ServiceAccount
+    name: istio-reader-service-account
     namespace: istio-system
 ---
 
@@ -492,7 +540,7 @@ spec:
       containers:
         - name: discovery
           image: "gcr.io/istio-testing/pilot:latest"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           args:
           - "discovery"
           - --monitoringAddr=:15014
@@ -501,6 +549,7 @@ spec:
           - cluster.local
           - --secureGrpcAddr
           - ""
+          - --trust-domain=cluster.local
           - --keepaliveMaxServerConnectionAge
           - "30m"
           ports:
@@ -511,7 +560,7 @@ spec:
               path: /ready
               port: 8080
             initialDelaySeconds: 5
-            periodSeconds: 30
+            periodSeconds: 5
             timeoutSeconds: 5
           env:
           - name: POD_NAME
@@ -541,7 +590,7 @@ spec:
             mountPath: /etc/istio/config
         - name: istio-proxy
           image: "gcr.io/istio-testing/proxyv2:latest"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 15011
           args:
@@ -554,6 +603,7 @@ spec:
           - /var/lib/envoy/envoy.yaml.tmpl
           - --controlPlaneAuthPolicy
           - MUTUAL_TLS
+          - --trust-domain=cluster.local
           env:
           - name: POD_NAME
             valueFrom:
@@ -634,22 +684,6 @@ spec:
 ---
 # Source: istio-discovery/templates/enable-mesh-mtls.yaml
 
-# Destination rule to disable (m)TLS when talking to API server, as API server doesn't have sidecar.
-# Customer should add similar destination rules for other services that dont' have sidecar.
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: "api-server"
-  namespace: istio-system
-  labels:
-    release: istio-system-istio
-spec:
-  host: "kubernetes.default.svc.cluster.local"
-  trafficPolicy:
-    tls:
-      mode: DISABLE
-
----
 # Authentication policy to enable permissive mode for all services (that have sidecar) in the mesh.
 apiVersion: "authentication.istio.io/v1alpha1"
 kind: "MeshPolicy"
@@ -662,20 +696,6 @@ spec:
   - mtls:
       mode: PERMISSIVE
 ---
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: "default"
-  namespace: istio-system
-  labels:
-    release: istio-system-istio
-spec:
-  host: "*.local"
-  trafficPolicy:
-    tls:
-      mode: DISABLE
----
-
 
 
 

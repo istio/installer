@@ -1,8 +1,4 @@
 ---
-# Source: base/templates/endpoints.yaml
-
-
----
 # Source: base/templates/namespaces.yaml
 # To prevent accidental injection into istio control plane namespaces.
 apiVersion: v1
@@ -5212,6 +5208,38 @@ spec:
       served: true
       storage: true
 ---
+
+
+---
+# Source: base/templates/clusterrole.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: istio-reader-istio-system
+  labels:
+    app: istio-reader
+    release: istio-system-cluster
+rules:
+- apiGroups:
+  - "config.istio.io"
+  - "rbac.istio.io"
+  - "security.istio.io"
+  - "networking.istio.io"
+  - "authentication.istio.io"
+  resources: ["*"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["endpoints", "pods", "services", "nodes", "replicationcontrollers"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["replicasets"]
+  verbs: ["get", "list", "watch"]
+---
+
+
+---
+# Source: base/templates/endpoints.yaml
 
 
 ---

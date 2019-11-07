@@ -98,6 +98,10 @@ pilot:
   telemetry:
     # Will not define mixerCheckServer and mixerReportServer
     enabled: true
+    v1:
+      enabled: true
+    v2:
+      enabled: false
 
   policy:
     # Will not define mixerCheckServer and mixerReportServer

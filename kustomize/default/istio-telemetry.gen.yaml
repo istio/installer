@@ -1,27 +1,4 @@
 ---
-# Source: mixer-telemetry/templates/poddisruptionbudget.yaml
-
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: istio-telemetry
-  namespace: istio-system
-  labels:
-    app: istio-telemetry
-    release: istio-system-istio
-    istio: mixer
-    istio-mixer-type: telemetry
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: istio-telemetry
-      release: istio-system-istio
-      istio: mixer
-      istio-mixer-type: telemetry
----
-
----
 # Source: mixer-telemetry/templates/configmap-envoy.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -608,6 +585,29 @@ spec:
       resource:
         name: cpu
         targetAverageUtilization: 80
+---
+
+---
+# Source: mixer-telemetry/templates/poddisruptionbudget.yaml
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: istio-telemetry
+  namespace: istio-system
+  labels:
+    app: istio-telemetry
+    release: istio-system-istio
+    istio: mixer
+    istio-mixer-type: telemetry
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: istio-telemetry
+      release: istio-system-istio
+      istio: mixer
+      istio-mixer-type: telemetry
 ---
 
 ---

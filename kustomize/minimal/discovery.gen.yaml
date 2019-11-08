@@ -194,6 +194,8 @@ data:
     autoscaleMin: 1
     configMap: true
     configNamespace: istio-config
+    configSource:
+      subscribedResources: null
     cpu:
       targetAverageUtilization: 80
     deploymentLabels: null
@@ -302,6 +304,8 @@ data:
     # TODO (lei-tang): we'll decide whether enable it by default or not before Istio 1.4 Release.
     certificates:
       []
+    configSources:
+    - address: istio-galley.istio-system.svc:9901
 
     defaultConfig:
       #

@@ -229,8 +229,7 @@ global:
 
   # imagePullPolicy is applied to istio control plane components.
   # local tests require IfNotPresent, to avoid uploading to dockerhub.
-  # TODO: Switch to Always as default, and override in the local tests.
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
 
   # controlPlaneMtls enabled. Will result in delays starting the pods while secrets are
   # propagated, not recommended for tests.
@@ -380,7 +379,7 @@ global:
   # The default depends on the environment.
   #   kubernetes: cluster.local
   #   else:  default dns domain
-  trustDomain: ""
+  trustDomain: "cluster.local"
 
   #  The trust domain aliases represent the aliases of trust_domain.
   #  For example, if we have
@@ -527,6 +526,14 @@ global:
   # webhook configurations. When this option is set as false, webhooks manage their
   # own webhook configurations.
   operatorManageWebhooks: false
+  istioRemote: false
+
+  # Settings for remote cluster.
+  createRemoteSvcEndpoints: false
+  remotePilotCreateSvcEndpoint: false
+  remotePolicyAddress: ""
+  remotePilotAddress: ""
+  remoteTelemetryAddress: ""
 
 # Internal setting - used when generating helm templates for kustomize.
 # clusterResources controls the inclusion of cluster-wide resources when generating the charts/installing.

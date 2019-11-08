@@ -32,16 +32,21 @@ data:
       pilot: istio-system
       prometheus: istio-system
     istio_namespace: istio-system
+    deployment:
+      accessible_namespaces: ['**']
     server:
       port: 20001
       web_root: /kiali
     external_services:
       istio:
         url_service_version: http://istio-pilot.istio-system:8080/version
-      jaeger:
+      tracing:
         url: 
       grafana:
         url: 
+      prometheus:
+        url: http://prometheus.istio-system:9090
+
 
 ---
 # Source: kiali/templates/serviceaccount.yaml
@@ -71,8 +76,9 @@ rules:
       - namespaces
       - nodes
       - pods
-      - services
+      - pods/log
       - replicationcontrollers
+      - services
     verbs:
       - get
       - list
@@ -80,8 +86,8 @@ rules:
   - apiGroups: ["extensions", "apps"]
     resources:
       - deployments
-      - statefulsets
       - replicasets
+      - statefulsets
     verbs:
       - get
       - list
@@ -120,6 +126,7 @@ rules:
       - monitoringdashboards
     verbs:
       - get
+      - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -136,8 +143,9 @@ rules:
       - namespaces
       - nodes
       - pods
-      - services
+      - pods/log
       - replicationcontrollers
+      - services
     verbs:
       - get
       - list
@@ -145,8 +153,8 @@ rules:
   - apiGroups: ["extensions", "apps"]
     resources:
       - deployments
-      - statefulsets
       - replicasets
+      - statefulsets
     verbs:
       - get
       - list
@@ -182,6 +190,7 @@ rules:
       - monitoringdashboards
     verbs:
       - get
+      - list
 
 ---
 # Source: kiali/templates/clusterrolebinding.yaml
@@ -250,8 +259,8 @@ spec:
     spec:
       serviceAccountName: kiali-service-account
       containers:
-      - image: "docker.io/kiali/kiali:v1.4.2"
-        imagePullPolicy: Always
+      - image: "quay.io/kiali/kiali:v1.9"
+        imagePullPolicy: IfNotPresent
         name: kiali
         command:
         - "/opt/kiali/kiali"
@@ -278,11 +287,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: PROMETHEUS_SERVICE_URL
-          value: http://prometheus.istio-system:9090
-          
-        - name: SERVER_WEB_ROOT
-          value: /kiali
         volumeMounts:
         - name: kiali-configuration
           mountPath: "/kiali-configuration"

@@ -236,12 +236,12 @@ data:
     accessLogFile: ""
 
     enableEnvoyAccessLogService: false
+    mixerCheckServer: istio-policy.istio-system.svc.cluster.local:9091
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
     reportBatchMaxEntries: 100
     # reportBatchMaxTime is the max waiting time before the telemetry data of a request is sent to the mixer server
     reportBatchMaxTime: 1s
     mixerReportServer: istio-telemetry.istio-system.svc.cluster.local:9091
-    mixerCheckServer: istio-policy.istio-system.svc.cluster.local:9091
 
     disablePolicyChecks: true
 
@@ -253,7 +253,7 @@ data:
 
     # The trust domain corresponds to the trust root of a system.
     # Refer to https://github.com/spiffe/spiffe/blob/master/standards/SPIFFE-ID.md#21-trust-domain
-    trustDomain: ""
+    trustDomain: "cluster.local"
 
     #  The trust domain aliases represent the aliases of trust_domain.
     #  For example, if we have
@@ -262,15 +262,18 @@ data:
     #  Any service with the identity "td1/ns/foo/sa/a-service-account", "td2/ns/foo/sa/a-service-account",
     #  or "td3/ns/foo/sa/a-service-account" will be treated the same in the Istio mesh.
     trustDomainAliases:
+
     # Set expected values when SDS is disabled
     # Unix Domain Socket through which envoy communicates with NodeAgent SDS to get
     # key/cert for mTLS. Use secret-mount files instead of SDS if set to empty.
     sdsUdsPath: ""
+
     # This flag is used by secret discovery service(SDS).
     # If set to true(prerequisite: https://kubernetes.io/docs/concepts/storage/volumes/#projected), Istio will inject volumes mount
     # for k8s service account JWT, so that K8s API server mounts k8s service account JWT to envoy container, which
     # will be used to generate key/cert eventually. This isn't supported for non-k8s case.
     enableSdsTokenMount: false
+
     # This flag is used by secret discovery service(SDS).
     # If set to true, envoy will fetch normal k8s service account JWT from '/var/run/secrets/kubernetes.io/serviceaccount/token'
     # (https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/#accessing-the-api-from-a-pod)
@@ -347,6 +350,15 @@ metadata:
     app: pilot
     release: istio-system-istio-discovery
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: istio-reader-service-account
+  namespace: istio-system
+  labels:
+    app: istio-reader
+    release: istio-system-istio-discovery
+---
 
 
 ---
@@ -418,6 +430,22 @@ subjects:
     name: istio-pilot-service-account
     namespace: istio-system
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: istio-reader-istio-system
+  labels:
+    app: istio-reader
+    release: istio-system-istio-discovery
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: istio-reader-istio-system
+subjects:
+  - kind: ServiceAccount
+    name: istio-reader-service-account
+    namespace: istio-system
+---
 
 
 ---
@@ -482,7 +510,7 @@ spec:
       containers:
         - name: discovery
           image: "gcr.io/istio-testing/pilot:1.4-dev"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           args:
           - "discovery"
           - --monitoringAddr=:15014
@@ -491,6 +519,7 @@ spec:
           - cluster.local
           - --secureGrpcAddr
           - ""
+          - --trust-domain=cluster.local
           - --plugins=health
           - --keepaliveMaxServerConnectionAge
           - "30m"
@@ -502,7 +531,7 @@ spec:
               path: /ready
               port: 8080
             initialDelaySeconds: 5
-            periodSeconds: 30
+            periodSeconds: 5
             timeoutSeconds: 5
           env:
           - name: POD_NAME
@@ -575,22 +604,6 @@ spec:
 ---
 # Source: istio-discovery/templates/enable-mesh-mtls.yaml
 
-# Destination rule to disable (m)TLS when talking to API server, as API server doesn't have sidecar.
-# Customer should add similar destination rules for other services that dont' have sidecar.
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: "api-server"
-  namespace: istio-system
-  labels:
-    release: istio-system-istio-discovery
-spec:
-  host: "kubernetes.default.svc.cluster.local"
-  trafficPolicy:
-    tls:
-      mode: DISABLE
-
----
 # Authentication policy to enable permissive mode for all services (that have sidecar) in the mesh.
 apiVersion: "authentication.istio.io/v1alpha1"
 kind: "MeshPolicy"
@@ -602,19 +615,6 @@ spec:
   peers:
   - mtls:
       mode: PERMISSIVE
----
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: "default"
-  namespace: istio-system
-  labels:
-    release: istio-system-istio-discovery
-spec:
-  host: "*.local"
-  trafficPolicy:
-    tls:
-      mode: DISABLE
 ---
 
 

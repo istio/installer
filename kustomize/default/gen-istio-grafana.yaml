@@ -13999,7 +13999,6 @@ data:
 
 ---
 # Source: grafana/templates/configmap.yaml
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -14010,18 +14009,19 @@ metadata:
     release: istio-system-istio
     istio: grafana
 data:
-  datasources.yaml: |-
+  datasources.yaml: |
     apiVersion: 1
     datasources:
-    - name: Prometheus
-      type: prometheus
-      orgId: 1
-      url: http://prometheus:9090
-      access: proxy
+    - access: proxy
+      editable: true
       isDefault: true
       jsonData:
         timeInterval: 5s
-      editable: true
+      name: Prometheus
+      orgId: 1
+      type: prometheus
+      url: http://prometheus:9090
+    
   dashboardproviders.yaml: |
     apiVersion: 1
     providers:
@@ -14085,8 +14085,8 @@ spec:
         fsGroup: 472
       containers:
         - name: grafana
-          image: "grafana/grafana:6.3.6"
-          imagePullPolicy: Always
+          image: "grafana/grafana:6.4.3"
+          imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 3000
           readinessProbe:
@@ -14212,19 +14212,6 @@ spec:
       - name: dashboards-istio-pilot-dashboard
         configMap:
           name:  istio-grafana-configuration-dashboards-pilot-dashboard
-
----
-# Source: grafana/templates/destination-rule.yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: grafana
-  namespace: istio-system
-spec:
-  host: grafana.istio-system
-  trafficPolicy:
-    tls:
-      mode: DISABLE
 
 ---
 # Source: grafana/templates/grafana-policy.yaml

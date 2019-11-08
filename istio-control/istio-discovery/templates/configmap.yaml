@@ -87,7 +87,6 @@ data:
     disableMixerHttpReports: false
     {{- end }}
 
-
     {{- if .Values.pilot.policy.enabled }}
 
     # Set the following variable to true to disable policy checks by the Mixer.

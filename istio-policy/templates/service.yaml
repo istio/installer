@@ -4,7 +4,7 @@ metadata:
   name: istio-policy
   namespace: {{ .Release.Namespace }}
   labels:
-    app: istio-policy
+    app: mixer
     istio: mixer
     release: {{ .Release.Name }}
 spec:

@@ -5,7 +5,7 @@ metadata:
   name: istio-policy
   namespace: {{ .Release.Namespace }}
   labels:
-    app: istio-policy
+    app: policy
     release: {{ .Release.Name }}
     istio: mixer
     istio-mixer-type: policy

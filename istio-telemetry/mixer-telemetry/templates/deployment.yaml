@@ -7,7 +7,6 @@ metadata:
     app: istio-mixer
     istio: mixer
     release: {{ .Release.Name }}
-    istio-mixer-type: telemetry
 spec:
   replicas: {{ .Values.mixer.telemetry.replicaCount }}
   strategy:

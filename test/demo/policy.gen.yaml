@@ -61,7 +61,7 @@ metadata:
   name: istio-policy
   namespace: istio-system
   labels:
-    app: istio-policy
+    app: mixer
     istio: mixer
     release: istio-system-istio
 spec:

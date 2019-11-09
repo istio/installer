@@ -233,7 +233,7 @@ global:
 
   # controlPlaneMtls enabled. Will result in delays starting the pods while secrets are
   # propagated, not recommended for tests.
-  controlPlaneSecurityEnabled: true
+  controlPlaneSecurityEnabled: false
 
   # disablePolicyChecks disables mixer policy checks.
   # if mixer.policy.enabled==true then disablePolicyChecks has affect.

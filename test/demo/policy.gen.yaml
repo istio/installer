@@ -164,9 +164,9 @@ spec:
         args:
           - --monitoringPort=15014
           - --address
-          - unix:///sock/mixer.socket
+          - tcp://0.0.0.0:9091
           - --log_output_level=default:info
-          - --configStoreURL=mcps://istio-galley.istio-system.svc:15019
+          - --configStoreURL=mcp://istio-galley.istio-system.svc:9901
           - --configDefaultNamespace=istio-system
           - --useAdapterCRDs=false
           - --useTemplateCRDs=false
@@ -197,57 +197,6 @@ spec:
             port: 15014
           initialDelaySeconds: 5
           periodSeconds: 5
-      - name: istio-proxy
-        image: "gcr.io/istio-testing/proxyv2:latest"
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 15004
-        - containerPort: 15090
-          protocol: TCP
-          name: http-envoy-prom
-        args:
-        - proxy
-        - --domain
-        - $(POD_NAMESPACE).svc.cluster.local
-        - --serviceCluster
-        - istio-policy
-        - --templateFile
-        - /etc/istio/proxy/envoy_policy.yaml.tmpl
-        - --controlPlaneAuthPolicy
-        - MUTUAL_TLS
-        - --trust-domain=cluster.local
-        env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.name
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
-        - name: INSTANCE_IP
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: status.podIP
-        - name: SDS_ENABLED
-          value: "false"
-        resources:
-          limits:
-            cpu: 2000m
-            memory: 1024Mi
-          requests:
-            cpu: 10m
-            memory: 40Mi
-          
-        volumeMounts:
-        - name: istio-certs
-          mountPath: /etc/certs
-          readOnly: true
-        - name: uds-socket
-          mountPath: /sock
 ---
 
 ---

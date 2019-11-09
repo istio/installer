@@ -180,19 +180,6 @@ data:
                       timeout: 0.000s
               stat_prefix: "15004"
             name: envoy.http_connection_manager
-          tls_context:
-            common_tls_context:
-              alpn_protocols:
-              - h2
-              tls_certificates:
-              - certificate_chain:
-                  filename: /etc/certs/cert-chain.pem
-                private_key:
-                  filename: /etc/certs/key.pem
-              validation_context:
-                trusted_ca:
-                  filename: /etc/certs/root-cert.pem
-            require_client_certificate: true
 
       - name: "9091"
         address:
@@ -468,9 +455,9 @@ spec:
         args:
           - --monitoringPort=15014
           - --address
-          - unix:///sock/mixer.socket
+          - tcp://0.0.0.0:9091
           - --log_output_level=default:info
-          - --configStoreURL=mcp://localhost:15019
+          - --configStoreURL=mcp://istio-galley.istio-system.svc:9901
           - --configDefaultNamespace=istio-system
           - --useAdapterCRDs=false
           - --useTemplateCRDs=false
@@ -506,59 +493,6 @@ spec:
             port: 15014
           initialDelaySeconds: 5
           periodSeconds: 5
-      - name: istio-proxy
-        image: "gcr.io/istio-testing/proxyv2:latest"
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 15004
-        - containerPort: 15090
-          protocol: TCP
-          name: http-envoy-prom
-        args:
-        - proxy
-        - --domain
-        - $(POD_NAMESPACE).svc.cluster.local
-        - --serviceCluster
-        - istio-telemetry
-        - --templateFile
-        - /var/lib/envoy/envoy.yaml.tmpl
-        - --controlPlaneAuthPolicy
-        - MUTUAL_TLS
-        - --trust-domain=cluster.local
-        env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.name
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
-        - name: INSTANCE_IP
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: status.podIP
-        - name: SDS_ENABLED
-          value: "false"
-        resources:
-          limits:
-            cpu: 2000m
-            memory: 1024Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          
-        volumeMounts:
-        - name: telemetry-envoy-config
-          mountPath: /var/lib/envoy
-        - name: istio-certs
-          mountPath: /etc/certs
-          readOnly: true
-        - name: uds-socket
-          mountPath: /sock
 ---
 
 ---

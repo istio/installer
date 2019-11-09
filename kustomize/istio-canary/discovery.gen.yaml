@@ -241,7 +241,7 @@ data:
     accessLogFile: ""
 
     enableEnvoyAccessLogService: false
-    mixerCheckServer: istio-policy.istio-system.svc.cluster.local:15004
+    mixerCheckServer: istio-policy.istio-system.svc.cluster.local:9091
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
     reportBatchMaxEntries: 100
     # reportBatchMaxTime is the max waiting time before the telemetry data of a request is sent to the mixer server
@@ -336,10 +336,10 @@ data:
           address: zipkin.istio-system:9411
       #
       # Mutual TLS authentication between sidecars and istio control plane.
-      controlPlaneAuthPolicy: MUTUAL_TLS
+      controlPlaneAuthPolicy: NONE
       #
       # Address where istio Pilot service is running
-      discoveryAddress: istio-pilot.istio-system:15011
+      discoveryAddress: istio-pilot.istio-system:15010
 
 ---
 
@@ -457,53 +457,6 @@ spec:
           volumeMounts:
           - name: config-volume
             mountPath: /etc/istio/config
-        - name: istio-proxy
-          image: "gcr.io/istio-testing/proxyv2:latest"
-          imagePullPolicy: IfNotPresent
-          ports:
-          - containerPort: 15011
-          args:
-          - proxy
-          - --domain
-          - $(POD_NAMESPACE).svc.cluster.local
-          - --serviceCluster
-          - istio-pilot
-          - --templateFile
-          - /var/lib/envoy/envoy.yaml.tmpl
-          - --controlPlaneAuthPolicy
-          - MUTUAL_TLS
-          - --trust-domain=cluster.local
-          env:
-          - name: POD_NAME
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.name
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.namespace
-          - name: INSTANCE_IP
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: status.podIP
-          - name: SDS_ENABLED
-            value: "false"
-          resources:
-            limits:
-              cpu: 2000m
-              memory: 1024Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
-          volumeMounts:
-          - name: istio-certs
-            mountPath: /etc/certs
-            readOnly: true
-          - name: pilot-envoy-config
-            mountPath: /var/lib/envoy
       volumes:
       - name: config-volume
         configMap:
@@ -511,10 +464,6 @@ spec:
       - name: pilot-envoy-config
         configMap:
           name: pilot-envoy-configcanary
-      - name: istio-certs
-        secret:
-          secretName: istio.istio-pilot-service-account
-          optional: true
       affinity:      
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

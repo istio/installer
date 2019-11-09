@@ -133,9 +133,9 @@ spec:
           - --statusPort
           - "15020"
           - --controlPlaneAuthPolicy
-          - MUTUAL_TLS
+          - NONE
           - --discoveryAddress
-          - istio-pilot.istio-system:15011
+          - istio-pilot.istio-system:15010
           - --trust-domain=cluster.local
           readinessProbe:
             failureThreshold: 30

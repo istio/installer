@@ -13,7 +13,7 @@ spec:
   minAvailable: 1
   selector:
     matchLabels:
-      app: istio-policy
+      app: policy
       release: {{ .Release.Name }}
       istio: mixer
       istio-mixer-type: policy

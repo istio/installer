@@ -482,10 +482,10 @@ data:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: sidecarInjectorWebhook
+  name: istio-sidecar-injector-service-account
   namespace: istio-system
   labels:
-    app: sidecar-injector
+    app: sidecarInjectorWebhook
     release: istio-system-istio
     istio: sidecar-injector
 

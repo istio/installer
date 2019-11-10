@@ -82,7 +82,7 @@ spec:
           {{- end }}
           {{- end }}
           livenessProbe:
-          {{- if .Values.citadelHealthCheck }}
+          {{- if .Values.security.citadelHealthCheck }}
             exec:
               command:
               - /usr/local/bin/istio_ca

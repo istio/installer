@@ -1,25 +1,4 @@
 ---
-# Source: istio-discovery/templates/poddisruptionbudget.yaml
-
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: istio-pilot
-  namespace: istio-system
-  labels:
-    app: pilot
-    release: istio-system-istio-discovery
-    istio: pilot
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: pilot
-      release: istio-system-istio-discovery
-      istio: pilot
----
-
----
 # Source: istio-discovery/templates/configmap-envoy.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -756,6 +735,27 @@ spec:
     resource:
       name: cpu
       targetAverageUtilization: 80
+---
+
+---
+# Source: istio-discovery/templates/poddisruptionbudget.yaml
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: istio-pilot
+  namespace: istio-system
+  labels:
+    app: pilot
+    release: istio-system-istio-discovery
+    istio: pilot
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: pilot
+      release: istio-system-istio-discovery
+      istio: pilot
 ---
 
 ---

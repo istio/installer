@@ -1,4 +1,25 @@
 ---
+# Source: istio-discovery/templates/poddisruptionbudget.yaml
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: istio-pilot
+  namespace: istio-system
+  labels:
+    app: pilot
+    release: istio-system-istio-discovery
+    istio: pilot
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: pilot
+      release: istio-system-istio-discovery
+      istio: pilot
+---
+
+---
 # Source: istio-discovery/templates/configmap-envoy.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -242,6 +263,7 @@ data:
 
     enableEnvoyAccessLogService: false
     mixerCheckServer: istio-policy.istio-system.svc.cluster.local:9091
+    mixerReportServer: istio-telemetry.istio-system.svc.cluster.local:9091
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
     reportBatchMaxEntries: 100
     # reportBatchMaxTime is the max waiting time before the telemetry data of a request is sent to the mixer server
@@ -734,27 +756,6 @@ spec:
     resource:
       name: cpu
       targetAverageUtilization: 80
----
-
----
-# Source: istio-discovery/templates/poddisruptionbudget.yaml
-
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: istio-pilot
-  namespace: istio-system
-  labels:
-    app: pilot
-    release: istio-system-istio-discovery
-    istio: pilot
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: pilot
-      release: istio-system-istio-discovery
-      istio: pilot
 ---
 
 ---

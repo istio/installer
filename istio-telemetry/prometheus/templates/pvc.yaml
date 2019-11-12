@@ -1,0 +1,19 @@
+{{- if .Values.prometheus.persist }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: prometheus-pvc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: prometheus
+    chart: {{ template "prometheus.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  storageClassName: {{ .Values.prometheus.storageClassName }}
+  accessModes:
+    - {{ .Values.prometheus.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.prometheus.storageSize }}
+{{- end }}

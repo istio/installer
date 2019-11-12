@@ -63,3 +63,8 @@ prometheus:
   # "security" and value "S1".
   podAntiAffinityLabelSelector: []
   podAntiAffinityTermLabelSelector: []
+
+  persist: false
+  storageClassName: ""
+  storageSize: 10Gi
+  accessMode: ReadWriteMany

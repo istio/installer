@@ -33,6 +33,7 @@ spec:
           imagePullPolicy: {{ .Values.global.imagePullPolicy | default "Always" }}
           args:
             - '--storage.tsdb.retention={{ .Values.prometheus.retention }}'
+            - '--storage.tsdb.path=/data'
             - '--config.file=/etc/prometheus/prometheus.yml'
           ports:
             - containerPort: 9090
@@ -56,6 +57,8 @@ spec:
             mountPath: /etc/prometheus
           - mountPath: /etc/istio-certs
             name: istio-certs
+          - mountPath: /data
+            name: data
       volumes:
       - name: config-volume
         configMap:
@@ -67,6 +70,13 @@ spec:
           optional: true
 {{- end }}
           secretName: istio.default
+      - name: data
+{{- if .Values.prometheus.persist }}
+        persistentVolumeClaim:
+          claimName: prometheus-pvc
+{{- else }}
+        emptyDir: {}
+{{- end }}
       affinity:
       {{- include "nodeaffinity" . | indent 6 }}
       {{- include "podAntiAffinity" . | indent 6 }}

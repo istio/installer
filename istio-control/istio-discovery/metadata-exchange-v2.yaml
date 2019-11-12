@@ -2,6 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   name: metadata-exchange
+  namespace: {{ .Release.Namespace }}
 spec:
   configPatches:
     - applyTo: HTTP_FILTER

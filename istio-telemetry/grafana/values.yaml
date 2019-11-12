@@ -124,3 +124,10 @@ grafana:
   # "security" and value "S1".
   podAntiAffinityLabelSelector: []
   podAntiAffinityTermLabelSelector: []
+
+  customDashboards: {}
+    # kubernetes.json: |
+    #   {
+    #     "description": "",
+    #     ...
+    #   } 

@@ -181,9 +181,28 @@ spec:
             readOnly: true
           - name: envoy-config
             mountPath: /var/lib/istio/galley/envoy
+          {{- if .Values.global.sds.enabled }}
+          - name: sds-uds-path
+            mountPath: /var/run/sds
+            readOnly: true
+          - name: istio-token
+            mountPath: /var/run/secrets/tokens
+          {{- end }}
 {{- end }}
 
       volumes:
+      {{- if .Values.global.sds.enabled }}
+      - hostPath:
+          path: /var/run/sds
+        name: sds-uds-path
+      - name: istio-token
+        projected:
+          sources:
+          - serviceAccountToken:
+              audience: {{ .Values.global.sds.token.aud }}
+              expirationSeconds: 43200
+              path: istio-token
+      {{- end }}
   {{- if or .Values.global.controlPlaneSecurityEnabled .Values.global.configValidation }}
       - name: istio-certs
         secret:

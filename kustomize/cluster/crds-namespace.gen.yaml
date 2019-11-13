@@ -1,4 +1,8 @@
 ---
+# Source: base/templates/endpoints.yaml
+
+
+---
 # Source: base/templates/namespaces.yaml
 # To prevent accidental injection into istio control plane namespaces.
 apiVersion: v1
@@ -5271,10 +5275,6 @@ subjects:
     name: istio-reader-service-account
     namespace: istio-system
 ---
-
-
----
-# Source: base/templates/endpoints.yaml
 
 
 ---

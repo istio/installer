@@ -7,7 +7,7 @@
 run-test-noauth: ${GOBIN}/istioctl run-test-noauth-micro run-test-noauth-full run-test-knative
 
 # Run a test with the smallest/simplest install possible
-run-test-noauth-micro:
+run-test-noauth-micro: run-build
 	kubectl apply -k kustomize/cluster --prune -l istio=cluster
 
 	# Verify that we can kube-inject using files ( there is no injector in this config )

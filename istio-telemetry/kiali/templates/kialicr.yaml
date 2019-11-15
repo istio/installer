@@ -1,0 +1,74 @@
+{{- if .Values.kiali.enabled }}
+apiVersion: kiali.io/v1alpha1
+kind: Kiali
+metadata:
+  name: kiali
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: kiali
+    release: {{ .Release.Name }}
+annotations:
+  ansible.operator-sdk/reconcile-period: "0s"
+spec:
+{{- if .Values.kiali.fullSpec }}
+{{ toYaml .Values.kiali.fullSpec | indent 2 }}
+{{- else }}
+  ###################################################################
+  # For details about the supported settings,
+  # see https://github.com/kiali/kiali/blob/master/operator/deploy/kiali/kiali_cr.yaml"
+  istio_component_namespaces:
+    grafana: "{{ .Values.global.telemetryNamespace }}"
+    pilot: "{{ .Values.global.configNamespace }}"
+    prometheus: "{{ .Values.global.prometheusNamespace }}"
+    tracing: "{{ .Values.global.telemetryNamespace }}"
+  istio_namespace: {{ .Release.Namespace }}
+  auth:
+    strategy: {{ .Values.kiali.dashboard.auth.strategy }}
+{{- if eq .Values.kiali.dashboard.auth.strategy "ldap" }}
+    ldap:
+{{- with .Values.kiali.dashboard.auth.strategy.ldap }}
+{{ toYaml . | indent 6 }}
+{{- end }}
+{{- end }}
+  deployment:
+    image_pull_policy: {{ .Values.global.imagePullPolicy }}
+    namespace: {{ .Release.Namespace }}
+    {{- if .Values.kiali.accessibleNamespaces }}
+    accessible_namespaces: {{ .Values.kiali.accessibleNamespaces }}
+    {{- end }}
+    ingress_enabled: {{ .Values.kiali.ingress.enabled }}
+    verbose_mode: 3
+    view_only_mode: {{ .Values.kiali.dashboard.viewOnlyMode }}
+    affinity:
+    {{- include "nodeaffinity" . | indent 6 }}
+    {{- include "podAntiAffinity" . | indent 6 }}
+    {{- if .Values.kiali.tolerations }}
+    tolerations:
+    {{ toYaml .Values.kiali.tolerations | indent 6 }}
+    {{- end }}
+    secret_name: {{ .Values.kiali.dashboard.secretName }}
+  external_services:
+    grafana:
+      url: {{ .Values.kiali.dashboard.grafanaURL }}
+    istio:
+      url_service_version: http://istio-pilot.{{ .Values.global.configNamespace }}:8080/version
+    prometheus:
+{{- if .Values.global.prometheusNamespace }}
+      url: http://prometheus.{{ .Values.global.prometheusNamespace }}:9090
+{{ else }}
+      url: http://prometheus:9090
+{{- end }}
+    tracing:
+      url: {{ .Values.kiali.dashboard.jaegerURL }}
+  {{- if .Values.kiali.security.enabled }}
+  identity:
+    cert_file: {{ .Values.kiali.security.cert_file }}
+    private_key_file: {{ .Values.kiali.security.private_key_file }}
+  {{- end}}
+  server:
+    port: 20001
+    {{- if .Values.kiali.contextPath }}
+    web_root: {{ .Values.kiali.contextPath }}
+    {{- end }}
+{{- end }}
+{{- end }}

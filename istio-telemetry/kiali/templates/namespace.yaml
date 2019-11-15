@@ -1,0 +1,9 @@
+{{- if .Values.kiali.operator.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.kiali.operator.namespace }}
+  labels:
+    app: kiali-operator
+    release: {{ .Release.Name }}
+{{- end }}

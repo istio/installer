@@ -4,10 +4,10 @@
 # Security is not enabled - this can be used for users who have ipsec or other secure VPC, or don't need the
 # security features. It is also intended to verify that Istio can work without citadel for a-la-carte modes.
 
-run-test-noauth: ${GOBIN}/istioctl run-test-noauth-micro run-test-noauth-full run-test-knative
+run-test-noauth: ${GOBIN}/istioctl run-build run-test-noauth-micro run-test-noauth-full run-test-knative
 
 # Run a test with the smallest/simplest install possible
-run-test-noauth-micro: run-build
+run-test-noauth-micro:
 	kubectl apply -k kustomize/cluster --prune -l istio=cluster
 
 	# Verify that we can kube-inject using files ( there is no injector in this config )

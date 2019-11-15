@@ -39,11 +39,10 @@ run-test-noauth-micro:
 
 	# Verify ingress and pilot are happy
 	# The 'simple' fortio has a rewrite rule - so /fortio/fortio/ is the real UI
-	curl -s localhost:30080/fortio/fortio/ |grep fortio_chart.js
+	timeout 10s sh -c 'until curl -s localhost:30080/fortio/fortio/ | grep fortio_chart.js; do echo "retrying..."; sleep .1; done'
 
 	# This is the ingress gateway, no rewrite. Without host it hits the redirect
-	curl -s localhost:30080/fortio/ -HHost:fortio-ingress.example.com | grep fortio_chart.js
-
+	timeout 3s sh -c 'until curl -s localhost:30080/fortio/ -HHost:fortio-ingress.example.com | grep fortio_chart.js; do echo "retrying..."; sleep .1; done'
 
 # Installs minimal istio (pilot + ingressgateway) to support knative serving.
 # Then installs a simple service and waits for the route to be ready.

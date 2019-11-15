@@ -11,7 +11,7 @@ INSTALL_OPTS="--set global.istioNamespace=${ISTIO_CONTROL_NS} --set global.confi
 # used directly with kubectl apply -f https://....
 # TODO: Add a local test - to check various things are in the right place (jsonpath or equivalent)
 # TODO: run a local etcd/apiserver and verify apiserver accepts the files
-run-build:  dep run-build-cluster run-build-demo run-build-micro run-build-minimal run-build-citadel run-build-default run-build-canary
+run-build:  dep run-build-cluster run-build-demo run-build-micro run-build-minimal run-build-citadel run-build-default run-build-canary run-build-ingress
 
 # Kustomization for cluster-wide resources. Must be used as first step ( if old installer was used - this might not be
 # required).

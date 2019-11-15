@@ -30,6 +30,7 @@ run-build-minimal:
 	  --set global.controlPlaneSecurityEnabled=false \
 	  --set pilot.useMCP=false \
 	  --set pilot.ingress.ingressControllerMode=STRICT \
+	  --set global.mtls.auto=false \
 	  --set pilot.plugins="health" > kustomize/minimal/discovery.gen.yaml
 
 # Generate config for ingress matching minimal profie. Runs in istio-system.

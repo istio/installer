@@ -48,7 +48,7 @@ run-build-ingress:
       > test/knative/istio-ingress.gen.yaml
 
 run-build-citadel:
-	bin/iop ${ISTIO_SYSTEM_NS} istio-system-security ${BASE}/security/citadel -t --set kustomize=true > kustomize/citadel/citadel.yaml
+	bin/iop ${ISTIO_SYSTEM_NS} istio-system-security ${BASE}/security/citadel -t --set kustomize=true > kustomize/citadel/citadel.gen.yaml
 
 # A canary pilot, to be used for testing config changes in pilot.
 run-build-canary: run-build-cluster

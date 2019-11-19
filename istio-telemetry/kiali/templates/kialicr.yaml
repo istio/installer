@@ -31,22 +31,40 @@ spec:
 {{- end }}
 {{- end }}
   deployment:
-    image_pull_policy: {{ .Values.global.imagePullPolicy }}
-    namespace: {{ .Release.Namespace }}
 {{- if .Values.kiali.accessibleNamespaces }}
     accessible_namespaces: {{ .Values.kiali.accessibleNamespaces }}
 {{- end }}
-    ingress_enabled: {{ .Values.kiali.ingress.enabled }}
-    verbose_mode: 3
-    view_only_mode: {{ .Values.kiali.dashboard.viewOnlyMode }}
     affinity:
     {{- include "nodeaffinity" . | indent 6 }}
     {{- include "podAntiAffinity" . | indent 6 }}
+    image_pull_policy: {{ .Values.global.imagePullPolicy | default "Always" }}
+{{- if .Values.global.imagePullSecrets }}
+    image_pull_secrets:
+{{- range .Values.global.imagePullSecrets }}
+    - {{ . }}
+{{- end }}
+{{- end }}
+    ingress_enabled: {{ .Values.kiali.ingress.enabled }}
+    namespace: {{ .Release.Namespace }}
+{{- if .Values.kiali.podAnnotations }}
+    pod_annotations:
+{{ toYaml .Values.kiali.podAnnotations | indent 6 }}
+{{- end }}
+{{- if .Values.global.priorityClassName }}
+    priority_class_name: {{ .Values.global.priorityClassName }}
+{{- end }}
+    replicas: {{ .Values.kiali.replicaCount }}
+{{- if .Values.kiali.resources }}
+    resources:
+{{ toYaml .Values.kiali.resources | indent 6 }}
+{{- end }}
+    secret_name: {{ .Values.kiali.dashboard.secretName }}
 {{- if .Values.kiali.tolerations }}
     tolerations:
 {{ toYaml .Values.kiali.tolerations | indent 6 }}
 {{- end }}
-    secret_name: {{ .Values.kiali.dashboard.secretName }}
+    verbose_mode: 3
+    view_only_mode: {{ .Values.kiali.dashboard.viewOnlyMode }}
   external_services:
     grafana:
       url: {{ .Values.kiali.dashboard.grafanaURL }}
@@ -61,9 +79,11 @@ spec:
     tracing:
       url: {{ .Values.kiali.dashboard.jaegerURL }}
 {{- if .Values.kiali.security.enabled }}
+  identity: {}
+{{- else}}
   identity:
-    cert_file: {{ .Values.kiali.security.cert_file }}
-    private_key_file: {{ .Values.kiali.security.private_key_file }}
+    cert_file: ""
+    private_key_file: ""
 {{- end}}
 {{- if .Values.kiali.excludedWorkloads }}
   kubernetes_config:

@@ -62,3 +62,13 @@ metadata:
     istio-injection: disabled
 ---
 {{- end }}
+
+{{- if and (ne .Values.kialiOperator.namespace .Release.Namespace) (.Values.kialiOperator.enabled) }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.kialiOperator.namespace }}
+  labels:
+    istio-injection: disabled
+---
+{{- end }}

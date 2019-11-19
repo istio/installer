@@ -1,26 +1,14 @@
-#
-# addon kiali
-#
 kiali:
 
-  operator:
-    enabled: true # This installs the operator if `true`. Set to false if the operator is already installed.
-    hub: quay.io/kiali
-    image: kiali-operator
-    tag: v1.9
-    namespace: kiali-operator
-    replicaCount: 1
-    nodeSelector: {}
-    podAnnotations: {}
-    resources: {}
-
-  createDemoSecret: true # When true, a secret will be created with a default username and password. Useful for demos.
-
   enabled: false # If using demo profile, this will be set to `true`.
-  replicaCount: 1
+
   nodeSelector: {}
   podAnnotations: {}
   resources: {}
+  tolerations: []
+  replicaCount: 1
+
+  createDemoSecret: false # When true, a secret will be created with a default username and password. Useful for demos.
 
   # Specify the pod anti-affinity that allows you to constrain which nodes
   # your pod is eligible to be scheduled based on labels on pods that are
@@ -45,6 +33,7 @@ kiali:
 
   ingress:
     enabled: false
+    ## TODO are these used anywhere?
     ## Used to create an Ingress record.
     hosts:
       - kiali.local
@@ -86,8 +75,6 @@ kiali:
 
   security:
     enabled: false
-    cert_file: /kiali-cert/cert-chain.pem
-    private_key_file: /kiali-cert/key.pem
 
   excludedWorkloads:
     - "CronJob"

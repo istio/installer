@@ -1,4 +1,4 @@
-{{- if .Values.kiali.operator.enabled }}
+{{- if .Values.kialiOperator.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -13,5 +13,5 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: kiali-operator-service-account
-    namespace: {{ .Values.kiali.operator.namespace }}
+    namespace: {{ .Values.kialiOperator.namespace }}
 {{- end }}

@@ -89,6 +89,14 @@ kiali:
     cert_file: /kiali-cert/cert-chain.pem
     private_key_file: /kiali-cert/key.pem
 
+  excludedWorkloads:
+    - "CronJob"
+    - "Job"
+  # Other options are:
+  #  - DeploymentConfig
+  #  - ReplicationController
+  #  - StatefulSet
+
   # Until https://github.com/helm/helm/pull/6876 is available, the only way to really support
   # a fully customized Kiali CR is to be able to pass the full spec here. If this is defined,
   # most of the settings above will be ignored and this is used for the Kiali CR spec.

@@ -33,19 +33,19 @@ spec:
   deployment:
     image_pull_policy: {{ .Values.global.imagePullPolicy }}
     namespace: {{ .Release.Namespace }}
-    {{- if .Values.kiali.accessibleNamespaces }}
+{{- if .Values.kiali.accessibleNamespaces }}
     accessible_namespaces: {{ .Values.kiali.accessibleNamespaces }}
-    {{- end }}
+{{- end }}
     ingress_enabled: {{ .Values.kiali.ingress.enabled }}
     verbose_mode: 3
     view_only_mode: {{ .Values.kiali.dashboard.viewOnlyMode }}
     affinity:
     {{- include "nodeaffinity" . | indent 6 }}
     {{- include "podAntiAffinity" . | indent 6 }}
-    {{- if .Values.kiali.tolerations }}
+{{- if .Values.kiali.tolerations }}
     tolerations:
-    {{ toYaml .Values.kiali.tolerations | indent 6 }}
-    {{- end }}
+{{ toYaml .Values.kiali.tolerations | indent 6 }}
+{{- end }}
     secret_name: {{ .Values.kiali.dashboard.secretName }}
   external_services:
     grafana:
@@ -60,15 +60,20 @@ spec:
 {{- end }}
     tracing:
       url: {{ .Values.kiali.dashboard.jaegerURL }}
-  {{- if .Values.kiali.security.enabled }}
+{{- if .Values.kiali.security.enabled }}
   identity:
     cert_file: {{ .Values.kiali.security.cert_file }}
     private_key_file: {{ .Values.kiali.security.private_key_file }}
-  {{- end}}
+{{- end}}
+{{- if .Values.kiali.excludedWorkloads }}
+  kubernetes_config:
+    excluded_workloads:
+{{ toYaml .Values.kiali.excludedWorkloads | indent 6 }}
+{{- end}}
   server:
     port: 20001
-    {{- if .Values.kiali.contextPath }}
+{{- if .Values.kiali.contextPath }}
     web_root: {{ .Values.kiali.contextPath }}
-    {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}

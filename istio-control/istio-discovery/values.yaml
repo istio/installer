@@ -49,7 +49,7 @@ pilot:
   # the default MCP is assumed. The alternative option is SERVICE_REGISTRY
   # which describes the source is only forwarding synthetic service entries
   configSource:
-    subscribedResources:
+    subscribedResources: []
 
   plugins: []
 

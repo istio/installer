@@ -1,3 +1,6 @@
+#
+# addon kiali
+#
 kialiOperator:
 
   enabled: false # This installs the operator if `true`. Set to false if the operator is already installed or you do not want Kiali

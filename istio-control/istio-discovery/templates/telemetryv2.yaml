@@ -65,7 +65,7 @@ spec:
               vm_config:
                 vm_id: stats_outbound
                 runtime: envoy.wasm.runtime.null
-                code: 
+                code:
                   local:
                     inline_string: envoy.wasm.stats
     - applyTo: HTTP_FILTER

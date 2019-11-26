@@ -66,7 +66,7 @@
           values:
           {{- $vals := split "," $item.values }}
           {{- range $i, $v := $vals }}
-          - {{ $v }}
+          - {{ $v | quote }}
           {{- end }}
           {{- end }}
       topologyKey: {{ $item.topologyKey }}
@@ -84,7 +84,7 @@
             values:
             {{- $vals := split "," $item.values }}
             {{- range $i, $v := $vals }}
-            - {{ $v }}
+            - {{ $v | quote }}
             {{- end }}
             {{- end }}
         topologyKey: {{ $item.topologyKey }}

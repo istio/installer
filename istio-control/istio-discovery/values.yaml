@@ -138,3 +138,7 @@ telemetry:
     # For Null VM case now. If enabled, will set disableMixerHttpReports to true and not define mixerReportServer
     # also enable metadata exchange and stats filter.
     enabled: false
+
+    proxyMatch:
+      # regular expression to be used to select proxies to apply telemetry v2 envoy filters. e.g. "1.5*"
+      proxyVersion: "*"

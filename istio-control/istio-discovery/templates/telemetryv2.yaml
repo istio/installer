@@ -17,6 +17,8 @@ spec:
           filterChain:
             filter:
               name: "envoy.http_connection_manager"
+      proxy:
+        proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}
       patch:
         operation: INSERT_BEFORE
         value:
@@ -44,6 +46,8 @@ spec:
     - applyTo: HTTP_FILTER
       match:
         context: SIDECAR_OUTBOUND
+        proxy:
+          proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}
         listener:
           filterChain:
             filter:
@@ -71,6 +75,8 @@ spec:
     - applyTo: HTTP_FILTER
       match:
         context: SIDECAR_INBOUND
+        proxy:
+          proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}
         listener:
           filterChain:
             filter:
@@ -98,6 +104,8 @@ spec:
     - applyTo: HTTP_FILTER
       match:
         context: GATEWAY
+        proxy:
+          proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}
         listener:
           filterChain:
             filter:

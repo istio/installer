@@ -17,8 +17,8 @@ spec:
           filterChain:
             filter:
               name: "envoy.http_connection_manager"
-      proxy:
-        proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}
+        proxy:
+          proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}`
       patch:
         operation: INSERT_BEFORE
         value:

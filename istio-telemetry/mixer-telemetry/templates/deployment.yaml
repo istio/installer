@@ -209,15 +209,16 @@ spec:
         volumeMounts:
         - name: telemetry-envoy-config
           mountPath: /var/lib/envoy
-        - name: istio-certs
-          mountPath: /etc/certs
-          readOnly: true
         {{- if .Values.global.sds.enabled }}
         - name: sds-uds-path
           mountPath: /var/run/sds
           readOnly: true
         - name: istio-token
           mountPath: /var/run/secrets/tokens
+        {{ else }}
+        - name: istio-certs
+          mountPath: /etc/certs
+          readOnly: true
         {{- end }}
         - name: uds-socket
           mountPath: /sock

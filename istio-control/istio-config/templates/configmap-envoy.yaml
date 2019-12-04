@@ -74,6 +74,54 @@ data:
                     route:
                       cluster: in.9901
                       timeout: 0.000s
+        {{- if .Values.global.sds.enabled }}
+          tls_context:
+            common_tls_context:
+              alpn_protocols:
+              - h2
+              tls_certificate_sds_secret_configs:
+              - name: default
+                sds_config:
+                  api_config_source:
+                    api_type: GRPC
+                    grpc_services:
+                    - google_grpc:
+                        target_uri: {{ .Values.global.sds.udsPath }}
+                        channel_credentials:
+                          local_credentials: {}
+                        call_credentials:
+                        - from_plugin:
+                            name: envoy.grpc_credentials.file_based_metadata
+                            config:
+                              header_key: istio_sds_credentials_header-bin
+                              secret_data:
+                                filename: /var/run/secrets/tokens/istio-token
+                        credentials_factory_name: envoy.grpc_credentials.file_based_metadata
+                        stat_prefix: sdsstat
+              combined_validation_context:
+                default_validation_context:
+                  verify_subject_alt_name: []
+                validation_context_sds_secret_config:
+                  name: ROOTCA
+                  sds_config:
+                    api_config_source:
+                      api_type: GRPC
+                      grpc_services:
+                      - google_grpc:
+                          target_uri: {{ .Values.global.sds.udsPath }}
+                          channel_credentials:
+                            local_credentials: {}
+                          call_credentials:
+                          - from_plugin:
+                              name: envoy.grpc_credentials.file_based_metadata
+                              config:
+                                header_key: istio_sds_credentials_header-bin
+                                secret_data:
+                                  filename: /var/run/secrets/tokens/istio-token
+                          credentials_factory_name: envoy.grpc_credentials.file_based_metadata
+                          stat_prefix: sdsstat
+            require_client_certificate: true
+        {{- else }}
           tls_context:
             common_tls_context:
               alpn_protocols:
@@ -87,5 +135,6 @@ data:
                 trusted_ca:
                   filename: /etc/certs/root-cert.pem
             require_client_certificate: true
+        {{- end }}
 {{- end }}
 ---

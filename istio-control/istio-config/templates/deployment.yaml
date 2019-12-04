@@ -176,11 +176,19 @@ spec:
 {{ toYaml .Values.global.defaultResources | indent 12 }}
 {{- end }}
           volumeMounts:
+          - name: envoy-config
+            mountPath: /var/lib/istio/galley/envoy
+          {{- if .Values.global.sds.enabled }}
+          - name: sds-uds-path
+            mountPath: /var/run/sds
+            readOnly: true
+          - name: istio-token
+            mountPath: /var/run/secrets/tokens
+          {{ else }}
           - name: istio-certs
             mountPath: /etc/certs
             readOnly: true
-          - name: envoy-config
-            mountPath: /var/lib/istio/galley/envoy
+          {{- end }}
 {{- end }}
 
       volumes:
@@ -188,6 +196,18 @@ spec:
       - name: istio-certs
         secret:
           secretName: istio.istio-galley-service-account
+      {{- if .Values.global.sds.enabled }}
+      - hostPath:
+          path: /var/run/sds
+        name: sds-uds-path
+      - name: istio-token
+        projected:
+          sources:
+          - serviceAccountToken:
+              audience: {{ .Values.global.sds.token.aud }}
+              expirationSeconds: 43200
+              path: istio-token
+      {{- end }}
   {{- end }}
   {{- if .Values.global.certificates }}
       - name: dnscerts

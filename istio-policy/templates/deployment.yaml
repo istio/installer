@@ -60,6 +60,9 @@ spec:
         secret:
           secretName: policy-adapter-secret
           optional: true
+      - name: policy-envoy-config
+        configMap:
+          name: policy-envoy-config
       affinity:
       {{- include "nodeaffinity" . | indent 6 }}
       {{- include "podAntiAffinity" . | indent 6 }}
@@ -95,7 +98,7 @@ spec:
 {{- end }}
 {{- if .Values.global.useMCP }}
     {{- if .Values.global.controlPlaneSecurityEnabled}}
-          - --configStoreURL=mcps://istio-galley.{{ .Values.global.configNamespace }}.svc:15019
+          - --configStoreURL=mcp://localhost:15019
     {{- else }}
           - --configStoreURL=mcp://istio-galley.{{ .Values.global.configNamespace }}.svc:9901
     {{- end }}
@@ -169,7 +172,7 @@ spec:
         - --serviceCluster
         - istio-policy
         - --templateFile
-        - /etc/istio/proxy/envoy_policy.yaml.tmpl
+        - /var/lib/envoy/envoy.yaml.tmpl
       {{- if .Values.global.controlPlaneSecurityEnabled }}
         - --controlPlaneAuthPolicy
         - MUTUAL_TLS
@@ -208,15 +211,18 @@ spec:
 {{ toYaml .Values.global.defaultResources | indent 10 }}
 {{- end }}
         volumeMounts:
-        - name: istio-certs
-          mountPath: /etc/certs
-          readOnly: true
+        - name: policy-envoy-config
+          mountPath: /var/lib/envoy
         {{- if .Values.global.sds.enabled }}
         - name: sds-uds-path
           mountPath: /var/run/sds
           readOnly: true
         - name: istio-token
           mountPath: /var/run/secrets/tokens
+        {{ else }}
+        - name: istio-certs
+          mountPath: /etc/certs
+          readOnly: true
         {{- end }}
         - name: uds-socket
           mountPath: /sock

@@ -1,8 +1,9 @@
+# these EnvoyFilter templates work for release 1.4 only
 {{- if and .Values.telemetry.enabled .Values.telemetry.v2.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: metadata-exchange
+  name: metadata-exchange-1.4
   {{- if .Values.global.configRootNamespace }}
   namespace: {{ .Values.global.configRootNamespace }}
   {{- else }}
@@ -14,7 +15,7 @@ spec:
       match:
         context: ANY # inbound, outbound, and gateway
         proxy:
-          proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}
+          proxyVersion: '1\.4.*'
         listener:
           filterChain:
             filter:
@@ -35,7 +36,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: stats-filter
+  name: stats-filter-1.4
   {{- if .Values.global.configRootNamespace }}
   namespace: {{ .Values.global.configRootNamespace }}
   {{- else }}
@@ -47,7 +48,7 @@ spec:
       match:
         context: SIDECAR_OUTBOUND
         proxy:
-          proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}
+          proxyVersion: '1\.4.*'
         listener:
           filterChain:
             filter:
@@ -75,7 +76,7 @@ spec:
       match:
         context: SIDECAR_INBOUND
         proxy:
-          proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}
+          proxyVersion: '1\.4.*'
         listener:
           filterChain:
             filter:
@@ -103,7 +104,7 @@ spec:
       match:
         context: GATEWAY
         proxy:
-          proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}
+          proxyVersion: '1\.4.*'
         listener:
           filterChain:
             filter:
@@ -134,7 +135,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: stackdriver-filter
+  name: stackdriver-filter-1.4
   {{- if .Values.global.configRootNamespace }}
   namespace: {{ .Values.global.configRootNamespace }}
   {{- else }}
@@ -146,7 +147,7 @@ spec:
       match:
         context: SIDECAR_OUTBOUND
         proxy:
-          proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}
+          proxyVersion: '1\.4.*'
         listener:
           filterChain:
             filter:
@@ -175,7 +176,7 @@ spec:
       match:
         context: SIDECAR_INBOUND
         proxy:
-          proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}
+          proxyVersion: '1\.4.*'
         listener:
           filterChain:
             filter:
@@ -204,7 +205,7 @@ spec:
       match:
         context: GATEWAY
         proxy:
-          proxyVersion: {{ .Values.telemetry.v2.proxyMatch.proxyVersion }}
+          proxyVersion: '1\.4.*'
         listener:
           filterChain:
             filter:

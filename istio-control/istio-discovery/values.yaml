@@ -125,10 +125,6 @@ telemetry:
     # For Null VM case now. If enabled, will set disableMixerHttpReports to true and not define mixerReportServer
     # also enable metadata exchange and stats filter.
     enabled: true
-    proxyMatch:
-      # golang regular expression to be used to select proxies to apply telemetry v2 envoy filters.
-      # e.g. '1\.4.*', would only select 1.4 proxies.
-      proxyVersion: '1\.4.*'
     # Indicate if prometheus stats filter is enabled or not
     prometheus:
       enabled: false

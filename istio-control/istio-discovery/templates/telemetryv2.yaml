@@ -164,7 +164,7 @@ spec:
                 {{- if not .Values.telemetry.v2.stackdriver.configOverride }}
                 {"enable_mesh_edges_reporting": {{ .Values.telemetry.v2.stackdriver.topology }}, "disable_server_access_logging": {{ not .Values.telemetry.v2.stackdriver.logging }}, "meshEdgesReportingDuration": "600s"}
                 {{- else }}
-                {{ toJson .Values.telemetry.v2.stackdriver.configOverride | indent 16 }}
+                {{ toJson .Values.telemetry.v2.stackdriver.configOverride | indent 8 }}
                 {{- end }}
               vm_config:
                 vm_id: stackdriver_outbound

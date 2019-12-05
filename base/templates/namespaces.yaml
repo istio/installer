@@ -30,6 +30,17 @@ metadata:
 ---
 {{- end }}
 
+{{- if and (ne .Values.global.configRootNamespace .Release.Namespace) (ne .Values.global.configRootNamespace .Values.global.configNamespace) }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.global.configRootNamespace }}
+  labels:
+    istio-operator-managed: Reconcile
+    istio-injection: disabled
+---
+{{- end }}
+
 {{- if ne .Values.global.telemetryNamespace .Release.Namespace }}
 apiVersion: v1
 kind: Namespace

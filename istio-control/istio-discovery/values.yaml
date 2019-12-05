@@ -138,4 +138,12 @@ telemetry:
     # For Null VM case now. If enabled, will set disableMixerHttpReports to true and not define mixerReportServer
     # also enable metadata exchange and stats filter.
     enabled: true
-    sdfilter: true
+    # Indicate if prometheus stats filter is enabled or not
+    prometheus:
+      enabled: false
+    # stackdriver filter settings.
+    stackdriver:
+      enabled: true
+      logging: true
+      monitoring: true
+      topology: true

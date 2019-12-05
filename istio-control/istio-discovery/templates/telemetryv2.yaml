@@ -30,6 +30,7 @@ spec:
                   local:
                     inline_string: envoy.wasm.metadata_exchange
 ---
+{{- if .Values.telemetry.v2.prometheus.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
@@ -122,9 +123,10 @@ spec:
                 code:
                   local:
                     inline_string: envoy.wasm.stats
-
 ---
-{{- if .Values.telemetry.v2.sdfilter }}
+{{- end }}
+
+{{- if .Values.telemetry.v2.stackdriver.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
@@ -205,6 +207,7 @@ spec:
                 runtime: envoy.wasm.runtime.null
                 code:
                   local: { inline_string: envoy.wasm.null.stackdriver }
+---
 {{- end }}
 {{- end }}
 

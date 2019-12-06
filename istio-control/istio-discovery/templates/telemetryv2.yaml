@@ -1,5 +1,0 @@
-{{- if and .Values.telemetry.enabled .Values.telemetry.v2.enabled }}
-{{ .Files.Get "metadata-exchange-v2.yaml" }}
----
-{{ .Files.Get "stats-filter-v2.yaml" }}
-{{- end }}

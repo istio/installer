@@ -1,18 +1,21 @@
+# these EnvoyFilter templates work for release 1.5 only
 {{- if and .Values.telemetry.enabled .Values.telemetry.v2.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: metadata-exchange
-{{- if .Values.global.configRootNamespace }}
+  name: metadata-exchange-1.5
+  {{- if .Values.global.configRootNamespace }}
   namespace: {{ .Values.global.configRootNamespace }}
-{{- else }}
+  {{- else }}
   namespace: {{ .Release.Namespace }}
-{{- end }}
+  {{- end }}
 spec:
   configPatches:
     - applyTo: HTTP_FILTER
       match:
         context: ANY # inbound, outbound, and gateway
+        proxy:
+          proxyVersion: '1\.5.*'
         listener:
           filterChain:
             filter:
@@ -28,23 +31,25 @@ spec:
                 runtime: envoy.wasm.runtime.null
                 code:
                   local:
-                    inline_string: envoy.wasm.metadata_exchange
+                    inline_string: envoy.wasm.stats
 ---
 {{- if .Values.telemetry.v2.prometheus.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: stats-filter
-{{- if .Values.global.configRootNamespace }}
+  name: stats-filter-1.5
+  {{- if .Values.global.configRootNamespace }}
   namespace: {{ .Values.global.configRootNamespace }}
-{{- else }}
+  {{- else }}
   namespace: {{ .Release.Namespace }}
-{{- end }}
+  {{- end }}
 spec:
   configPatches:
     - applyTo: HTTP_FILTER
       match:
         context: SIDECAR_OUTBOUND
+        proxy:
+          proxyVersion: '1\.5.*'
         listener:
           filterChain:
             filter:
@@ -72,6 +77,8 @@ spec:
     - applyTo: HTTP_FILTER
       match:
         context: SIDECAR_INBOUND
+        proxy:
+          proxyVersion: '1\.5.*'
         listener:
           filterChain:
             filter:
@@ -99,6 +106,8 @@ spec:
     - applyTo: HTTP_FILTER
       match:
         context: GATEWAY
+        proxy:
+          proxyVersion: '1\.5.*'
         listener:
           filterChain:
             filter:
@@ -130,7 +139,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: stackdriver-filter
+  name: stackdriver-filter-1.5
   {{- if .Values.global.configRootNamespace }}
   namespace: {{ .Values.global.configRootNamespace }}
   {{- else }}
@@ -141,6 +150,8 @@ spec:
     - applyTo: HTTP_FILTER
       match:
         context: SIDECAR_OUTBOUND
+        proxy:
+          proxyVersion: '1\.5.*'
         listener:
           filterChain:
             filter:
@@ -155,7 +166,11 @@ spec:
             config:
               root_id: stackdriver_outbound
               configuration: |
-                {}
+                {{- if not .Values.telemetry.v2.stackdriver.configOverride }}
+                {"enable_mesh_edges_reporting": {{ .Values.telemetry.v2.stackdriver.topology }}, "disable_server_access_logging": {{ not .Values.telemetry.v2.stackdriver.logging }}, "meshEdgesReportingDuration": "600s"}
+                {{- else }}
+                {{ toJson .Values.telemetry.v2.stackdriver.configOverride | indent 8 }}
+                {{- end }}
               vm_config:
                 vm_id: stackdriver_outbound
                 runtime: envoy.wasm.runtime.null
@@ -164,6 +179,8 @@ spec:
     - applyTo: HTTP_FILTER
       match:
         context: SIDECAR_INBOUND
+        proxy:
+          proxyVersion: '1\.5.*'
         listener:
           filterChain:
             filter:
@@ -178,7 +195,11 @@ spec:
             config:
               root_id: stackdriver_inbound
               configuration: |
-                {}
+                {{- if not .Values.telemetry.v2.stackdriver.configOverride }}
+                {"enable_mesh_edges_reporting": {{ .Values.telemetry.v2.stackdriver.topology }}, "disable_server_access_logging": {{ not .Values.telemetry.v2.stackdriver.logging }}, "meshEdgesReportingDuration": "600s"}
+                {{- else }}
+                {{ toJson .Values.telemetry.v2.stackdriver.configOverride | indent 16 }}
+                {{- end }}
               vm_config:
                 vm_id: stackdriver_inbound
                 runtime: envoy.wasm.runtime.null
@@ -187,6 +208,8 @@ spec:
     - applyTo: HTTP_FILTER
       match:
         context: GATEWAY
+        proxy:
+          proxyVersion: '1\.5.*'
         listener:
           filterChain:
             filter:
@@ -201,13 +224,16 @@ spec:
             config:
               root_id: stackdriver_outbound
               configuration: |
-                {"disable_host_header_fallback": true}
+                {{- if not .Values.telemetry.v2.stackdriver.configOverride }}
+                {"enable_mesh_edges_reporting": {{ .Values.telemetry.v2.stackdriver.topology }}, "disable_server_access_logging": {{ not .Values.telemetry.v2.stackdriver.logging }}, "meshEdgesReportingDuration": "600s", "disable_host_header_fallback": true}
+                {{- else }}
+                {{ toJson .Values.telemetry.v2.stackdriver.configOverride | indent 16 }}
+                {{- end }}
               vm_config:
                 vm_id: stackdriver_outbound
                 runtime: envoy.wasm.runtime.null
                 code:
                   local: { inline_string: envoy.wasm.null.stackdriver }
 ---
-{{- end }}
-{{- end }}
-
+{{- end}}
+{{- end}}

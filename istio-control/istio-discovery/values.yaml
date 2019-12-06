@@ -144,9 +144,9 @@ telemetry:
     # stackdriver filter settings.
     stackdriver:
       enabled: false
-      logging: true
-      monitoring: true
-      topology: true
+      logging: false
+      monitoring: false
+      topology: false
       #  configOverride parts give you the ability to override the low level configuration params passed to envoy filter.
 
       configOverride: {}

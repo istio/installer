@@ -1,4 +1,3 @@
-# these EnvoyFilter templates work for release 1.4 only
 {{- if and .Values.telemetry.enabled .Values.telemetry.v2.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
@@ -130,7 +129,6 @@ spec:
                   inline_string: envoy.wasm.stats
 ---
 {{- end }}
-
 {{- if .Values.telemetry.v2.stackdriver.enabled }}
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter

@@ -277,10 +277,11 @@ spec:
           {{- if $gateway.sds.enabled }}
           - name: ingressgatewaysdsudspath
             mountPath: /var/run/ingress_gateway
-          {{- end }}
+          {{- else }}
           - name: istio-certs
             mountPath: /etc/certs
             readOnly: true
+          {{- end }}
           {{- range $gateway.secretVolumes }}
           - name: {{ .name }}
             mountPath: {{ .mountPath | quote }}
@@ -305,11 +306,12 @@ spec:
               path: istio-token
               expirationSeconds: 43200
               audience: {{ .Values.global.sds.token.aud }}
-      {{- end }}
+      {{- else }}
       - name: istio-certs
         secret:
           secretName: istio.istio-ingressgateway-service-account
           optional: true
+      {{- end }}
       {{- range $gateway.secretVolumes }}
       - name: {{ .name }}
         secret:

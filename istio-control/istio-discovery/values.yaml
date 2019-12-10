@@ -134,6 +134,9 @@ mixer:
 
 telemetry:
   enabled: true
+  v1:
+    # Set true to enable Mixer based telemetry
+    enabled: true
   v2:
     # For Null VM case now. If enabled, will set disableMixerHttpReports to true and not define mixerReportServer
     # also enable metadata exchange and stats filter.

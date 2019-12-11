@@ -97,4 +97,5 @@ spec:
 {{- if .Values.tracing.opencensus.tolerations }}
       tolerations:
 {{ toYaml .Values.tracing.opencensus.tolerations | indent 6 }}
+{{- end }}
 {{ end }}

@@ -98,6 +98,7 @@ spec:
 {{- if .Values.tracing.jaeger.tolerations }}
       tolerations:
 {{ toYaml .Values.tracing.jaeger.tolerations | indent 6 }}
+{{- end }}
 {{- if eq .Values.tracing.jaeger.spanStorageType "badger" }}
       volumes:
       - name: data

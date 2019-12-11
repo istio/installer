@@ -74,4 +74,5 @@ spec:
       {{- if .Values.tracing.zipkin.tolerations }}
       tolerations:
       {{ toYaml .Values.tracing.zipkin.tolerations | indent 6 }}
-{{ end }}
+      {{- end }}
+  {{ end }}

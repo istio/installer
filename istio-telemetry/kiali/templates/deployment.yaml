@@ -93,3 +93,4 @@ spec:
       {{- if .Values.kiali.tolerations }}
       tolerations:
       {{ toYaml .Values.kiali.tolerations | indent 6 }}
+      {{- end }}

@@ -16,8 +16,15 @@
           values:
         {{- range $key, $val := .Values.global.arch }}
           {{- if gt ($val | int) 0 }}
-          - {{ $key }}
+          - {{ $key | quote }}
           {{- end }}
+        {{- end }}
+        {{- $nodeSelector := default .Values.global.defaultNodeSelector .Values.tracing.nodeSelector -}}
+        {{- range $key, $val := $nodeSelector }}
+        - key: {{ $key }}
+          operator: In
+          values:
+          - {{ $val | quote }}
         {{- end }}
 {{- end }}
 
@@ -30,7 +37,7 @@
         - key: beta.kubernetes.io/arch
           operator: In
           values:
-          - {{ $key }}
+          - {{ $key | quote }}
     {{- end }}
   {{- end }}
 {{- end }}
@@ -59,7 +66,7 @@
           values:
           {{- $vals := split "," $item.values }}
           {{- range $i, $v := $vals }}
-          - {{ $v }}
+          - {{ $v | quote }}
           {{- end }}
           {{- end }}
       topologyKey: {{ $item.topologyKey }}
@@ -77,7 +84,7 @@
             values:
             {{- $vals := split "," $item.values }}
             {{- range $i, $v := $vals }}
-            - {{ $v }}
+            - {{ $v | quote }}
             {{- end }}
             {{- end }}
         topologyKey: {{ $item.topologyKey }}

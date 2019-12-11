@@ -28,6 +28,7 @@ global:
 
   policyNamespace: istio-system
 
+  configRootNamespace: istio-system
 
   ## End new settings
   ## After this line we have the old Istio settings.
@@ -94,10 +95,23 @@ global:
     # Configure the access log for sidecar to JSON or TEXT.
     accessLogEncoding: TEXT
 
+    # Configure envoy gRPC access log service.
     envoyAccessLogService:
       enabled: false
       host: # example: accesslog-service.istio-system
       port: # example: 15000
+      tlsSettings:
+        mode: DISABLE # DISABLE, SIMPLE, MUTUAL, ISTIO_MUTUAL
+        clientCertificate: # example: /etc/istio/als/cert-chain.pem
+        privateKey:        # example: /etc/istio/als/key.pem
+        caCertificates:    # example: /etc/istio/als/root-cert.pem
+        sni:               # example: als.somedomain
+        subjectAltNames: []
+        # - als.somedomain
+      tcpKeepalive:
+        probes: 3
+        time: 10s
+        interval: 10s
 
     # Log level for proxy, applies to gateways and sidecars.
     # Expected values are: trace|debug|info|warning|error|critical|off
@@ -216,8 +230,7 @@ global:
 
   # imagePullPolicy is applied to istio control plane components.
   # local tests require IfNotPresent, to avoid uploading to dockerhub.
-  # TODO: Switch to Always as default, and override in the local tests.
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
 
   # controlPlaneMtls enabled. Will result in delays starting the pods while secrets are
   # propagated, not recommended for tests.
@@ -367,7 +380,7 @@ global:
   # The default depends on the environment.
   #   kubernetes: cluster.local
   #   else:  default dns domain
-  trustDomain: ""
+  trustDomain: "cluster.local"
 
   #  The trust domain aliases represent the aliases of trust_domain.
   #  For example, if we have
@@ -514,6 +527,14 @@ global:
   # webhook configurations. When this option is set as false, webhooks manage their
   # own webhook configurations.
   operatorManageWebhooks: false
+  istioRemote: false
+
+  # Settings for remote cluster.
+  createRemoteSvcEndpoints: false
+  remotePilotCreateSvcEndpoint: false
+  remotePolicyAddress: ""
+  remotePilotAddress: ""
+  remoteTelemetryAddress: ""
 
 # Internal setting - used when generating helm templates for kustomize.
 # clusterResources controls the inclusion of cluster-wide resources when generating the charts/installing.

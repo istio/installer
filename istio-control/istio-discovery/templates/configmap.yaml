@@ -26,6 +26,49 @@ data:
 
     enableEnvoyAccessLogService: {{ .Values.global.proxy.envoyAccessLogService.enabled }}
 
+    {{- if .Values.global.istioRemote }}
+
+    {{- if .Values.global.remotePolicyAddress }}
+    {{- if .Values.global.createRemoteSvcEndpoints }}
+    mixerCheckServer: istio-policy.{{ .Release.Namespace }}:15004
+    {{- else }}
+    mixerCheckServer: {{ .Values.global.remotePolicyAddress }}:15004
+    {{- end }}
+    {{- end }}
+    {{- if .Values.global.remoteTelemetryAddress }}
+    {{- if .Values.global.createRemoteSvcEndpoints }}
+    mixerReportServer: istio-telemetry.{{ .Release.Namespace }}:15004
+    {{- else }}
+    mixerReportServer: {{ .Values.global.remoteTelemetryAddress }}:15004
+    {{- end }}
+    {{- end }}
+
+    {{- else }}
+
+    {{- if .Values.mixer.policy.enabled }}
+    {{- if .Values.global.controlPlaneSecurityEnabled }}
+    mixerCheckServer: istio-policy.{{ .Values.global.policyNamespace }}.svc.{{ .Values.global.proxy.clusterDomain }}:15004
+    {{- else }}
+    mixerCheckServer: istio-policy.{{ .Values.global.policyNamespace }}.svc.{{ .Values.global.proxy.clusterDomain }}:9091
+    {{- end }}
+    {{- end }}
+
+    {{- if and .Values.telemetry.v1.enabled .Values.telemetry.enabled }}
+    {{- if .Values.global.controlPlaneSecurityEnabled }}
+    mixerReportServer: istio-telemetry.{{ .Values.global.telemetryNamespace }}.svc.{{ .Values.global.proxy.clusterDomain }}:15004
+    {{- else }}
+    mixerReportServer: istio-telemetry.{{ .Values.global.telemetryNamespace }}.svc.{{ .Values.global.proxy.clusterDomain }}:9091
+    {{- end }}
+    {{- end }}
+
+    {{- end }}
+
+    {{- if or .Values.mixer.policy.enabled (and .Values.global.istioRemote .Values.global.remotePolicyAddress) }}
+    # policyCheckFailOpen allows traffic in cases when the mixer policy service cannot be reached.
+    # Default is false which means the traffic is denied when the client is unable to connect to Mixer.
+    policyCheckFailOpen: {{ .Values.global.policyCheckFailOpen }}
+    {{- end }}
+
     {{- if .Values.mixer.telemetry.reportBatchMaxEntries }}
     # reportBatchMaxEntries is the number of requests that are batched before telemetry data is sent to the mixer server
     reportBatchMaxEntries: {{ .Values.mixer.telemetry.reportBatchMaxEntries }}
@@ -41,26 +84,11 @@ data:
     sidecarToTelemetrySessionAffinity: {{ .Values.mixer.telemetry.sessionAffinityEnabled }}
     {{- end }}
 
-    {{- if and .Values.pilot.telemetry.enabled .Values.pilot.telemetry.v1.enabled }}
-    {{- if .Values.global.controlPlaneSecurityEnabled }}
-    mixerReportServer: istio-telemetry.{{ .Values.global.telemetryNamespace }}.svc.cluster.local:15004
-    {{- else }}
-    mixerReportServer: istio-telemetry.{{ .Values.global.telemetryNamespace }}.svc.cluster.local:9091
-    {{- end }}
-    {{- end }}
-
-    {{- if .Values.global.controlPlaneSecurityEnabled }}
-    mixerCheckServer: istio-policy.{{ .Values.global.policyNamespace }}.svc.cluster.local:15004
-    {{- else }}
-    mixerCheckServer: istio-policy.{{ .Values.global.policyNamespace }}.svc.cluster.local:9091
-    {{- end }}
-
-    {{- if .Values.pilot.telemetry.v2.enabled }}
+    {{- if .Values.telemetry.v2.enabled }}
     disableMixerHttpReports: true
     {{- else }}
     disableMixerHttpReports: false
     {{- end }}
-
 
     {{- if .Values.pilot.policy.enabled }}
 
@@ -78,6 +106,16 @@ data:
 
     {{- end }}
 
+    # Automatic protocol detection uses a set of heuristics to
+    # determine whether the connection is using TLS or not (on the
+    # server side), as well as the application protocol being used
+    # (e.g., http vs tcp). These heuristics rely on the client sending
+    # the first bits of data. For server first protocols like MySQL,
+    # MongoDB, etc., Envoy will timeout on the protocol detection after
+    # the specified period, defaulting to non mTLS plain TCP
+    # traffic. Set this field to tweak the period that Envoy will wait
+    # for the client to send the first bits of data. (MUST BE >=1ms)
+    protocolDetectionTimeout: {{ .Values.global.proxy.protocolDetectionTimeout }}
 
     # This is the k8s ingress service name, update if you used a different name
     {{- if .Values.pilot.ingress }}
@@ -109,15 +147,18 @@ data:
     sdsUdsPath: {{ .Values.global.sds.udsPath | quote }}
 
     {{- else }}
+
     # Set expected values when SDS is disabled
     # Unix Domain Socket through which envoy communicates with NodeAgent SDS to get
     # key/cert for mTLS. Use secret-mount files instead of SDS if set to empty.
     sdsUdsPath: ""
+
     # This flag is used by secret discovery service(SDS).
     # If set to true(prerequisite: https://kubernetes.io/docs/concepts/storage/volumes/#projected), Istio will inject volumes mount
     # for k8s service account JWT, so that K8s API server mounts k8s service account JWT to envoy container, which
     # will be used to generate key/cert eventually. This isn't supported for non-k8s case.
     enableSdsTokenMount: false
+
     # This flag is used by secret discovery service(SDS).
     # If set to true, envoy will fetch normal k8s service account JWT from '/var/run/secrets/kubernetes.io/serviceaccount/token'
     # (https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/#accessing-the-api-from-a-pod)
@@ -133,12 +174,18 @@ data:
     enableAutoMtls: {{ .Values.global.mtls.auto }}
 
     {{- if .Values.pilot.useMCP }}
-    config_sources:
+    configSources:
     {{- if .Values.global.controlPlaneSecurityEnabled }}
     - address: localhost:15019
     {{- else }}
     - address: istio-galley.{{ .Values.global.configNamespace }}:9901
     {{- end }}
+    {{- if .Values.pilot.configSource.subscribedResources }}
+      subscribedResources:
+    {{- range .Values.pilot.configSource.subscribedResources }}
+        - {{ . }}
+    {{- end }}
+    {{- end}}
     {{- end }}
 
     outboundTrafficPolicy:
@@ -212,33 +259,61 @@ data:
         stackdriver: {}
       {{- end }}
 
+    {{- $defPilotHostname := printf "istio-pilot.%s" .Release.Namespace }}
+    {{- $pilotAddress := .Values.global.remotePilotAddress | default $defPilotHostname }}
     {{- if .Values.global.controlPlaneSecurityEnabled }}
       #
       # Mutual TLS authentication between sidecars and istio control plane.
       controlPlaneAuthPolicy: MUTUAL_TLS
       #
       # Address where istio Pilot service is running
-      discoveryAddress: istio-pilot.{{ .Release.Namespace }}:15011
+      {{- if or .Values.global.remotePilotCreateSvcEndpoint .Values.global.createRemoteSvcEndpoints }}
+      discoveryAddress: {{ $defPilotHostname }}:15011
+      {{- else }}
+      discoveryAddress: {{ $pilotAddress }}:15011
+      {{- end }}
     {{- else }}
       #
       # Mutual TLS authentication between sidecars and istio control plane.
       controlPlaneAuthPolicy: NONE
       #
       # Address where istio Pilot service is running
-      discoveryAddress: istio-pilot.{{ .Release.Namespace }}:15010
+      {{- if or .Values.global.remotePilotCreateSvcEndpoint .Values.global.createRemoteSvcEndpoints }}
+      discoveryAddress: {{ $defPilotHostname }}:15010
+      {{- else }}
+      discoveryAddress: {{ $pilotAddress }}:15010
+      {{- end }}
     {{- end }}
 
     {{- if .Values.global.proxy.envoyMetricsService.enabled }}
-       # Envoy's Metrics Service stats sink pushes Envoy metrics to a remote collector via the Metrics Service gRPC API.
+      #
+      # Envoy's Metrics Service stats sink pushes Envoy metrics to a remote collector via the Metrics Service gRPC API.
       envoyMetricsService:
         address: {{ .Values.global.proxy.envoyMetricsService.host }}:{{ .Values.global.proxy.envoyMetricsService.port }}
+      {{- if .Values.global.proxy.envoyMetricsService.tlsSettings }}
+        tlsSettings:
+{{ toYaml .Values.global.proxy.envoyMetricsService.tlsSettings | trim | indent 10 }}
+      {{- end}}
+      {{- if .Values.global.proxy.envoyMetricsService.tcpKeepalive }}
+        tcpKeepalive:
+{{ toYaml .Values.global.proxy.envoyMetricsService.tcpKeepalive | trim | indent 10 }}
+      {{- end}}
     {{- end}}
 
 
     {{- if .Values.global.proxy.envoyAccessLogService.enabled }}
+      #
       # Envoy's AccessLog Service pushes access logs to a remote collector via the Access Log Service gRPC API.
       envoyAccessLogService:
         address: {{ .Values.global.proxy.envoyAccessLogService.host }}:{{ .Values.global.proxy.envoyAccessLogService.port }}
+      {{- if .Values.global.proxy.envoyAccessLogService.tlsSettings }}
+        tlsSettings:
+{{ toYaml .Values.global.proxy.envoyAccessLogService.tlsSettings | trim | indent 10 }}
+      {{- end}}
+      {{- if .Values.global.proxy.envoyAccessLogService.tcpKeepalive }}
+        tcpKeepalive:
+{{ toYaml .Values.global.proxy.envoyAccessLogService.tcpKeepalive | trim | indent 10 }}
+      {{- end}}
     {{- end}}
 
 ---

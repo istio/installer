@@ -19,13 +19,12 @@ spec:
       maxUnavailable: {{ .Values.mixer.policy.rollingMaxUnavailable }}
   selector:
     matchLabels:
-      app: istio-policy
       istio: mixer
       istio-mixer-type: policy
   template:
     metadata:
       labels:
-        app: istio-policy
+        app: policy
         istio: mixer
         istio-mixer-type: policy
       annotations:
@@ -51,7 +50,7 @@ spec:
         projected:
           sources:
           - serviceAccountToken:
-              audience: {{ .Values.global.trustDomain }}
+              audience: {{ .Values.global.sds.token.aud }}
               expirationSeconds: 43200
               path: istio-token
       {{- end }}

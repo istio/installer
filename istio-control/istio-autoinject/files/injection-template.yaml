@@ -131,12 +131,12 @@ template: |
     - "{{ .ProxyConfig.StatsdUdpAddress }}"
   {{- end }}
   {{- if .Values.global.proxy.envoyMetricsService.enabled }}
-    - --envoyMetricsServiceAddress
-    - "{{ .ProxyConfig.GetEnvoyMetricsService.GetAddress }}"
+    - --envoyMetricsService
+    - '{{ protoToJSON .ProxyConfig.EnvoyMetricsService }}'
   {{- end }}
   {{- if .Values.global.proxy.envoyAccessLogService.enabled }}
-    - --envoyAccessLogServiceAddress
-    - "{{ .ProxyConfig.GetEnvoyAccessLogService.GetAddress }}"
+    - --envoyAccessLogService
+    - '{{ protoToJSON .ProxyConfig.EnvoyAccessLogService }}'
   {{- end }}
     - --proxyAdminPort
     - "{{ .ProxyConfig.ProxyAdminPort }}"
@@ -163,7 +163,6 @@ template: |
   {{- if .Values.global.logAsJson }}
     - --log_as_json
   {{- end }}
-    - --controlPlaneBootstrap=false
   {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapOverride`) }}
     - --templateFile=/etc/istio/custom-bootstrap/envoy_bootstrap.json
   {{- end }}
@@ -199,9 +198,13 @@ template: |
     - name: ISTIO_META_POD_PORTS
       value: |-
         [
+        {{- $first := true }}
         {{- range $index1, $c := .Spec.Containers }}
           {{- range $index2, $p := $c.Ports }}
-            {{if or (ne $index1 0) (ne $index2 0)}},{{end}}{{ structToJSON $p }}
+            {{- if (structToJSON $p) }}
+            {{if not $first}},{{end}}{{ structToJSON $p }}
+            {{- $first = false }}
+            {{- end }}
           {{- end}}
         {{- end}}
         ]
@@ -239,7 +242,7 @@ template: |
     {{ end }}
     {{- if and .TypeMeta.APIVersion .DeploymentMeta.Name }}
     - name: ISTIO_META_OWNER
-      value: kubernetes://api/{{ .TypeMeta.APIVersion }}/namespaces/{{ valueOrDefault .DeploymentMeta.Namespace `default` }}/{{ toLower .TypeMeta.Kind}}s/{{ .DeploymentMeta.Name }}
+      value: kubernetes://apis/{{ .TypeMeta.APIVersion }}/namespaces/{{ valueOrDefault .DeploymentMeta.Namespace `default` }}/{{ toLower .TypeMeta.Kind}}s/{{ .DeploymentMeta.Name }}
     {{- end}}
     {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapOverride`) }}
     - name: ISTIO_BOOTSTRAP_OVERRIDE
@@ -283,10 +286,13 @@ template: |
       capabilities:
         add:
         - NET_ADMIN
+      runAsGroup: 1337
       {{ else -}}
+      {{ if .Values.global.sds.enabled }}
+      runAsGroup: 1337
+      {{- end }}
       runAsUser: 1337
       {{- end }}
-      runAsGroup: 1337
     resources:
       {{ if or (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPU`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemory`) -}}
       requests:

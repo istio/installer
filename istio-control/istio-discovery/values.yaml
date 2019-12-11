@@ -42,7 +42,14 @@ pilot:
   # You can use jwksResolverExtraRootCA to provide a root certificate
   # in PEM format. This will then be trusted by pilot when resolving
   # JWKS URIs.
-  jwksResolverExtraRootCA:
+  jwksResolverExtraRootCA: ""
+
+  # This is used to set the source of configuration for
+  # the associated address in configSource, if nothing is specificed
+  # the default MCP is assumed. The alternative option is SERVICE_REGISTRY
+  # which describes the source is only forwarding synthetic service entries
+  configSource:
+    subscribedResources: []
 
   plugins: []
 
@@ -73,7 +80,7 @@ pilot:
   keepaliveMaxServerConnectionAge: 30m
 
   # Additional labels to apply to the deployment.
-  deploymentLabels:
+  deploymentLabels: {}
 
 
   ## Mesh config settings
@@ -100,18 +107,6 @@ pilot:
     # This is required to be different than 'istio' if multiple ingresses are present.
     ingressClass: istio
 
-  telemetry:
-    enabled: true
-
-    v1:
-      # Will define mixerCheckServer and mixerReportServer
-      enabled: false
-
-    v2:
-      # For Null VM case now. If enabled, will set disableMixerHttpReports to true and not define mixerReportServer
-      # also enable metadata exchange and stats filter.
-      enabled: true
-
   policy:
     # Will not define mixerCheckServer and mixerReportServer
     enabled: false
@@ -133,3 +128,33 @@ mixer:
     reportBatchMaxTime: 1s
 
     sessionAffinityEnabled: false
+  policy:
+    enabled: false
+
+
+telemetry:
+  enabled: true
+  v1:
+    # Set true to enable Mixer based telemetry
+    enabled: true
+  v2:
+    # For Null VM case now. If enabled, will set disableMixerHttpReports to true and not define mixerReportServer
+    # also enable metadata exchange and stats filter.
+    enabled: false
+    # Indicate if prometheus stats filter is enabled or not
+    prometheus:
+      enabled: true
+    # stackdriver filter settings.
+    stackdriver:
+      enabled: false
+      logging: false
+      monitoring: false
+      topology: false
+      #  configOverride parts give you the ability to override the low level configuration params passed to envoy filter.
+
+      configOverride: {}
+      #  e.g.
+      #  enable_mesh_edges_reporting: true
+      #  disable_server_access_logging: false
+      #  meshEdgesReportingDuration: 500s
+      #  disable_host_header_fallback: true

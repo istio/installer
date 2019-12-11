@@ -7,7 +7,6 @@ metadata:
     app: istio-mixer
     istio: mixer
     release: {{ .Release.Name }}
-    istio-mixer-type: telemetry
 spec:
   replicas: {{ .Values.mixer.telemetry.replicaCount }}
   strategy:
@@ -21,7 +20,7 @@ spec:
   template:
     metadata:
       labels:
-        app: istio-telemetry
+        app: telemetry
         istio: mixer
         istio-mixer-type: telemetry
       annotations:
@@ -47,7 +46,7 @@ spec:
         projected:
           sources:
           - serviceAccountToken:
-              audience: {{ .Values.global.trustDomain }}
+              audience: {{ .Values.global.sds.token.aud }}
               expirationSeconds: 43200
               path: istio-token
       {{- end }}
@@ -120,8 +119,8 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-        {{- if .Values.mixer.env }}
-        {{- range $key, $val := .Values.mixer.env }}
+        {{- if .Values.mixer.telemetry.env }}
+        {{- range $key, $val := .Values.mixer.telemetry.env }}
         - name: {{ $key }}
           value: "{{ $val }}"
         {{- end }}

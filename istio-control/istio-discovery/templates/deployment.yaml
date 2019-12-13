@@ -160,6 +160,8 @@ spec:
           - name: istio-token
             mountPath: /var/run/secrets/tokens
             readOnly: true
+          - name: local-certs
+            mountPath: /var/run/secrets/istio-dns
           - name: cacerts
             mountPath: /etc/cacerts
             readOnly: true
@@ -245,32 +247,32 @@ spec:
 {{- end }}
       volumes:
       {{- if .Values.global.istiod.enabled }}
-        # Technically not needed on this pod - but it helps debugging/testing SDS
-        # Should be removed after everything works.
-        - emptyDir:
-            medium: Memory
-          name: local-certs
-        - name: istio-token
-          projected:
-            sources:
-              - serviceAccountToken:
-                  audience: {{ .Values.global.sds.token.aud }}
-                  expirationSeconds: 43200
-                  path: istio-token
-        - name: istiod
-          configMap:
-            name: istiod
-            optional: true
-        # Optional: user-generated root
-        - name: cacerts
-          secret:
-            secretName: cacerts
-            optional: true
-        # Optional - image should have
-        - name: inject
-          configMap:
-            name: inject
-            optional: true
+      # Technically not needed on this pod - but it helps debugging/testing SDS
+      # Should be removed after everything works.
+      - emptyDir:
+          medium: Memory
+        name: local-certs
+      - name: istio-token
+        projected:
+          sources:
+            - serviceAccountToken:
+                audience: {{ .Values.global.sds.token.aud }}
+                expirationSeconds: 43200
+                path: istio-token
+      - name: istiod
+        configMap:
+          name: istiod
+          optional: true
+      # Optional: user-generated root
+      - name: cacerts
+        secret:
+          secretName: cacerts
+          optional: true
+      # Optional - image should have
+      - name: inject
+        configMap:
+          name: inject
+          optional: true
 
       {{ else }}
       {{- if .Values.global.sds.enabled }}

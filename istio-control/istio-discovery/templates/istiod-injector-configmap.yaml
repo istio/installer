@@ -1,0 +1,21 @@
+{{- if not .Values.global.omitSidecarInjectorConfigMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inject
+  namespace: {{ .Release.Namespace }}
+  labels:
+    release: {{ .Release.Name }}
+data:
+  values: |-
+    {{ .Values | toJson }}
+
+  config: |-
+    policy: {{ .Values.global.proxy.autoInject }}
+{{ .Files.Get "files/injection-template.yaml" | trim | indent 4 }}
+    injectedAnnotations:
+    {{- range $key, $val := .Values.global.injectedAnnotations }}
+      "{{ $key }}": "{{ $val }}"
+    {{- end }}
+
+{{- end }}

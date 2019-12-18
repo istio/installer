@@ -17,9 +17,9 @@ webhooks:
       service:
 {{- if .Values.global.istiod.enabled }}
         name: istiod
-{{ - else }}
+{{- else }}
         name: istio-sidecar-injector
-{{ - end }}
+{{- end }}
         namespace: {{ .Release.Namespace }}
         path: "/inject"
 {{- if .Values.sidecarInjectorWebhook.selfSigned }}

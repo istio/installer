@@ -136,12 +136,12 @@ template: |
     - "{{ .ProxyConfig.StatsdUdpAddress }}"
   {{- end }}
   {{- if .Values.global.proxy.envoyMetricsService.enabled }}
-    - --envoyMetricsServiceAddress
-    - "{{ .ProxyConfig.GetEnvoyMetricsService.GetAddress }}"
+    - --envoyMetricsService
+    - '{{ protoToJSON .ProxyConfig.EnvoyMetricsService }}'
   {{- end }}
   {{- if .Values.global.proxy.envoyAccessLogService.enabled }}
-    - --envoyAccessLogServiceAddress
-    - "{{ .ProxyConfig.GetEnvoyAccessLogService.GetAddress }}"
+    - --envoyAccessLogService
+    - '{{ protoToJSON .ProxyConfig.EnvoyAccessLogService }}'
   {{- end }}
     - --proxyAdminPort
     - "{{ .ProxyConfig.ProxyAdminPort }}"
@@ -172,6 +172,10 @@ template: |
   {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapOverride`) }}
     - --templateFile=/etc/istio/custom-bootstrap/envoy_bootstrap.json
   {{- end }}
+  {{- if .Values.global.proxy.lifecycle }}
+    lifecycle:
+      {{ toYaml .Values.global.proxy.lifecycle | indent 4 }}
+    {{- end }}
     env:
     # Temp, pending PR to make it default or based on the istiodAddr env
     - name: CA_ADDR
@@ -207,9 +211,13 @@ template: |
     - name: ISTIO_META_POD_PORTS
       value: |-
         [
+        {{- $first := true }}
         {{- range $index1, $c := .Spec.Containers }}
           {{- range $index2, $p := $c.Ports }}
-            {{if or (ne $index1 0) (ne $index2 0)}},{{end}}{{ structToJSON $p }}
+            {{- if (structToJSON $p) }}
+            {{if not $first}},{{end}}{{ structToJSON $p }}
+            {{- $first = false }}
+            {{- end }}
           {{- end}}
         {{- end}}
         ]
@@ -247,7 +255,7 @@ template: |
     {{ end }}
     {{- if and .TypeMeta.APIVersion .DeploymentMeta.Name }}
     - name: ISTIO_META_OWNER
-      value: kubernetes://api/{{ .TypeMeta.APIVersion }}/namespaces/{{ valueOrDefault .DeploymentMeta.Namespace `default` }}/{{ toLower .TypeMeta.Kind}}s/{{ .DeploymentMeta.Name }}
+      value: kubernetes://apis/{{ .TypeMeta.APIVersion }}/namespaces/{{ valueOrDefault .DeploymentMeta.Namespace `default` }}/{{ toLower .TypeMeta.Kind}}s/{{ .DeploymentMeta.Name }}
     {{- end}}
     {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapOverride`) }}
     - name: ISTIO_BOOTSTRAP_OVERRIDE

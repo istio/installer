@@ -58,6 +58,8 @@ spec:
 {{- if .Values.global.priorityClassName }}
       priorityClassName: "{{ .Values.global.priorityClassName }}"
 {{- end }}
+      securityContext:
+        fsGroup: 1337
       containers:
         - name: discovery
 {{- if contains "/" .Values.pilot.image }}

@@ -149,7 +149,10 @@ template: |
     - --concurrency
     - "{{ .ProxyConfig.Concurrency }}"
     {{ end -}}
-    {{- if .Values.global.controlPlaneSecurityEnabled }}
+    {{- if .Values.global.istiod.enabled }}
+    - --controlPlaneAuthPolicy
+    - NONE
+    {{- else if .Values.global.controlPlaneSecurityEnabled }}
     - --controlPlaneAuthPolicy
     - MUTUAL_TLS
     {{- else }}
@@ -299,6 +302,7 @@ template: |
       runAsUser: 1337
       {{- end }}
       runAsGroup: 1337
+      fsGroup: 1337
     resources:
       {{ if or (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPU`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemory`) -}}
       requests:

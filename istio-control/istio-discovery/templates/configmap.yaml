@@ -29,6 +29,12 @@ data:
     # Set accessLogFile to empty string to disable access log.
     accessLogFile: "{{ .Values.global.proxy.accessLogFile }}"
 
+    # If accessLogEncoding is TEXT, value will be used directly as the log format
+    accessLogFormat: {{ .Values.global.proxy.accessLogFormat | quote }}
+
+    # Set accessLogEncoding to JSON or TEXT to configure sidecar access log
+    accessLogEncoding: {{ .Values.global.proxy.accessLogEncoding }}
+
     enableEnvoyAccessLogService: {{ .Values.global.proxy.envoyAccessLogService.enabled }}
 
     {{- if .Values.global.istioRemote }}

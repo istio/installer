@@ -47,7 +47,6 @@ rules:
   resources: ["endpointslices"]
   verbs: ["get", "list", "watch"]
 ---
-{{ end }}
 
 {{ if .Values.global.istiod.enabled }}
 # Dedicated cluster role - istiod will use fewer dangerous permissions ( secret access in particular ).
@@ -57,7 +56,8 @@ kind: ClusterRole
 metadata:
   name: istiod-{{ .Release.Namespace }}
   labels:
-    release: istiod
+    app: pilot
+    release: {{ .Release.Name }}
 rules:
   # Injector management - future plan is to be managed by operator.
   # Only needed if injection/validation are enabled
@@ -144,4 +144,5 @@ rules:
     resources: ["serviceaccounts"]
     verbs: ["get", "watch", "list"]
 
+{{ end }}
 {{ end }}

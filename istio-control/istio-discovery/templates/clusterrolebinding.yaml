@@ -17,7 +17,7 @@ subjects:
 ---
 {{ if .Values.global.istiod.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+  kind: ClusterRoleBinding
 metadata:
   name: istiod-pilot-{{ .Release.Namespace }}
   labels:

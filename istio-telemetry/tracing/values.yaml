@@ -44,6 +44,7 @@ tracing:
     storageClassName: ""
     accessMode: ReadWriteMany
     podAnnotations: {}
+    tolerations: []
 
   zipkin:
     hub: docker.io/openzipkin
@@ -67,6 +68,7 @@ tracing:
     node:
       cpus: 2
     podAnnotations: {}
+    tolerations: []
 
   opencensus:
     hub: docker.io/omnition
@@ -82,6 +84,7 @@ tracing:
       stackdriver:
         enable_tracing: true
     podAnnotations: {}
+    tolerations: []
 
   service:
     annotations: {}

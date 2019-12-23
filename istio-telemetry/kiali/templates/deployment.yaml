@@ -90,3 +90,7 @@ spec:
       affinity:
       {{- include "nodeaffinity" . | indent 6 }}
       {{- include "podAntiAffinity" . | indent 6 }}
+      {{- if .Values.kiali.tolerations }}
+      tolerations:
+      {{ toYaml .Values.kiali.tolerations | indent 6 }}
+      {{- end }}

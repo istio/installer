@@ -2,7 +2,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: istio-cni-config
-  namespace: {{ .Release.Namespace }}
+  namespace: kube-system
   labels:
     app: istio-cni
     release: {{ .Release.Name }}

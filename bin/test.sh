@@ -101,7 +101,7 @@ do
     if [ -z $INGRESS_HOST ]; then
         export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n ${INGRESS_NS} -o jsonpath='{.items[0].status.hostIP}')
         export INGRESS_PORT=$(kubectl -n ${INGRESS_NS} get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
-        export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
+        export SECURE_INGRESS_PORT=$(kubectl -n ${INGRESS_NS} get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
     fi
     export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
     RESULT=$(curl -s -o /dev/null -w "%{http_code}" http://${GATEWAY_URL}/productpage)

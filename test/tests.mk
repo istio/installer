@@ -28,8 +28,13 @@ run-all-tests: run-build \
     run-reachability-test \
 	run-prometheus-operator-config-test
 
-# Tests using multiple namespaces. Out of scope for 1.3
-run-multinamespace: run-build install-full
+# Tests using multiple namespaces.
+run-multinamespace: ISTIO_CONTROL_NS=istio-control
+run-multinamespace: ISTIO_TELEMETRY_NS=istio-telemetry
+run-multinamespace: ISTIO_POLICY_NS=istio-policy
+run-multinamespace: ISTIO_INGRESS_NS=istio-ingress
+run-multinamespace: ISTIO_EGRESS_NS=istio-egress
+run-multinamespace: run-build install-full run-bookinfo
 
 # Tests running against 'micro' environment - just citadel + pilot + ingress
 # TODO: also add 'nano' - pilot + ingress without citadel, some users are using this a-la-carte option
@@ -88,7 +93,7 @@ run-bookinfo:
 	#kubectl label namespace bookinfo istio-env=${ISTIO_CONTROL_NS} --overwrite
 	kubectl -n bookinfo apply -f test/k8s/mtls_permissive.yaml
 	kubectl -n bookinfo apply -f test/k8s/sidecar-local.yaml
-	ONE_NAMESPACE=1 SKIP_CLEANUP=${SKIP_CLEANUP} ISTIO_CONTROL=${ISTIO_SYSTEM_NS} INGRESS_NS=${ISTIO_SYSTEM_NS} SKIP_DELETE=1 SKIP_LABEL=1 \
+	ONE_NAMESPACE=1 SKIP_CLEANUP=${SKIP_CLEANUP} ISTIO_CONTROL=${ISTIO_CONTROL_NS} INGRESS_NS=${ISTIO_INGRESS_NS} SKIP_DELETE=1 SKIP_LABEL=1 \
 	  bin/test.sh ${GOPATH}/src/istio.io/istio
 
 # Simple fortio install and curl command

@@ -5,7 +5,7 @@ kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: istio-cni-node
-  namespace: kube-system
+  namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: istio-cni-node
     release: {{ .Release.Name }}

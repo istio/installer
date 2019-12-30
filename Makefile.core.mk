@@ -75,6 +75,16 @@ export ISTIOCTL_BIN ?= /usr/local/bin/istioctl
 ENABLE_NAMESPACES_BY_DEFAULT ?= true
 CUSTOM_SIDECAR_INJECTOR_NAMESPACE ?=
 
+# default is istio-injection, the value must be set to "enabled"
+# if the value is set and not istio-injection,  the value is the 'release' label of the injector
+# {{- else if eq .Values.sidecarInjectorWebhook.injectLabel "istio-injection" }}
+#      matchLabels:
+#        istio-injection: enabled
+# {{- else }}
+#      matchLabels:
+#        istio-env: {{ .Release.Namespace }}
+INJECT_LABEL ?= istio-injection
+
 # Namespace and environment running the control plane.
 # A cluster must support multiple control plane versions.
 ISTIO_SYSTEM_NS ?= istio-system

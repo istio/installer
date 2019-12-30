@@ -23,6 +23,7 @@ function print_help() {
 
 # Customizable
 INGRESS_NS=${INGRESS_NS:-istio-ingress}
+BOOKINFO_NS=${BOOKINFO_NS:-bookinfo}
 
 export WAIT_TIMEOUT=${WAIT_TIMEOUT:-5m}
 SKIP_CLEANUP=${SKIP_CLEANUP:-0}
@@ -62,7 +63,7 @@ cd $ISTIO_PATH
 BOOKINFO_DEPLOYMENTS="details-v1 productpage-v1 ratings-v1 reviews-v1 reviews-v2 reviews-v3"
 
 if [ "$SKIP_SETUP" -ne 1 ]; then
-    kubectl create ns bookinfo || true
+    kubectl create ns ${BOOKINFO_NS} || true
     # We use the first namespace with sidecar injection enabled to determine the control plane's namespace.
     # Fails in KIND.
     if [ -z "$ISTIO_CONTROL" ]; then
@@ -71,23 +72,23 @@ if [ "$SKIP_SETUP" -ne 1 ]; then
     ISTIO_CONTROL=${ISTIO_CONTROL:-istio-control}
 
     if [ -z "$SKIP_DELETE" ]; then
-        kubectl -n bookinfo delete -f samples/bookinfo/platform/kube/bookinfo.yaml --ignore-not-found
-        kubectl -n bookinfo delete -f samples/bookinfo/networking/destination-rule-all.yaml --ignore-not-found
-        kubectl -n bookinfo delete -f samples/bookinfo/networking/bookinfo-gateway.yaml --ignore-not-found
+        kubectl -n ${BOOKINFO_NS} delete -f samples/bookinfo/platform/kube/bookinfo.yaml --ignore-not-found
+        kubectl -n ${BOOKINFO_NS} delete -f samples/bookinfo/networking/destination-rule-all.yaml --ignore-not-found
+        kubectl -n ${BOOKINFO_NS} delete -f samples/bookinfo/networking/bookinfo-gateway.yaml --ignore-not-found
 
-        kubectl label ns bookinfo istio-env=${ISTIO_CONTROL} --overwrite
+        kubectl label ns ${BOOKINFO_NS} istio-env=${ISTIO_CONTROL} --overwrite
     fi
 
     # Must skip if testing with global inject
-    if [ -z "$SKIP_LABEL" ]; then
-        kubectl label ns bookinfo istio-env=${ISTIO_CONTROL} --overwrite
+    if [ "$SKIP_LABEL" -ne 1 ]; then
+        kubectl label ns ${BOOKINFO_NS} istio-env=${ISTIO_CONTROL} --overwrite
     fi
-    kubectl -n bookinfo apply -f samples/bookinfo/platform/kube/bookinfo.yaml
-    kubectl -n bookinfo apply -f samples/bookinfo/networking/destination-rule-all.yaml
-    kubectl -n bookinfo apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
+    kubectl -n ${BOOKINFO_NS} apply -f samples/bookinfo/platform/kube/bookinfo.yaml
+    kubectl -n ${BOOKINFO_NS} apply -f samples/bookinfo/networking/destination-rule-all.yaml
+    kubectl -n ${BOOKINFO_NS} apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
 
     for depl in ${BOOKINFO_DEPLOYMENTS}; do
-        kubectl -n bookinfo rollout status deployments $depl --timeout=$WAIT_TIMEOUT
+        kubectl -n ${BOOKINFO_NS} rollout status deployments $depl --timeout=$WAIT_TIMEOUT
     done
 fi
 
@@ -119,7 +120,7 @@ set -e
 
 if [ "$SKIP_CLEANUP" -ne 1 ]; then
     echo "Cleaning up..."
-    kubectl -n bookinfo delete -f samples/bookinfo/platform/kube/bookinfo.yaml --ignore-not-found
-    kubectl -n bookinfo delete -f samples/bookinfo/networking/destination-rule-all.yaml --ignore-not-found
-    kubectl -n bookinfo delete -f samples/bookinfo/networking/bookinfo-gateway.yaml --ignore-not-found
+    kubectl -n ${BOOKINFO_NS} delete -f samples/bookinfo/platform/kube/bookinfo.yaml --ignore-not-found
+    kubectl -n ${BOOKINFO_NS} delete -f samples/bookinfo/networking/destination-rule-all.yaml --ignore-not-found
+    kubectl -n ${BOOKINFO_NS} delete -f samples/bookinfo/networking/bookinfo-gateway.yaml --ignore-not-found
 fi

@@ -29,12 +29,23 @@ run-all-tests: run-build \
 	run-prometheus-operator-config-test
 
 # Tests using multiple namespaces.
-run-multinamespace: ISTIO_CONTROL_NS=istio-control
-run-multinamespace: ISTIO_TELEMETRY_NS=istio-telemetry
-run-multinamespace: ISTIO_POLICY_NS=istio-policy
-run-multinamespace: ISTIO_INGRESS_NS=istio-ingress
-run-multinamespace: ISTIO_EGRESS_NS=istio-egress
 run-multinamespace: run-build install-full run-bookinfo
+
+# Test using multiple IstioControlPlane
+run-multi-istiocontrolplane: 
+	# Install latest release build. 
+	# istio-system is used for citadel which is shared between master and latest build
+	ENABLE_NAMESPACES_BY_DEFAULT=false INJECT_LABEL=${ISTIO_CONTROL_NS} \
+		ONE_NAMESPACE=0 SKIP_LABEL=0 HUB=docker.io/istio TAG=1.4.2 \
+		SKIP_CLEANUP=1 make run-multinamespace
+
+	# Install master build into *-master namespaces
+	ENABLE_NAMESPACES_BY_DEFAULT=false INJECT_LABEL=${ISTIO_CONTROL_NS} \
+		ONE_NAMESPACE=0 SKIP_LABEL=0 \
+		ISTIO_CONTROL_NS=istio-control-master ISTIO_TELEMETRY_NS=istio-telemetry-master \
+		ISTIO_POLICY_NS=istio-policy-master ISTIO_INGRESS_NS=istio-ingress-master \
+		ISTIO_EGRESS_NS=istio-egress-master BOOKINFO_NS=bookinfo-master \
+		SKIP_CLEANUP=1 make run-multinamespace
 
 # Tests running against 'micro' environment - just citadel + pilot + ingress
 # TODO: also add 'nano' - pilot + ingress without citadel, some users are using this a-la-carte option
@@ -93,7 +104,7 @@ run-bookinfo:
 	#kubectl label namespace bookinfo istio-env=${ISTIO_CONTROL_NS} --overwrite
 	kubectl -n bookinfo apply -f test/k8s/mtls_permissive.yaml
 	kubectl -n bookinfo apply -f test/k8s/sidecar-local.yaml
-	ONE_NAMESPACE=1 SKIP_CLEANUP=${SKIP_CLEANUP} ISTIO_CONTROL=${ISTIO_CONTROL_NS} INGRESS_NS=${ISTIO_INGRESS_NS} SKIP_DELETE=1 SKIP_LABEL=1 \
+	ONE_NAMESPACE=${ONE_NAMESPACE} SKIP_CLEANUP=${SKIP_CLEANUP} ISTIO_CONTROL=${ISTIO_CONTROL_NS} INGRESS_NS=${ISTIO_INGRESS_NS} SKIP_DELETE=1 SKIP_LABEL=${SKIP_LABEL} \
 	  bin/test.sh ${GOPATH}/src/istio.io/istio
 
 # Simple fortio install and curl command

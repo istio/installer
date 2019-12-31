@@ -41,7 +41,7 @@ run-multi-istiocontrolplane:
 
 	# Install master build into *-master namespaces
 	ENABLE_NAMESPACES_BY_DEFAULT=false INJECT_LABEL=${ISTIO_CONTROL_NS} \
-		ONE_NAMESPACE=0 SKIP_LABEL=0 \
+		ONE_NAMESPACE=0 SKIP_LABEL=0 ISTIO_INGRESS_LABELS=istio=custom-ingressgateway\
 		ISTIO_CONTROL_NS=istio-control-master ISTIO_TELEMETRY_NS=istio-telemetry-master \
 		ISTIO_POLICY_NS=istio-policy-master ISTIO_INGRESS_NS=istio-ingress-master \
 		ISTIO_EGRESS_NS=istio-egress-master BOOKINFO_NS=bookinfo-master \

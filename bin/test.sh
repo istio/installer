@@ -86,6 +86,11 @@ if [ "$SKIP_SETUP" -ne 1 ]; then
     kubectl -n ${BOOKINFO_NS} apply -f samples/bookinfo/platform/kube/bookinfo.yaml
     kubectl -n ${BOOKINFO_NS} apply -f samples/bookinfo/networking/destination-rule-all.yaml
     kubectl -n ${BOOKINFO_NS} apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
+    # Patch with custom label
+    if [ ! -z $ISTIO_INGRESS_LABELS ]; then
+        kubectl patch gateway bookinfo-gateway -p '{"spec":{"selector":{"'${ISTIO_INGRESS_LABELS%=*}'":"'${ISTIO_INGRESS_LABELS#*=}'"}}}' \
+            -n ${BOOKINFO_NS} --type='merge'
+    fi
 
     for depl in ${BOOKINFO_DEPLOYMENTS}; do
         kubectl -n ${BOOKINFO_NS} rollout status deployments $depl --timeout=$WAIT_TIMEOUT
@@ -100,7 +105,11 @@ do
     export INGRESS_PORT=$(kubectl -n ${INGRESS_NS} get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
     export SECURE_INGRESS_PORT=$(kubectl -n ${INGRESS_NS} get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
     if [ -z $INGRESS_HOST ]; then
-        export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n ${INGRESS_NS} -o jsonpath='{.items[0].status.hostIP}')
+        if [ -z $ISTIO_INGRESS_LABELS ]; then
+            export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n ${INGRESS_NS} -o jsonpath='{.items[0].status.hostIP}')
+        else
+            export INGRESS_HOST=$(kubectl get po -l $ISTIO_INGRESS_LABELS -n ${INGRESS_NS} -o jsonpath='{.items[0].status.hostIP}')
+        fi
         export INGRESS_PORT=$(kubectl -n ${INGRESS_NS} get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
         export SECURE_INGRESS_PORT=$(kubectl -n ${INGRESS_NS} get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
     fi

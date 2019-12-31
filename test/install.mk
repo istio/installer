@@ -127,15 +127,20 @@ install-base: install-base-chart
 install-ingress:
 	kubectl create ns ${ISTIO_INGRESS_NS} || true
 	kubectl label ns ${ISTIO_INGRESS_NS} istio-injection=disabled --overwrite
-	bin/iop ${ISTIO_INGRESS_NS} istio-ingress ${BASE}/gateways/istio-ingress  ${IOP_OPTS} ${INSTALL_OPTS}
+	if [ -z "${ISTIO_INGRESS_LABELS}" ]; then \
+		bin/iop ${ISTIO_INGRESS_NS} istio-ingress ${BASE}/gateways/istio-ingress ${IOP_OPTS} ${INSTALL_OPTS}; \
+	else \
+		bin/iop ${ISTIO_INGRESS_NS} istio-ingress ${BASE}/gateways/istio-ingress \
+			--set gateways.istio-ingressgateway.labels.${ISTIO_INGRESS_LABELS} ${IOP_OPTS} ${INSTALL_OPTS}; \
+	fi
 	kubectl wait deployments istio-ingressgateway -n ${ISTIO_INGRESS_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 wait-all-system:
 	kubectl wait deployments istio-citadel -n ${ISTIO_SYSTEM_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
-	kubectl wait deployments istio-galley istio-pilot -n ${ISTIO_SYSTEM_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
-	kubectl wait deployments istio-sidecar-injector -n ${ISTIO_SYSTEM_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
-	kubectl wait deployments istio-ingressgateway -n ${ISTIO_SYSTEM_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
-	kubectl wait deployments istio-telemetry prometheus grafana -n ${ISTIO_SYSTEM_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl wait deployments istio-galley istio-pilot -n ${ISTIO_CONTROL_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl wait deployments istio-sidecar-injector -n ${ISTIO_CONTROL_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl wait deployments istio-ingressgateway -n ${ISTIO_INGRESS_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
+	kubectl wait deployments istio-telemetry prometheus grafana -n ${ISTIO_TELEMETRY_NS} --for=condition=available --timeout=${WAIT_TIMEOUT}
 
 
 install-egress:

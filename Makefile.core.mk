@@ -85,6 +85,9 @@ CUSTOM_SIDECAR_INJECTOR_NAMESPACE ?=
 #        istio-env: {{ .Release.Namespace }}
 INJECT_LABEL ?= istio-injection
 
+# istio-ingress labels used to replace the predefined labels
+ISTIO_INGRESS_LABELS ?= 
+
 # Namespace and environment running the control plane.
 # A cluster must support multiple control plane versions.
 ISTIO_SYSTEM_NS ?= istio-system

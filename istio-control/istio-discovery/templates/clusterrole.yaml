@@ -42,7 +42,7 @@ rules:
     - "certificatesigningrequests"
     - "certificatesigningrequests/approval"
     - "certificatesigningrequests/status"
-  verbs: ["update", "create", "get", "delete"]
+  verbs: ["update", "create", "get", "delete", "watch"]
 - apiGroups: ["discovery.k8s.io"]
   resources: ["endpointslices"]
   verbs: ["get", "list", "watch"]
@@ -124,7 +124,7 @@ rules:
       - "certificatesigningrequests"
       - "certificatesigningrequests/approval"
       - "certificatesigningrequests/status"
-    verbs: ["update", "create", "get", "delete"]
+    verbs: ["update", "create", "get", "delete", "watch"]
   # Used by Istiod to verify the JWT tokens
   - apiGroups: ["authentication.k8s.io"]
     resources: ["tokenreviews"]

@@ -25,7 +25,7 @@ spec:
 {{- end }}
   type: {{ $gateway.type }}
   selector:
-    app: istio-ingressgateway
+{{ $gateway.labels | toYaml | indent 4 }}
   ports:
 
     {{- range $key, $val := $gateway.ports }}

@@ -192,8 +192,6 @@ template: |
       {{ toYaml .Values.global.proxy.lifecycle | indent 4 }}
     {{- end }}
     env:
-    - name: SIGN_CERT_AT_KUBERNETES_CA
-      value: "{{ .Values.global.signCertAtKubernetesCa }}"
     # Temp, pending PR to make it default or based on the istiodAddr env
     - name: CA_ADDR
     {{- if .Values.global.configNamespace }}

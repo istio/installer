@@ -200,6 +200,9 @@ spec:
     - sourceLabels: [__meta_kubernetes_pod_annotation_istio_mtls]
       action: drop
       regex: 'true'
+    - sourceLabels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+      action: drop
+      regex: kube-state-metrics
     - sourceLabels: [__meta_kubernetes_service_annotation_prometheus_io_path]
       action: replace
       targetLabel: __metrics_path__

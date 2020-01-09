@@ -193,7 +193,7 @@ template: |
     {{- end }}
     env:
     - name: SIGN_CERT_AT_KUBERNETES_CA
-      value: {{ .Values.global.signCertAtKubernetesCa }}
+      value: "{{ .Values.global.signCertAtKubernetesCa }}"
     # Temp, pending PR to make it default or based on the istiodAddr env
     - name: CA_ADDR
     {{- if .Values.global.configNamespace }}
@@ -353,7 +353,7 @@ template: |
     {{  end -}}
     volumeMounts:
     {{- if not .Values.global.signCertAtKubernetesCa }}
-    - mountPath: /etc/citadel-ca-cert
+    - mountPath: /etc/istio/citadel-ca-cert
       name: citadel-ca-cert
     {{- end }}
     {{ if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapOverride`) }}

@@ -350,7 +350,7 @@ template: |
   {{- end }}
     {{  end -}}
     volumeMounts:
-    {{- if not .Values.global.signCertAtKubernetesCa }}
+    {{- if eq .Values.global.pilotCertProvider "citadel" }}
     - mountPath: /etc/istio/citadel-ca-cert
       name: citadel-ca-cert
     {{- end }}
@@ -392,7 +392,7 @@ template: |
           path: istio-token
           expirationSeconds: 43200
           audience: {{ .Values.global.sds.token.aud }}
-  {{- if not .Values.global.signCertAtKubernetesCa }}
+  {{- if eq .Values.global.pilotCertProvider "citadel" }}
   - name: citadel-ca-cert
     configMap:
       name: istio-ca-root-cert

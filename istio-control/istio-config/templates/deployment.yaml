@@ -179,28 +179,47 @@ spec:
 {{ toYaml .Values.global.defaultResources | indent 12 }}
 {{- end }}
           volumeMounts:
+          {{- if .Values.global.sds.enabled }}
+          - name: sds-uds-path
+            mountPath: /var/run/sds
+            readOnly: true
+          - name: istio-token
+            mountPath: /var/run/secrets/tokens
+          {{- else }}
           - name: istio-certs
             mountPath: /etc/certs
             readOnly: true
+          {{- end }}
           - name: envoy-config
             mountPath: /var/lib/istio/galley/envoy
-{{- end }}
+{{- end }} # if .Values.global.controlPlaneSecurityEnabled
 
       volumes:
-  {{- if or .Values.global.controlPlaneSecurityEnabled .Values.global.configValidation }}
+  {{- if .Values.global.controlPlaneSecurityEnabled }}
+      - name: envoy-config
+        configMap:
+          name: galley-envoy-config
+      {{- if .Values.global.sds.enabled }}
+      - hostPath:
+          path: /var/run/sds
+        name: sds-uds-path
+      - name: istio-token
+        projected:
+          sources:
+          - serviceAccountToken:
+              audience: {{ .Values.global.sds.token.aud }}
+              expirationSeconds: 43200
+              path: istio-token
+      {{- else }}
       - name: istio-certs
         secret:
           secretName: istio.istio-galley-service-account
+      {{- end }}
   {{- end }}
   {{- if .Values.global.certificates }}
       - name: dnscerts
         secret:
           secretName: dns.istio-galley-service-account
-  {{- end }}
-  {{- if .Values.global.controlPlaneSecurityEnabled }}
-      - name: envoy-config
-        configMap:
-          name: galley-envoy-config
   {{- end }}
       - name: config
         configMap:

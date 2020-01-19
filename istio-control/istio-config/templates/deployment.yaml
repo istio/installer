@@ -87,14 +87,15 @@ spec:
 {{- end }}
           volumeMounts:
   {{- if .Values.global.configValidation }}
-          - name: istio-certs
-            mountPath: /etc/certs
-            readOnly: true
-  {{- end }}
-  {{- if .Values.global.certificates }}
+    {{- if .Values.global.certificates }}
           - name: dnscerts
             mountPath: /etc/dnscerts
             readOnly: true
+    {{- else }}
+          - name: istio-certs
+            mountPath: /etc/certs
+            readOnly: true
+    {{- end }}
   {{- end }}
           - name: config
             mountPath: /etc/config

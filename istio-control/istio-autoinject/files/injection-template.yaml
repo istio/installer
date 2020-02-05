@@ -1,8 +1,12 @@
 template: |
+  {{- $cniDisabled := (not .Values.istio_cni.enabled) }}
+  {{- $cniRepairEnabled := (and .Values.istio_cni.enabled .Values.istio_cni.repair.enabled) }}
+  {{- $enableInitContainer := (or $cniDisabled $cniRepairEnabled .Values.global.proxy.enableCoreDump) }}
   rewriteAppHTTPProbe: {{ valueOrDefault .Values.sidecarInjectorWebhook.rewriteAppHTTPProbe false }}
+  {{- if $enableInitContainer }}
   initContainers:
   {{ if ne (annotation .ObjectMeta `sidecar.istio.io/interceptionMode` .ProxyConfig.InterceptionMode) `NONE` }}
-  {{ if .Values.istio_cni.enabled -}}
+  {{ if $cniRepairEnabled -}}
   - name: istio-validation
   {{ else -}}
   - name: istio-init
@@ -38,7 +42,7 @@ template: |
     - "-k"
     - "{{ index .ObjectMeta.Annotations `traffic.sidecar.istio.io/kubevirtInterfaces` }}"
     {{ end -}}
-    {{ if .Values.istio_cni.enabled -}}
+    {{ if $cniRepairEnabled -}}
     - "--run-validation"
     - "--skip-rule-apply"
     {{ end -}}
@@ -53,7 +57,7 @@ template: |
       allowPrivilegeEscalation: {{ .Values.global.proxy.privileged }}
       privileged: {{ .Values.global.proxy.privileged }}
       capabilities:
-    {{- if not .Values.istio_cni.enabled }}
+    {{- if not $cniRepairEnabled }}
         add:
         - NET_ADMIN
         - NET_RAW
@@ -61,7 +65,7 @@ template: |
         drop:
         - ALL
       readOnlyRootFilesystem: false
-    {{- if not .Values.istio_cni.enabled }}
+    {{- if not $cniRepairEnabled }}
       runAsGroup: 0
       runAsNonRoot: false
       runAsUser: 0
@@ -98,6 +102,7 @@ template: |
       runAsGroup: 0
       runAsNonRoot: false
       runAsUser: 0
+  {{ end }}
   {{ end }}
   containers:
   - name: istio-proxy

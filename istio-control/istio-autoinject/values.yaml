@@ -85,3 +85,5 @@ sidecarInjectorWebhook:
 # TODO: rename to 'enableIptables' or add 'interceptionMode: CNI'
 istio_cni:
   enabled: false
+  repair:
+    enabled: true

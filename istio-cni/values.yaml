@@ -36,7 +36,7 @@ cni:
 
     labelPods: "true"
     createEvents: "true"
-    deletePods: "true"
+    deletePods: "false"
 
     brokenPodLabelKey: "cni.istio.io/uninitialized"
     brokenPodLabelValue: "true"

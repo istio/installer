@@ -253,11 +253,6 @@ spec:
               path: istio-token
               expirationSeconds: 43200
               audience: {{ .Values.global.sds.token.aud }}
-      {{- end }}
-      {{ if .Values.global.sds.enabled }}
-      - name: sdsudspath
-        hostPath:
-          path: /var/run/sds
       {{- else }}
       - name: istio-certs
         secret:

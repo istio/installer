@@ -6,6 +6,7 @@ grafana:
     tag: 6.5.2
   persist: false
   storageClassName: ""
+  storageSize: 5Gi
   accessMode: ReadWriteMany
   security:
     enabled: false

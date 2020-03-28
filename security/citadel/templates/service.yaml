@@ -8,7 +8,6 @@ metadata:
     app: security
     istio: citadel
     release: {{ .Release.Name }}
-
 spec:
   ports:
     - name: grpc-citadel

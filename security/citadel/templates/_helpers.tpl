@@ -75,3 +75,12 @@ Create chart name and version as used by the chart label.
 {{- define "security.chart" -}}
 {{- .Chart.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{- define "custom-dns-names-args" -}}
+{{ $dns_names := list }}
+{{- range $k,$v := .Values.security.dnsCerts -}}
+    {{- $arg := printf "%s:%s" $k $v -}}
+    {{- $dns_names = append $dns_names $arg -}}
+{{- end -}}
+{{- $dns_names | join "," -}}
+{{- end -}}
